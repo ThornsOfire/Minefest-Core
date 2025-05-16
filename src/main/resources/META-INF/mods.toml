@@ -1,0 +1,26 @@
+# This is an example mods.toml file. It contains the data relating to the loading mods.
+# There are several mandatory fields (#mandatory), and many more that are optional (#optional).
+# The overall format is standard TOML format, v0.5.0.
+
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml" #mandatory
+
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="[49,)" #mandatory
+
+# The license for your mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
+license="MIT"
+
+[[mods]] #mandatory
+modId="minefest" #mandatory
+version="1.0.0" #mandatory
+displayName="Minefest Core" #mandatory
+
+# A text field displayed in the mod UI
+authors="Minefest Team" #optional
+
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Minefest Core - A revolutionary music festival platform for Minecraft.
+Experience live music events in a virtual space with thousands of other players.
+''' 

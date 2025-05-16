@@ -1,0 +1,51 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+
+# Eclipse
+*.launch
+.settings/
+.metadata
+.classpath
+.project
+bin/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VSCode
+.vscode/
+.settings/
+bin/
+.classpath
+.project
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Minecraft/Forge
+run/
+logs/
+crash-reports/
+
+# Compiled files
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Logs
+*.log
+*.log.gz
+hs_err_pid*
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock 
