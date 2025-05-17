@@ -8,5 +8,5 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MinefestCore.MOD_ID);
     
-    // Festival items will be registered here
+    // Add item registrations here
 } 

@@ -7,10 +7,9 @@ classes/
 # Eclipse
 *.launch
 .settings/
-.metadata
+.metadata/
 .classpath
 .project
-bin/
 
 # IntelliJ IDEA
 .idea/
@@ -20,32 +19,26 @@ bin/
 
 # VSCode
 .vscode/
-.settings/
 bin/
-.classpath
-.project
-
-# MacOS
-.DS_Store
-.AppleDouble
-.LSOverride
+.settings/
+.vscode/
 
 # Minecraft/Forge
 run/
 logs/
 crash-reports/
 
-# Compiled files
-*.class
-*.jar
-!gradle/wrapper/gradle-wrapper.jar
+# Mac OS
+.DS_Store
+.AppleDouble
+.LSOverride
 
-# Logs
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Project-specific
 *.log
-*.log.gz
-hs_err_pid*
-
-# Runtime data
-*.pid
-*.seed
-*.pid.lock 
+*.jar
+!gradle-wrapper.jar 

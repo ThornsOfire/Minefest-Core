@@ -9,11 +9,11 @@ modLoader="javafml" #mandatory
 loaderVersion="[49,)" #mandatory
 
 # The license for your mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
-license="MIT"
+license="All Rights Reserved"
 
 [[mods]] #mandatory
 modId="minefest" #mandatory
-version="1.0.0" #mandatory
+version="1.20.4-0.1.0.0" #mandatory
 displayName="Minefest Core" #mandatory
 
 # A text field displayed in the mod UI
@@ -23,4 +23,18 @@ authors="Minefest Team" #optional
 description='''
 Minefest Core - A revolutionary music festival platform for Minecraft.
 Experience live music events in a virtual space with thousands of other players.
-''' 
+'''
+
+[[dependencies.minefest]] #mandatory
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[49,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.minefest]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.4,1.21)"
+    ordering="NONE"
+    side="BOTH" 

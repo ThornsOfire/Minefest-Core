@@ -1,0 +1,4 @@
+name: MinefestCore
+main: com.minefest.core.bungee.MinefestBungee
+version: 1.0.0
+author: Minefest Team 
