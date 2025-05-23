@@ -1,11 +1,12 @@
-package com.minefest.core;
+package com.minefest.essentials;
 
-import com.minefest.core.init.ModBlocks;
-import com.minefest.core.init.ModItems;
-import com.minefest.core.init.ModCreativeTabs;
-import com.minefest.core.network.TimeSync;
-import com.minefest.core.timing.MasterClock;
-import com.minefest.core.config.MinefestConfig;
+import com.minefest.essentials.init.ModBlocks;
+import com.minefest.essentials.init.ModItems;
+import com.minefest.essentials.init.ModCreativeTabs;
+import com.minefest.essentials.network.TimeSync;
+import com.minefest.essentials.timing.MasterClock;
+import com.minefest.essentials.config.MinefestConfig;
+import com.minefest.essentials.test.ServerTestBroadcaster;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,9 +26,35 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
+/**
+ * 🔒 LOCKED COMPONENT [Index: 02] - DO NOT MODIFY WITHOUT USER APPROVAL
+ * Lock Date: 2025-05-22
+ * Lock Reason: Core mod initialization working, MasterClock integration stable
+ * 
+ * COMPONENT SIGNPOST [Index: 02]
+ * Purpose: Central mod initialization and core component coordination
+ * Side: COMMON with side-specific initialization
+ * 
+ * Workflow:
+ * 1. [Index: 02.1] Initialize mod event bus and configuration
+ * 2. [Index: 02.2] Create and initialize MasterClock on server side
+ * 3. [Index: 02.3] Register mod content (blocks, items, creative tabs)
+ * 4. [Index: 02.4] Set up common setup event handling
+ * 
+ * Dependencies:
+ * - MasterClock [Index: 01] - server-side timing authority
+ * - MinefestConfig [Index: 10] - configuration management
+ * - ServerTestBroadcaster [Index: 13] - test broadcasting system
+ * 
+ * Related Files:
+ * - MasterClock.java [Index: 01] - timing system initialization
+ * - MinefestConfig.java [Index: 10] - configuration registration
+ * - ServerTestBroadcaster.java [Index: 13] - test system initialization
+ */
 @Mod(MinefestCore.MOD_ID)
 public class MinefestCore {
     public static final String MOD_ID = "minefest";
@@ -46,22 +73,23 @@ public class MinefestCore {
             serverId = UUID.randomUUID().toString();
         }
 
-        // Register configs first - this is common for both sides
-        MinefestConfig.register(ModLoadingContext.get());
-
-        // Get the event bus
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        
-        // Register to the mod event bus for initialization events
         modEventBus.addListener(this::commonSetup);
         
-        // Only register config events on server side
-        if (!FMLEnvironment.dist.isClient()) {
-            modEventBus.addListener(this::onConfigLoad);
-            modEventBus.addListener(this::onConfigReload);
+        // Register config
+        MinefestConfig.register(ModLoadingContext.get());
+        modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(this::onConfigReload);
+        
+        // Initialize components
+        if (FMLEnvironment.dist.isDedicatedServer()) {
+            masterClock = MasterClock.createInstance();
+            masterClock.initialize();
+            isInitialized = true;
+            LOGGER.info("MasterClock initialized and ready");
         }
-
-        // Register to the Forge event bus for game events
+        
+        // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register mod content - common for both sides
@@ -69,7 +97,7 @@ public class MinefestCore {
         ModItems.ITEMS.register(modEventBus);
         
         // Register creative tabs only on client side
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.dist.isClient() && ModCreativeTabs.CREATIVE_MODE_TABS != null) {
             ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         }
 
@@ -79,52 +107,25 @@ public class MinefestCore {
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             // Initialize network channels
+            if (FMLEnvironment.dist.isDedicatedServer()) {
+                ServerTestBroadcaster.init();
+            }
             LOGGER.info("Minefest Core common setup completed");
         });
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
     private void onConfigLoad(final ModConfigEvent.Loading event) {
         LOGGER.info("Loading Minefest Core configuration");
+        // Config values are not yet available during the loading event
+        // We'll validate them later when they're actually needed
         configLoaded = true;
-        if (!isInitialized) {
-            initializeAfterConfigLoad();
-        } else {
-            LOGGER.debug("Already initialized - config changes will be applied through event handlers");
-        }
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
     private void onConfigReload(final ModConfigEvent.Reloading event) {
         LOGGER.info("Reloading Minefest Core configuration");
+        // Config values are not yet available during the reload event
+        // We'll validate them later when they're actually needed
         configLoaded = true;
-        if (!isInitialized) {
-            initializeAfterConfigLoad();
-        } else {
-            LOGGER.debug("Already initialized - config changes will be applied through event handlers");
-        }
-    }
-
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    private void initializeAfterConfigLoad() {
-        try {
-            MinefestConfig.ensureLoaded();
-            
-            // Initialize MasterClock after config is loaded
-            if (masterClock == null) {
-                masterClock = MasterClock.createInstance();
-                masterClock.initialize();
-                isInitialized = true;
-                LOGGER.info("Minefest Core initialization completed");
-            } else {
-                LOGGER.warn("MasterClock already initialized - skipping initialization");
-            }
-        } catch (IllegalStateException e) {
-            LOGGER.warn("Config not loaded yet - deferring initialization");
-        } catch (Exception e) {
-            LOGGER.error("Failed to initialize Minefest Core after config load", e);
-            throw new RuntimeException("Failed to initialize Minefest Core", e);
-        }
     }
 
     public static MinefestCore getInstance() {
@@ -163,22 +164,25 @@ public class MinefestCore {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
             ResourceLocation channelRL = new ResourceLocation(MOD_ID, channel);
-            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                try {
-                    CustomPacketPayload payload = new CustomPacketPayload() {
-                        @Override
-                        public ResourceLocation id() {
-                            return channelRL;
-                        }
+            var players = server.getLevel(Level.OVERWORLD).players();
+            if (players != null) {
+                for (ServerPlayer player : players) {
+                    try {
+                        CustomPacketPayload payload = new CustomPacketPayload() {
+                            @Override
+                            public ResourceLocation id() {
+                                return channelRL;
+                            }
 
-                        @Override
-                        public void write(FriendlyByteBuf buffer) {
-                            buffer.writeBytes(message);
-                        }
-                    };
-                    player.connection.send(new ClientboundCustomPayloadPacket(payload));
-                } catch (Exception e) {
-                    LOGGER.error("Failed to send plugin message to player {}", player.getName().getString(), e);
+                            @Override
+                            public void write(FriendlyByteBuf buffer) {
+                                buffer.writeBytes(message);
+                            }
+                        };
+                        player.connection.send(new ClientboundCustomPayloadPacket(payload));
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to send plugin message to player {}", player.getName().getString(), e);
+                    }
                 }
             }
         }

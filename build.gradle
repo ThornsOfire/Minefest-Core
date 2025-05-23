@@ -5,12 +5,101 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+'
+        classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
 
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+}
+
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
+
+version = project.mod_version
+group = 'com.minefest'
+archivesBaseName = 'minefest-essentials'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.ORACLE
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+    options.encoding = 'UTF-8'
+    options.compilerArgs += [
+        '--add-exports=java.base/sun.security.util=ALL-UNNAMED',
+        '--add-exports=jdk.naming.dns/com.sun.jndi.dns=java.naming',
+        '--add-opens=java.base/java.util.jar=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+        '--add-opens=java.base/java.text=ALL-UNNAMED',
+        '--add-opens=java.desktop/java.awt.font=ALL-UNNAMED'
+    ]
+}
+
+println "Java: ${System.getProperty('java.version')}, JVM: ${System.getProperty('java.vm.version')} (${System.getProperty('java.vendor')}), Arch: ${System.getProperty('os.arch')}"
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'minefest'
+            
+            // Memory allocation for development
+            jvmArgs '-Xms2G', '-Xmx4G'
+            jvmArgs '-XX:+UseG1GC'
+            jvmArgs '-XX:MaxGCPauseMillis=50'
+            
+            // Simplified module system configuration
+            jvmArgs '--add-opens=java.base/java.util.jar=ALL-UNNAMED'
+            jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+            jvmArgs '--add-opens=java.base/java.text=ALL-UNNAMED'
+            jvmArgs '--add-opens=java.desktop/java.awt.font=ALL-UNNAMED'
+            jvmArgs '--add-exports=java.base/sun.security.util=ALL-UNNAMED'
+            jvmArgs '--add-exports=jdk.naming.dns/com.sun.jndi.dns=java.naming'
+            
+            // Disable module system conflicts by forcing all to unnamed module
+            jvmArgs '--add-modules=ALL-SYSTEM'
+            jvmArgs '--illegal-access=permit'
+            
+            // Removed problematic module exports that were causing conflicts
+        }
+        
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'minefest'
+            
+            // Memory allocation for development server
+            jvmArgs '-Xms2G', '-Xmx6G'
+            jvmArgs '-XX:+UseG1GC'
+            jvmArgs '-XX:MaxGCPauseMillis=50'
+            jvmArgs '-XX:G1HeapRegionSize=32M'
+            
+            // Module system configuration to avoid conflicts
+            jvmArgs '--add-modules', 'ALL-SYSTEM'
+            jvmArgs '--illegal-access=permit'
+            jvmArgs '--add-opens=java.base/java.util.jar=ALL-UNNAMED'
+            jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+            jvmArgs '--add-opens=java.base/java.text=ALL-UNNAMED'
+            jvmArgs '--add-opens=java.desktop/java.awt.font=ALL-UNNAMED'
+            jvmArgs '--add-exports=java.base/sun.security.util=ALL-UNNAMED'
+            jvmArgs '--add-exports=jdk.naming.dns/com.sun.jndi.dns=java.naming'
+            
+            // Removed mods configuration to use jar in mods folder instead
+        }
+    }
+}
 
 repositories {
     maven { url = 'https://maven.minecraftforge.net' }
@@ -32,100 +121,96 @@ repositories {
     }
 }
 
-version = '1.20.4-0.1.0.0'
-group = 'com.minefest' 
-archivesBaseName = 'minefest-core'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-        vendor = JvmVendorSpec.ORACLE
-    }
-}
-
-println "Java: ${System.getProperty('java.version')}, JVM: ${System.getProperty('java.vm.version')} (${System.getProperty('java.vendor')}), Arch: ${System.getProperty('os.arch')}"
-
-minecraft {
-    mappings channel: 'official', version: '1.20.4'
-    reobf {
-        reobf = false
-    }
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                minefest {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                minefest {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
 dependencies {
-    minecraft "net.minecraftforge:forge:1.20.4-49.0.31"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     
-    // Updated LavaPlayer dependency
     implementation 'com.sedmelluq:lavaplayer:1.3.78'
-    
-    // BungeeCord API - Updated to use release version
     compileOnly 'net.md-5:bungeecord-api:1.20-R0.1'
-    
-    // Guava for ByteStreams
     implementation 'com.google.guava:guava:32.1.2-jre'
+}
+
+configurations {
+    all {
+        resolutionStrategy {
+            force 'com.github.oshi:oshi-core:6.4.10'
+        }
+    }
+}
+
+tasks.named('processResources').configure {
+    // Remove the copy of Java files to resources
+    // This was causing issues
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "forge_version", project.forge_version
+    inputs.property "loader_version_range", project.loader_version_range
+    inputs.property "forge_version_range", project.forge_version_range
+    inputs.property "minecraft_version_range", project.minecraft_version_range
+    inputs.property "mod_authors", project.mod_authors
+    inputs.property "mod_license", project.mod_license
+    inputs.property "mod_description", project.mod_description
+
+    // Exclude Java source files from resources
+    exclude '**/*.java'
+
+    filesMatching('META-INF/mods.toml') {
+        expand 'version': project.version,
+               'minecraft_version': project.minecraft_version,
+               'forge_version': project.forge_version,
+               'loader_version_range': project.loader_version_range,
+               'forge_version_range': project.forge_version_range,
+               'minecraft_version_range': project.minecraft_version_range,
+               'mod_authors': project.mod_authors,
+               'mod_license': project.mod_license,
+               'mod_description': project.mod_description,
+               'mod_version': project.mod_version
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title"     : "Minefest Core",
-            "Specification-Vendor"    : "Minefest Team",
-            "Specification-Version"   : "1",
-            "Implementation-Title"    : project.name,
-            "Implementation-Version"  : project.jar.archiveVersion,
-            "Implementation-Vendor"   : "Minefest Team",
+            "Specification-Title": "minefest",
+            "Specification-Vendor": "minefestsareus",
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.jar.archiveVersion,
+            "Implementation-Vendor" :"minefestsareus",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
     
-    // Handle duplicate files
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    
-    // Include the compiled classes
-    from sourceSets.main.output
-    
-    // Include resources
-    from 'src/main/resources'
-    
-    // Exclude unnecessary files
+    exclude 'oshi.properties'
+    exclude 'oshi.architecture.properties'
     exclude 'META-INF/MANIFEST.MF'
     exclude 'META-INF/*.SF'
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
+    
+    from sourceSets.main.output
 }
 
-// Create run/mods directory if it doesn't exist
 task createModsDir {
     doLast {
         file('run/mods').mkdirs()
     }
 }
 
-// Task to clean the run/mods directory
 task cleanModsDir {
     doLast {
         delete fileTree('run/mods') {
@@ -134,8 +219,295 @@ task cleanModsDir {
     }
 }
 
-// Task to copy the mod JAR to the run/mods directory
-task copyModToRunMods(type: Copy, dependsOn: [jar, createModsDir, cleanModsDir]) {
+task createServerTestEnv {
+    doLast {
+        def serverTestDir = file('run/server-test')
+        serverTestDir.mkdirs()
+        
+        def serverProperties = new File(serverTestDir, 'server-test.properties')
+        if (!serverProperties.exists()) {
+            serverProperties.text = """
+#Minecraft server properties for testing
+spawn-protection=16
+max-tick-time=60000
+query.port=25565
+generator-settings={}
+sync-chunk-writes=true
+force-gamemode=false
+allow-nether=true
+enforce-whitelist=false
+gamemode=survival
+broadcast-console-to-ops=true
+enable-query=false
+player-idle-timeout=0
+difficulty=easy
+spawn-monsters=true
+broadcast-rcon-to-ops=true
+op-permission-level=4
+pvp=true
+entity-broadcast-range-percentage=100
+snooper-enabled=true
+level-type=default
+hardcore=false
+enable-command-block=false
+max-players=20
+network-compression-threshold=256
+resource-pack-sha1=
+max-world-size=29999984
+function-permission-level=2
+rcon.port=25575
+server-port=25565
+debug=false
+server-ip=
+spawn-npcs=true
+allow-flight=false
+level-name=world
+view-distance=10
+resource-pack=
+spawn-animals=true
+white-list=false
+rcon.password=
+generate-structures=true
+max-build-height=256
+online-mode=false
+level-seed=
+prevent-proxy-connections=false
+enable-rcon=false
+motd=Minefest Test Server
+""".trim()
+        }
+        
+        def opsFile = new File(serverTestDir, 'ops.json')
+        if (!opsFile.exists()) {
+            opsFile.text = '[]'
+        }
+    }
+}
+
+task setupServerTest {
+    dependsOn 'build', 'createServerTestEnv', 'copyModToServerTest'
+    group = 'minefest'
+    description = 'Sets up the test server environment with the latest mod build'
+}
+
+task copyModToRunMods(type: Copy, dependsOn: jar) {
     from jar
     into 'run/mods'
-} 
+    doFirst {
+        delete fileTree('run/mods') {
+            include '*.jar'
+        }
+    }
+}
+
+task copyModToServerMods(type: Copy, dependsOn: jar) {
+    from jar
+    into 'server/mods'
+    doFirst {
+        delete fileTree('server/mods') {
+            include '*.jar'
+        }
+    }
+}
+
+task copyModToServerTest(type: Copy, dependsOn: jar) {
+    from jar
+    into 'run/server-test/mods'
+    doFirst {
+        delete fileTree('run/server-test/mods') {
+            include '*.jar'
+        }
+    }
+}
+
+task copyModToClientMods(type: Copy, dependsOn: jar) {
+    from jar
+    into 'c:/Users/rstic/curseforge/minecraft/Instances/Minefest (1)/mods'
+    doFirst {
+        // Remove old versions of our mod
+        delete fileTree('c:/Users/rstic/curseforge/minecraft/Instances/Minefest (1)/mods') {
+            include 'minefest-essentials-*.jar'
+        }
+    }
+    onlyIf {
+        // Only copy if the CurseForge directory exists
+        file('c:/Users/rstic/curseforge/minecraft/Instances/Minefest (1)/mods').exists()
+    }
+}
+
+// Comprehensive build task that updates all environments
+task buildAll {
+    dependsOn 'clean', 'build', 'copyModToRunMods', 'copyModToServerMods', 'copyModToClientMods'
+    group = 'minefest'
+    description = 'Clean build and deploy to development (run/mods), production (server/mods), and client (CurseForge) environments'
+    
+    doLast {
+        println "✅ Built and deployed Minefest-Core v${project.version}"
+        println "📁 Development environment: run/mods/"
+        println "🚀 Production environment: server/mods/"
+        println "🎮 Client environment: CurseForge/Minefest (1)/mods/"
+        println ""
+        println "Ready to start:"
+        println "  Development: ./gradlew runServer"
+        println "  Production:  cd server && ./run.bat"
+        println "  Client:      Launch from CurseForge app"
+    }
+}
+
+// Create a special dev jar with the correct structure for Forge to find the mod class
+task devJar(type: Jar, dependsOn: cleanModsDir) {
+    archiveBaseName = 'minefest-dev'
+    
+    manifest {
+        attributes([
+            "Specification-Title": "minefest",
+            "Specification-Vendor": "minefestsareus", 
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.jar.archiveVersion,
+            "Implementation-Vendor" :"minefestsareus",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+    
+    // Include resources but exclude Java files
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.java'
+    }
+    
+    // Include compiled classes but not the resources
+    from sourceSets.main.output.classesDirs
+    
+    // Exclude duplicate files like MANIFEST.MF 
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude 'META-INF/MANIFEST.MF'
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    
+    // Important: Place the dev jar directly in the run/mods folder
+    destinationDirectory = file("${projectDir}/run/mods")
+}
+
+// Make sure our dev jar is created before running the client
+tasks.matching { it.name == 'runClient' }.configureEach {
+    dependsOn 'copyModToRunMods', 'copyModToServerMods'
+}
+
+// Make sure our dev jar is created before running the server - FIXED APPROACH
+tasks.whenTaskAdded { task ->
+    if (task.name == 'runServer') {
+        task.dependsOn 'copyModToRunMods', 'copyModToServerMods'
+        
+        task.doFirst {
+            // More aggressive build directory hiding
+            def buildDir = file('build')
+            def buildBackup = file('build-backup-temp')
+            
+            if (buildDir.exists()) {
+                if (buildBackup.exists()) {
+                    delete buildBackup
+                }
+                buildDir.renameTo(buildBackup)
+                println "MINEFEST: Temporarily moved build directory to prevent module conflicts"
+            }
+            
+            // Also try to exclude from classpath if possible  
+            systemProperty 'fml.disableResourceCache', 'true'
+        }
+        
+        task.doLast {
+            // Restore build directory after server run
+            def buildDir = file('build')
+            def buildBackup = file('build-backup-temp')
+            
+            if (buildBackup.exists() && !buildDir.exists()) {
+                buildBackup.renameTo(buildDir)
+                println "MINEFEST: Restored build directory"
+            }
+        }
+    }
+}
+
+// Add a clean task to remove any dev jars we created
+tasks.register('cleanDevJars', Delete) {
+    delete fileTree(dir: "${projectDir}/run/mods", include: 'minefest-dev*.jar')
+}
+
+// Make clean depend on cleanDevJars
+tasks.clean.dependsOn cleanDevJars
+
+// Configure the runClient task with additional JVM arguments
+// Fix: Use tasks.named instead of direct property access
+tasks.matching { it.name == 'runClient' }.configureEach {
+    doFirst {
+        // Make sure Forge doesn't try to load classes from the resources directory
+        systemProperty 'coremod.ignoreCoreMods', 'true'
+        systemProperty 'forge.forceNoStencil', 'true'
+    }
+}
+
+// Custom task to run server without build directory conflicts
+task runServerClean(type: JavaExec, dependsOn: ['copyModToRunMods', 'copyModToServerMods']) {
+    group = 'minefest'
+    description = 'Run the server without build directory conflicts'
+    
+    workingDir project.file('run')
+    
+    classpath = configurations.runtimeClasspath
+    mainClass = 'net.minecraftforge.userdev.LaunchTesting'
+    
+    args '--launchTarget', 'forge_userdev_server'
+    args '--gameDir', '.'
+    
+    jvmArgs '--add-modules', 'ALL-SYSTEM'
+    jvmArgs '--illegal-access=permit'
+    jvmArgs '--add-opens=java.base/java.util.jar=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.text=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.desktop/java.awt.font=ALL-UNNAMED'
+    jvmArgs '--add-exports=java.base/sun.security.util=ALL-UNNAMED'
+    jvmArgs '--add-exports=jdk.naming.dns/com.sun.jndi.dns=java.naming'
+    
+    systemProperty 'forge.logging.markers', 'REGISTRIES'
+    systemProperty 'forge.logging.console.level', 'debug'
+    systemProperty 'forge.enabledGameTestNamespaces', 'minefest'
+    systemProperty 'fml.disableModClasspathScanning', 'true'
+}
+
+// Lock Protocol Validation Task
+task validateLocks {
+    description 'Validates that locked components have not been modified without approval'
+    group 'verification'
+    
+    doLast {
+        def lockedFiles = [
+            'src/main/java/com/minefest/essentials/config/MinefestConfig.java',
+            'src/main/java/com/minefest/essentials/MinefestCore.java'
+        ]
+        
+        def violations = []
+        
+        lockedFiles.each { filePath ->
+            def file = project.file(filePath)
+            if (file.exists()) {
+                def content = file.text
+                if (!content.contains('🔒 LOCKED COMPONENT')) {
+                    violations.add("${filePath} is marked as locked but missing lock comment")
+                }
+            }
+        }
+        
+        if (!violations.isEmpty()) {
+            println "⚠️  LOCK PROTOCOL VIOLATIONS DETECTED:"
+            violations.each { println "   - ${it}" }
+            println "\n📖 Review docs/CODE_LOCKING_PROTOCOL.md for procedures"
+            println "🔒 Locked files require user approval before modification"
+        } else {
+            println "✅ Lock protocol compliance verified"
+        }
+    }
+}
+
+// Run lock validation before build
+build.dependsOn validateLocks 

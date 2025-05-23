@@ -1,20 +1,21 @@
-package com.minefest.core.timing;
+package com.minefest.essentials.timing;
 
-import com.minefest.core.MinefestCore;
-import com.minefest.core.network.TimeSync;
-import com.minefest.core.config.MinefestConfig;
+import com.minefest.essentials.MinefestCore;
+import com.minefest.essentials.network.TimeSync;
+import com.minefest.essentials.config.MinefestConfig;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.common.MinecraftForge;
-import com.minefest.core.timing.ClientTimeSync;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.minecraft.world.level.Level;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,11 +24,29 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * MasterClock is the central timing authority for Minefest.
- * In a BungeeCord network, one server instance acts as the time authority,
- * while others synchronize to it.
+ * 🔒 LOCKED COMPONENT [Index: 01] - DO NOT MODIFY WITHOUT USER APPROVAL
+ * Lock Date: 2025-05-22
+ * Lock Reason: Core timing system working, MasterClock integration stable
  * 
- * This class should only be instantiated and used on the server side.
+ * COMPONENT SIGNPOST [Index: 01]
+ * Purpose: Central timing authority for Minefest synchronized media streaming
+ * Side: DEDICATED_SERVER only - handles network timing synchronization
+ * 
+ * Workflow:
+ * 1. [Index: 01.1] Initialize timing authority and client sync tracking
+ * 2. [Index: 01.2] Handle network synchronization with other servers (BungeeCord)
+ * 3. [Index: 01.3] Provide millisecond-precision timing for media synchronization
+ * 4. [Index: 01.4] Manage client time synchronization and drift compensation
+ * 
+ * Dependencies:
+ * - MinefestConfig [Index: 10] - timing authority configuration
+ * - TimeSync [Index: 03] - network synchronization protocol
+ * - MinefestCore [Index: 02] - core initialization and server access
+ * 
+ * Related Files:
+ * - ServerTestBroadcaster.java [Index: 13] - uses MasterClock for timing validation
+ * - TimeSync.java [Index: 03] - network synchronization protocol implementation
+ * - MinefestConfig.java [Index: 10] - timing authority and interval configuration
  */
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class MasterClock {
@@ -35,7 +54,7 @@ public class MasterClock {
     
     private final AtomicLong masterTime;
     private final Map<UUID, ClientTimeSync> clientSyncs;
-    private long lastSyncTick;
+    private long lastClientSync;
     private long lastNetworkSync;
     private final AtomicBoolean isTimeAuthority;
     private final AtomicLong networkTimeOffset;
@@ -50,7 +69,7 @@ public class MasterClock {
         
         this.masterTime = new AtomicLong(System.currentTimeMillis());
         this.clientSyncs = new ConcurrentHashMap<>();
-        this.lastSyncTick = 0;
+        this.lastClientSync = 0;
         this.lastNetworkSync = 0;
         this.isTimeAuthority = new AtomicBoolean(false);
         this.networkTimeOffset = new AtomicLong(0);
@@ -99,15 +118,27 @@ public class MasterClock {
 
     private void updateFromConfig() {
         try {
-            MinefestConfig.ensureLoaded();
+            if (!MinefestConfig.ensureLoaded()) {
+                LOGGER.debug("Config not loaded yet - using default values");
+                setTimeAuthority(false); // Safe default
+                return;
+            }
+            
             boolean configAuthority = MinefestConfig.SERVER.isTimeAuthority.get();
+            
+            // In test mode, always become the authority if no other authority is found
+            if (System.getProperty("minefest.testing") != null && 
+                !configAuthority && 
+                System.currentTimeMillis() - lastSuccessfulSync.get() > 5000) {
+                LOGGER.info("Test mode: No network master found after 5 seconds, becoming time authority");
+                configAuthority = true;
+            }
+            
             setTimeAuthority(configAuthority);
             LOGGER.info("Updated time authority from config: {}", configAuthority);
-        } catch (IllegalStateException e) {
-            LOGGER.warn("Config not loaded yet - using default values");
-            setTimeAuthority(false); // Safe default
         } catch (Exception e) {
             LOGGER.error("Failed to update from config", e);
+            setTimeAuthority(false); // Safe default on error
         }
     }
 
@@ -176,41 +207,29 @@ public class MasterClock {
     /**
      * Handle a time update from the network master
      */
-    public void handleMasterTimeUpdate(long networkMasterTime) {
+    public void handleMasterTimeUpdate(long networkTime) {
         if (isTimeAuthority()) {
             LOGGER.debug("Ignoring master time update as we are the authority");
             return;
         }
         
         try {
-            MinefestConfig.ensureLoaded();
-            long localTime = masterTime.get();
-            long newOffset = networkMasterTime - localTime;
+            long currentTime = System.currentTimeMillis();
+            long newOffset = networkTime - currentTime;
             
-            // Smooth transition to new offset
+            // Use exponential moving average for smooth adjustments
             long currentOffset = networkTimeOffset.get();
             long smoothedOffset = (long)(currentOffset * 0.8 + newOffset * 0.2);
+            
             networkTimeOffset.set(smoothedOffset);
+            lastSuccessfulSync.set(currentTime);
             
-            lastSuccessfulSync.set(System.currentTimeMillis());
-            
-            int maxDriftMs = MinefestConfig.COMMON.maxDriftMs.get();
-            if (Math.abs(newOffset - currentOffset) > maxDriftMs) {
-                LOGGER.warn("High network time drift detected: {}ms", newOffset - currentOffset);
-                reportDrift(newOffset - currentOffset);
-            } else {
-                LOGGER.debug("Time sync successful: offset={}ms", smoothedOffset);
-            }
-        } catch (IllegalStateException e) {
-            LOGGER.warn("Config not loaded - skipping time update");
+            LOGGER.debug("Updated network time offset: {}ms", smoothedOffset);
         } catch (Exception e) {
             LOGGER.error("Error handling master time update", e);
         }
     }
 
-    /**
-     * Handle a time response from the network master
-     */
     public void handleTimeResponse(long masterTime, long requestTime) {
         if (isTimeAuthority()) {
             LOGGER.debug("Ignoring time response as we are the authority");
@@ -234,43 +253,74 @@ public class MasterClock {
         if (event.phase != TickEvent.Phase.END) return;
         
         try {
-            MinefestConfig.ensureLoaded();
+            if (!MinefestConfig.ensureLoaded()) {
+                // Config not loaded yet, skip this tick
+                return;
+            }
             
-            long currentTick = event.getServer().getTickCount();
+            long currentTime = System.currentTimeMillis();
             int syncInterval = MinefestConfig.COMMON.clientSyncInterval.get();
             int networkSyncInterval = MinefestConfig.COMMON.networkSyncInterval.get();
             
             // Update master time
-            masterTime.set(System.currentTimeMillis());
+            masterTime.set(currentTime);
             
-            // Sync to clients
-            if (currentTick - lastSyncTick >= syncInterval) {
+            // Sync to clients if needed
+            if (currentTime - lastClientSync >= syncInterval) {
                 syncToClients();
-                lastSyncTick = currentTick;
+                lastClientSync = currentTime;
             }
             
-            // Network sync if we're not the authority
-            if (!isTimeAuthority() && 
-                System.currentTimeMillis() - lastNetworkSync >= networkSyncInterval) {
+            // Sync with network if needed
+            if (currentTime - lastNetworkSync >= networkSyncInterval) {
                 syncWithNetwork();
-                lastNetworkSync = System.currentTimeMillis();
+                lastNetworkSync = currentTime;
             }
-        } catch (IllegalStateException e) {
-            // Config not loaded yet - skip this tick
-            return;
         } catch (Exception e) {
-            LOGGER.error("Error in server tick handling", e);
+            LOGGER.error("Error in server tick handler", e);
         }
     }
 
     private void syncToClients() {
-        // Implementation for syncing time to clients
-        if (isTimeAuthority.get()) {
-            byte[] message = TimeSync.createMasterTimeUpdate(getCurrentTime());
-            if (message != null) {
-                MinefestCore.sendPluginMessage(TimeSync.CHANNEL, message);
-                LOGGER.debug("Broadcast time to clients: {}", getCurrentTime());
+        try {
+            long startTime = System.currentTimeMillis();
+            long currentTime = getCurrentTime();
+            
+            // Get all online players
+            var server = ServerLifecycleHooks.getCurrentServer();
+            if (server == null) return;
+            
+            var players = server.getLevel(Level.OVERWORLD).players();
+            if (players == null || players.isEmpty()) return;
+            
+            for (ServerPlayer player : players) {
+                try {
+                    // Check if we've exceeded our time budget for syncing
+                    if (System.currentTimeMillis() - startTime > 45) { // 45ms timeout
+                        LOGGER.warn("Time sync taking too long - deferring remaining clients to next tick");
+                        break;
+                    }
+                    
+                    UUID playerId = player.getUUID();
+                    ClientTimeSync clientSync = clientSyncs.get(playerId);
+                    
+                    if (clientSync == null) {
+                        clientSync = new ClientTimeSync(playerId);
+                        clientSyncs.put(playerId, clientSync);
+                    }
+                    
+                    // Send time update to client
+                    byte[] timeUpdate = TimeSync.createMasterTimeUpdate(currentTime);
+                    if (timeUpdate != null) {
+                        MinefestCore.sendPluginMessage(TimeSync.CHANNEL, timeUpdate);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Failed to sync time with client: {}", player.getName().getString(), e);
+                    // Continue with next client
+                }
             }
+        } catch (Exception e) {
+            LOGGER.error("Error in syncToClients", e);
         }
     }
 
@@ -281,45 +331,27 @@ public class MasterClock {
         }
     }
 
-    private void broadcastNetworkTimeSync() {
-        if (!isTimeAuthority.get()) return;
-        
-        byte[] message = TimeSync.createMasterTimeUpdate(getCurrentTime());
-        if (message != null) {
-            MinefestCore.sendPluginMessage(TimeSync.CHANNEL, message);
-            LOGGER.debug("Broadcast network time: {}", getCurrentTime());
-        }
-    }
-
     private void requestNetworkTimeSync() {
-        if (isTimeAuthority.get()) return;
-        
-        String serverId = MinefestCore.getServerId();
-        long requestTime = System.currentTimeMillis();
-        byte[] message = TimeSync.createTimeRequest(serverId, requestTime);
-        
-        if (message != null) {
-            MinefestCore.sendPluginMessage(TimeSync.CHANNEL, message);
-            LOGGER.debug("Requested network time sync");
-        }
-    }
-
-    private void reportDrift(long drift) {
         try {
             String serverId = MinefestCore.getServerId();
-            byte[] message = TimeSync.createDriftReport(
-                serverId,
-                masterTime.get(),
-                getCurrentTime(),
-                drift
-            );
-            
-            if (message != null) {
-                MinefestCore.sendPluginMessage(TimeSync.CHANNEL, message);
-                LOGGER.info("Reported time drift of {}ms", drift);
+            long requestTime = System.currentTimeMillis();
+            byte[] request = TimeSync.createTimeRequest(serverId, requestTime);
+            if (request != null) {
+                MinefestCore.sendPluginMessage(TimeSync.CHANNEL, request);
             }
         } catch (Exception e) {
-            LOGGER.error("Error reporting time drift", e);
+            LOGGER.error("Error requesting network time sync", e);
+        }
+    }
+
+    private void broadcastNetworkTimeSync() {
+        try {
+            byte[] update = TimeSync.createMasterTimeUpdate(getCurrentTime());
+            if (update != null) {
+                MinefestCore.sendPluginMessage(TimeSync.CHANNEL, update);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error broadcasting network time sync", e);
         }
     }
 } 

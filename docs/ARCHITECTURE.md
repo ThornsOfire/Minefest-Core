@@ -1,5 +1,31 @@
 # Minefest-Core Architecture
 
+## Package Structure
+
+```
+com.minefest.essentials/
+├── MinefestCore.java        # Main mod class
+├── audio/                   # Audio streaming implementation
+│   ├── AudioManager.java    # Server-side audio management
+│   ├── MinefestAudioLoadHandler.java
+│   └── StreamingSession.java
+├── init/                    # Common initialization and registry
+│   ├── ModBlocks.java
+│   ├── ModItems.java
+│   └── ModCreativeTabs.java
+├── config/                  # Configuration handling
+│   └── MinefestConfig.java  # Side-specific config management
+├── network/                 # Network and synchronization
+│   └── TimeSync.java       # Server-side time sync
+├── timing/                  # Time management
+│   ├── MasterClock.java    # Server-side time authority
+│   └── ClientTimeSync.java # Client sync data structure
+├── test/                    # Testing utilities
+│   └── ServerTestBroadcaster.java
+└── bungee/                 # Server-side BungeeCord integration
+    └── MinefestBungee.java
+```
+
 ## System Overview
 
 ```mermaid

@@ -1,10 +1,27 @@
-package com.minefest.core.timing;
+package com.minefest.essentials.timing;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Handles time synchronization data for a single client
+ * COMPONENT SIGNPOST [Index: 12]
+ * Purpose: Client time synchronization data tracking for individual connections
+ * Side: DEDICATED_SERVER only - tracks client sync state on server
+ * 
+ * Workflow:
+ * 1. [Index: 12.1] Initialize client synchronization tracking with UUID
+ * 2. [Index: 12.2] Update sync data with exponential moving average for smoothing
+ * 3. [Index: 12.3] Track latency and connection staleness
+ * 4. [Index: 12.4] Provide sync status for timing system decisions
+ * 
+ * Dependencies:
+ * - MasterClock [Index: 01] - creates and manages client sync instances
+ * - Java UUID [Index: N/A] - client identification
+ * - AtomicLong [Index: N/A] - thread-safe timing data
+ * 
+ * Related Files:
+ * - MasterClock.java [Index: 01] - manages collection of client sync instances
+ * - TimeSync.java [Index: 03] - network protocol for sync messages
  */
 public class ClientTimeSync {
     private final UUID clientId;

@@ -1,27 +1,170 @@
 # Minefest-Core
 
-Minefest-Core is a Minecraft Forge mod that enables music festival experiences within Minecraft. It handles client-to-internet radio connections, provides synchronized video playback capabilities, and maintains time synchronization across all connected clients.
+A revolutionary music festival platform for Minecraft. Experience live music events in a virtual space with thousands of other players.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- **Java 17** (Oracle or OpenJDK)
+- **Minecraft 1.20.4**
+- **Forge 49.2.0**
+
+### Development Setup
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd Minefest-Core
+   ```
+
+2. **Build and Deploy to All Environments** ⭐ **Recommended**
+   ```bash
+   # Builds and deploys to both development (run/mods) and production (server/mods)
+   ./gradlew buildAll
+   
+   # Then start development server
+   ./gradlew runServer
+   
+   # Or start production server
+   cd server && ./run.bat
+   ```
+
+3. **Quick Development Server** (includes build)
+   ```bash
+   # Windows - One-click build and start (syncs both environments)
+   quick_start_server.bat
+   
+   # Manual approach
+   ./gradlew buildAll runServer
+   ```
+
+4. **Client Testing**
+   ```bash
+   ./gradlew runClient
+   ```
+
+### Production Deployment 🚀
+
+For deploying from Windows development to Linux production servers:
+
+#### Automated Deployment ⭐ **Recommended**
+```bash
+# Windows
+set DEPLOY_HOST=your-server.com
+deploy.bat
+
+# Linux/Git Bash/WSL
+export DEPLOY_HOST=your-server.com
+./deploy.sh
+```
+
+#### Manual Deployment
+```bash
+# Build locally
+./gradlew buildAll
+
+# Copy to server
+rsync -avz server/ user@your-server:/path/to/server/
+
+# Start on server
+ssh user@your-server
+cd /path/to/server
+./run.sh
+```
+
+📖 **See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide**
+
+### Build Workflow ⚙️
+
+**Key Concept**: *All build tasks now keep development and production environments synchronized*
+
+| Task | Development (`run/mods`) | Production (`server/mods`) | Use Case |
+|------|-------------------------|---------------------------|----------|
+| `./gradlew buildAll` | ✅ Updated | ✅ Updated | **Recommended** - Full rebuild with sync |
+| `./gradlew runServer` | ✅ Updated | ✅ Updated | Development testing |
+| `./gradlew runClient` | ✅ Updated | ✅ Updated | Client testing |
+| `./gradlew copyModToServerMods` | ❌ No change | ✅ Updated | Production-only update |
+
+**Why this matters**: Previously, development and production could get out of sync, leading to version mismatches. Now both environments are always at the same version.
+
+## 📁 Project Structure
+
+```
+Minefest-Core/
+├── src/main/java/              # Main mod source code
+│   └── com/minefest/essentials/
+├── src/main/resources/         # Mod resources (assets, configs)
+├── server/                     # Standalone server setup
+│   ├── mods/                   # Server mod directory
+│   ├── user_jvm_args.txt      # Memory allocation (6GB)
+│   ├── run.bat                 # Windows server launcher
+│   └── run.sh                  # Linux server launcher
+├── run/                        # Development environment
+│   ├── mods/                   # Development mod directory
+│   └── eula.txt               # Auto-accepted for development
+├── docs/                       # All project documentation
+│   ├── README.md              # This file
+│   ├── DEPLOYMENT.md          # Production deployment guide
+│   ├── CHANGELOG.md           # Version history
+│   ├── TROUBLESHOOTING.md     # Common issues & solutions
+│   ├── SERVER_CLIENT_SEPARATION.md # Server/client code separation guide
+│   └── ...                    # Other documentation
+├── deploy.bat                  # Windows deployment script
+├── deploy.sh                   # Linux deployment script
+├── build.gradle               # Gradle build configuration
+├── gradle.properties          # Memory settings (6GB)
+├── quick_start_server.bat     # One-click development server
+└── start-server.bat          # Production server launcher
+```
+
+### Key Files
+- **`deploy.bat/.sh`** - Automated deployment to Linux production servers
+- **`server/run.sh`** - Linux server launcher for cloud deployment
+- **`quick_start_server.bat`** - Simplified development server launcher
+- **`start-server.bat`** - Production server launcher (uses server/ directory)
+- **`server/user_jvm_args.txt`** - Memory allocation (6GB) and GC optimization
+- **`gradle.properties`** - Development memory settings and mod metadata
+- **`build.gradle`** - Build configuration with memory optimizations
+
+## Cross-Platform Development
+
+### Local Development (Windows)
+- **Environment**: Windows with Oracle JDK 17
+- **Testing**: `./gradlew runServer` or `quick_start_server.bat`
+- **Location**: `run/mods/` directory
+
+### Production Deployment (Linux)
+- **Environment**: Linux server with OpenJDK 17
+- **Deployment**: Automated scripts (`deploy.bat`/`deploy.sh`)
+- **Location**: `server/mods/` directory
+- **Launcher**: `./run.sh`
+
+### Cloud Compatibility
+- ✅ **AWS EC2** (Ubuntu/Amazon Linux)
+- ✅ **Google Cloud Platform** (Ubuntu/CentOS)
+- ✅ **DigitalOcean** (Ubuntu)
+- ✅ **Azure** (Ubuntu/CentOS)
+- ✅ **Any Linux VPS** with Java 17+
 
 ## Architecture
 
 ### Server-Side Components
 The following components run exclusively on the server:
-- **MasterClock System**: Central timing authority
-- **Time Synchronization**: Network-wide time management
+- **MasterClock System**: Central timing authority (`com.minefest.essentials.timing.MasterClock`)
+- **Time Synchronization**: Network-wide time management (`com.minefest.essentials.network.TimeSync`)
 - **Event Management**: Festival and concert coordination
-- **Server Configuration**: Performance and scaling settings
+- **Server Configuration**: Performance and scaling settings (`com.minefest.essentials.config.MinefestConfig`)
 
 ### Client-Side Components
 These components run on player clients:
-- **Audio Playback**: Local stream handling
+- **Audio Playback**: Local stream handling (`com.minefest.essentials.audio`)
 - **Time Display**: Synchronized event timing
 - **Client Configuration**: Local performance settings
 
 ### Common Components
 Shared between client and server:
-- **Network Protocol**: Communication layer
-- **Common Configuration**: Basic mod settings
-- **Resource Management**: Blocks, items, and creative tabs
+- **Network Protocol**: Communication layer (`com.minefest.essentials.network`)
+- **Common Configuration**: Basic mod settings (`com.minefest.essentials.config`)
+- **Resource Management**: Blocks, items, and creative tabs (`com.minefest.essentials.init`)
 
 ## Current Features
 

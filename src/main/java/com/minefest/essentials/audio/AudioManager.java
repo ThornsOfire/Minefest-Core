@@ -1,6 +1,6 @@
-package com.minefest.core.audio;
+package com.minefest.essentials.audio;
 
-import com.minefest.core.MinefestCore;
+import com.minefest.essentials.MinefestCore;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -14,6 +14,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * COMPONENT SIGNPOST [Index: 05]
+ * Purpose: Audio streaming management with connection pooling and resilient reconnection
+ * Side: DEDICATED_SERVER only - manages server-side audio streaming sessions
+ * 
+ * Workflow:
+ * 1. [Index: 05.1] Initialize audio player manager and connection pooling
+ * 2. [Index: 05.2] Create and manage streaming sessions with automatic reconnection
+ * 3. [Index: 05.3] Handle audio events and connection failures gracefully
+ * 4. [Index: 05.4] Manage resource cleanup and connection lifecycle
+ * 
+ * Dependencies:
+ * - LavaPlayer [Index: N/A] - audio streaming and playback framework
+ * - StreamingSession [Index: 06] - individual audio session management
+ * - MinefestAudioLoadHandler [Index: 07] - audio loading event handling
+ * - MinefestCore [Index: 02] - logging and core mod access
+ * 
+ * Related Files:
+ * - StreamingSession.java [Index: 06] - individual session state management
+ * - MinefestAudioLoadHandler.java [Index: 07] - audio loading event handling
+ * - MasterClock.java [Index: 01] - timing synchronization for audio playback
+ */
 public class AudioManager {
     private final AudioPlayerManager playerManager;
     private final Map<UUID, StreamingSession> streamingSessions;

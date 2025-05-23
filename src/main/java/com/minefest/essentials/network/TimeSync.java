@@ -1,9 +1,9 @@
-package com.minefest.core.network;
+package com.minefest.essentials.network;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.minefest.core.MinefestCore;
+import com.minefest.essentials.MinefestCore;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -12,10 +12,27 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Handles time synchronization messages between BungeeCord proxy and Forge servers
+ * COMPONENT SIGNPOST [Index: 03]
+ * Purpose: Network time synchronization protocol for BungeeCord/multi-server timing
+ * Side: DEDICATED_SERVER only - handles inter-server timing communication
+ * 
+ * Workflow:
+ * 1. [Index: 03.1] Create and serialize timing protocol messages
+ * 2. [Index: 03.2] Handle incoming network synchronization messages
+ * 3. [Index: 03.3] Validate message integrity and server identity
+ * 4. [Index: 03.4] Route messages to appropriate MasterClock handlers
+ * 
+ * Dependencies:
+ * - MasterClock [Index: 01] - timing authority and synchronization logic
+ * - MinefestCore [Index: 02] - server access and logging
+ * - Google Guava [Index: N/A] - byte array serialization utilities
+ * 
+ * Related Files:
+ * - MasterClock.java [Index: 01] - timing logic and synchronization state
+ * - MinefestBungee.java [Index: 04] - BungeeCord proxy integration
  */
 public class TimeSync {
-    public static final String CHANNEL = "minefest:timesync";
+    public static final String CHANNEL = "timesync";
     private static final Logger LOGGER = LogManager.getLogger();
     private static final AtomicInteger messageCounter = new AtomicInteger(0);
     private static final int MAX_MESSAGE_SIZE = 32768; // 32KB max message size

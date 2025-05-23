@@ -1,6 +1,6 @@
-package com.minefest.core.audio;
+package com.minefest.essentials.audio;
 
-import com.minefest.core.MinefestCore;
+import com.minefest.essentials.MinefestCore;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -8,6 +8,26 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * COMPONENT SIGNPOST [Index: 07]
+ * Purpose: Audio loading event handler for LavaPlayer integration
+ * Side: DEDICATED_SERVER only - handles audio stream loading callbacks
+ * 
+ * Workflow:
+ * 1. [Index: 07.1] Handle successful track loading and start playback
+ * 2. [Index: 07.2] Process playlist loading for radio streams
+ * 3. [Index: 07.3] Handle loading failures and error cases
+ * 4. [Index: 07.4] Complete CompletableFuture for async operation tracking
+ * 
+ * Dependencies:
+ * - LavaPlayer AudioLoadResultHandler [Index: N/A] - audio loading interface
+ * - StreamingSession [Index: 06] - session state management
+ * - MinefestCore [Index: 02] - logging access
+ * 
+ * Related Files:
+ * - AudioManager.java [Index: 05] - creates handler instances for audio loading
+ * - StreamingSession.java [Index: 06] - manages session state updates
+ */
 public class MinefestAudioLoadHandler implements AudioLoadResultHandler {
     private final StreamingSession session;
     private final CompletableFuture<StreamingSession> future;

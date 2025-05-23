@@ -1,6 +1,6 @@
-package com.minefest.core.bungee;
+package com.minefest.essentials.bungee;
 
-import com.minefest.core.network.TimeSync;
+import com.minefest.essentials.network.TimeSync;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -12,8 +12,23 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.util.concurrent.TimeUnit;
 
 /**
- * BungeeCord plugin component for Minefest
- * Handles time synchronization between servers
+ * COMPONENT SIGNPOST [Index: 04]
+ * Purpose: BungeeCord proxy plugin for multi-server time synchronization
+ * Side: PROXY - runs on BungeeCord proxy server
+ * 
+ * Workflow:
+ * 1. [Index: 04.1] Initialize plugin channel registration for time sync messages
+ * 2. [Index: 04.2] Identify and configure time authority server
+ * 3. [Index: 04.3] Forward time synchronization messages between servers
+ * 4. [Index: 04.4] Schedule periodic time sync broadcasts
+ * 
+ * Dependencies:
+ * - BungeeCord API [Index: N/A] - proxy server plugin framework
+ * - TimeSync [Index: 03] - network protocol for time synchronization
+ * 
+ * Related Files:
+ * - TimeSync.java [Index: 03] - protocol implementation for sync messages
+ * - MasterClock.java [Index: 01] - timing authority on individual servers
  */
 public class MinefestBungee extends Plugin implements Listener {
     private String timeAuthorityServer;
