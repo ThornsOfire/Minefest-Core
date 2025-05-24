@@ -1,9 +1,5 @@
 package com.minefest.essentials.blocks;
 
-import com.minefest.essentials.blocks.entity.DJStandBlockEntity;
-import com.minefest.essentials.blocks.entity.SpeakerBlockEntity;
-import com.minefest.essentials.init.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -21,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -30,6 +27,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.mojang.serialization.MapCodec;
+import com.minefest.essentials.blocks.entity.DJStandBlockEntity;
+import com.minefest.essentials.blocks.entity.SpeakerBlockEntity;
+import com.minefest.essentials.init.ModBlockEntities;
 
 import javax.annotation.Nullable;
 
@@ -58,7 +60,7 @@ import javax.annotation.Nullable;
 public class DJStandBlock extends HorizontalDirectionalBlock implements EntityBlock {
     private static final Logger LOGGER = LogManager.getLogger();
     
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     
     // DJ Stand shape (similar to lectern dimensions from OpenFM design)
     private static final VoxelShape SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0);

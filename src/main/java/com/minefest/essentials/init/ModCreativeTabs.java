@@ -51,18 +51,16 @@ public class ModCreativeTabs {
                             output.accept(ModItems.REMOTE_CONTROL.get());
                         })
                         .build()) : null;
-    
+
     private static DeferredRegister<CreativeModeTab> createTabsRegister() {
         try {
-            // Only create if we're in a development environment or client side
-            if (FMLEnvironment.dist.isClient() || FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
-                return DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MinefestCore.MOD_ID);
-            }
+            // PROPER FIX: Use the correct registry for Minecraft 1.20.4 + Forge 49.2.0
+            // Creative tabs should work in both development and production
+            return DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MinefestCore.MOD_ID);
         } catch (Exception e) {
-            // If CREATIVE_MODE_TAB registry doesn't exist, just return null
-            // This can happen in some client environments
-            System.out.println("Creative tabs not available in this environment: " + e.getMessage());
+            // If creative mode tab registry doesn't exist, gracefully fallback
+            System.out.println("Creative tabs not available - this is expected in client-only builds: " + e.getMessage());
+            return null;
         }
-        return null;
     }
 } 
