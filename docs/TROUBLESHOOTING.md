@@ -1,5 +1,34 @@
 # Minefest-Core Troubleshooting Guide
 
+## üö® **Current Critical Issues (v1.20.4-0.2.3.4)**
+
+### **HORIZONTAL_FACING Property Error - CurseForge Client Crash**
+**Status**: ‚ö†Ô∏è **ACTIVE INVESTIGATION** - Blocking CurseForge client startup
+**Error**: `java.lang.NoSuchFieldError: HORIZONTAL_FACING at com.minefest.essentials.blocks.DJStandBlock.<clinit>(DJStandBlock.java:63)`
+
+**Environment**: CurseForge client with Minecraft 1.20.4 + Forge 49.2.0
+
+**Symptoms**:
+- Production server: ‚úÖ Works correctly
+- Development client: ‚úÖ Works correctly  
+- CurseForge client: ‚ùå Crashes immediately on startup
+
+**Attempted Fixes**:
+- ‚úÖ Fixed syntax errors in `ModCreativeTabs.java`
+- ‚úÖ Verified correct usage of `BlockStateProperties.HORIZONTAL_FACING` (not `HorizontalDirectionalBlock.FACING`)
+- ‚úÖ Rebuilt and deployed clean client JAR (115KB without server dependencies)
+- ‚úÖ Enhanced build automation to prevent deployment timing bugs
+- ‚ùå Issue persists despite all fixes
+
+**Current Investigation**:
+- Minecraft 1.20.4 / Forge 49.2.0 property compatibility verification needed
+- Consider alternative block state property approaches
+- May require different property reference for client environment
+
+**Workaround**: Use development client or production server - both work correctly
+
+---
+
 ## Boot and Startup Issues
 
 ### Module Resolution Conflicts
@@ -174,7 +203,7 @@ java.lang.NoClassDefFoundError: com/sedmelluq/lava/common/tools/DaemonThreadFact
 
 **Impact:** **COMPLETE SERVER FAILURE** - Mod cannot initialize, zero functionality available
 
-**Status:** ‚?å **UNRESOLVED CRITICAL ISSUE**
+**Status:** ÔøΩ?ÔøΩ **UNRESOLVED CRITICAL ISSUE**
 
 **Root Cause:** jarJar system embeds LavaPlayer main JAR but misses transitive dependencies from `lava-common` library.
 
@@ -205,9 +234,9 @@ implementation 'com.sedmelluq:lavaplayer:1.3.78'
 Comment out AudioManager initialization in MinefestCore to allow basic mod loading.
 
 ### **Current Project Impact:**
-- ‚?å **ALL development blocked** - Cannot test any features
-- ‚?å **Server inoperable** - Complete startup failure
-- ‚?å **Documentation invalid** - Claims of working features are false until server starts
+- ÔøΩ?ÔøΩ **ALL development blocked** - Cannot test any features
+- ÔøΩ?ÔøΩ **Server inoperable** - Complete startup failure
+- ÔøΩ?ÔøΩ **Documentation invalid** - Claims of working features are false until server starts
 
 ## Network and BungeeCord Issues
 
