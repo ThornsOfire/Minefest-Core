@@ -6,7 +6,7 @@ We follow the Forge-recommended format for mod versioning:
 MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH
 ```
 
-Example: `1.20.4-0.1.0.10` (current version)
+Example: `1.20.4-0.2.3.4` (current version)
 
 ## Version Components
 
@@ -54,19 +54,7 @@ Increment when:
 - Move to `MCVERSION-1.0.0.0` for first stable release
 - Follow standard versioning rules after that
 
-## Recent Version History
-- **0.1.0.0**: Initial release with core timing and audio systems
-- **0.1.0.1-0.1.0.6**: Infrastructure improvements, documentation, and fixes
-- **0.1.0.7**: LuckPerms integration and permission system
-- **0.1.0.8**: Audio infrastructure blocks (DJ Stand, Speaker, Remote Control)
-- **0.1.0.9**: Professional textures integration
-- **0.1.0.10**: Comprehensive documentation update (current)
-
-## Upcoming Versions
-- **0.1.1.0**: Block entities and data persistence (Stage 2)
-- **0.2.0.0**: GUI system and user interfaces (Stage 3)
-- **0.3.0.0**: Live audio streaming integration (Stage 4)
-- **0.4.0.0**: Multi-stage festival support (Stage 5)
+## Recent Version History- **0.1.0.0-0.1.0.10**: Initial development with core systems- **0.1.1.0-0.1.3.7**: Block entities and GUI development (Stages 1-3)- **0.2.3.0**: Major breakthrough - LavaPlayer dependency resolution- **0.2.3.1-0.2.3.3**: Production server compatibility and documentation fixes- **0.2.3.4**: Client compatibility debugging (current)## Current Development Status- **Stage 1-3**: ✅ Complete (Audio infrastructure, Block entities, GUI)- **Stage 4**: ⚠️ On Hold - Client compatibility issue (HORIZONTAL_FACING crash)- **Next Milestone**: Resolve client crashes, then continue audio integration## Upcoming Versions- **0.2.3.x**: Client compatibility resolution- **0.3.0.0**: Live audio streaming integration (Stage 4)- **0.4.0.0**: Multi-stage festival support (Stage 5)- **1.0.0.0**: First stable release
 
 ## Special Tags
 - Beta releases: `-beta1`, `-beta2`, etc.
@@ -82,13 +70,4 @@ Example: `minefest-core-1.20.4-0.1.0.10.jar`
 - Example: `0.1.2.3` → `0.2.0.0` (when incrementing MINOR)
 - Example: `0.1.2.3` → `1.0.0.0` (when moving to stable)
 
-## Current Version Status
-We are currently at version `1.20.4-0.1.0.10`, indicating:
-- For Minecraft 1.20.4
-- In initial development phase (0.x)
-- First minor version with audio infrastructure complete
-- Ten patch releases with significant enhancements and documentation
-
----
-*Versioning Guide Version: 1.20.4-0.1.0.10*  
-*Last Updated: 2025-05-23* 
+## Current Version StatusWe are currently at version `1.20.4-0.2.3.4`, indicating:- For Minecraft 1.20.4- In development phase (0.x) with major systems complete- Third minor version with GUI and infrastructure complete- Fourth patch release addressing client compatibility issues---*Versioning Guide Version: 1.20.4-0.2.3.4*  *Last Updated: 2025-05-24* 
