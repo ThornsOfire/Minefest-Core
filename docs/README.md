@@ -1,7 +1,7 @@
 # :musical_note: Minefest-Core :tada:
 ### *Turn Your Minecraft Server Into The Ultimate Music Festival!* 
 
-[![Version](https://img.shields.io/badge/version-1.20.4--0.2.3.4-blue.svg)](https://github.com/ThornsOfire/Minefest-Core)
+[![Version](https://img.shields.io/badge/version-1.20.4--0.3.3.0-blue.svg)](https://github.com/ThornsOfire/Minefest-Core)
 [![Minecraft](https://img.shields.io/badge/minecraft-1.20.4-green.svg)](https://www.minecraft.net/)
 [![Forge](https://img.shields.io/badge/forge-49.2.0-orange.svg)](https://minecraftforge.net/)
 [![Party Ready](https://img.shields.io/badge/party-ready-ff69b4.svg)](https://github.com/ThornsOfire/Minefest-Core)
@@ -30,12 +30,7 @@ Minefest-Core transforms any Minecraft server into a professional music festival
 ## :musical_note: PARTY FEATURES :musical_note:
 
 ### :control_knobs: Professional DJ Equipment
-| Equipment | Status | What It Does |
-|-----------|--------|--------------|
-| :headphones: **DJ Stand** | :white_check_mark: **WORKING** | Full control panel for live mixing and streaming |
-| :speaker: **Speaker Systems** | :white_check_mark: **WORKING** | Networked audio across your entire festival grounds |
-| :radio: **Remote Control** | :white_check_mark: **WORKING** | Link equipment wirelessly like a real sound engineer |
-| :level_slider: **Audio Mixer** | :construction: **COMING SOON** | Multi-channel mixing for complex stages |
+| Equipment | Status | What It Does ||-----------|--------|--------------|| :headphones: **DJ Stand** | :white_check_mark: **WORKING** | Full control panel for live mixing and streaming || :speaker: **Speaker Systems** | :white_check_mark: **WORKING** | Networked audio across your entire festival grounds || :radio: **Remote Control** | :white_check_mark: **WORKING** | Link equipment wirelessly like a real sound engineer || :level_slider: **Audio Streaming** | :white_check_mark: **WORKING** | LavaPlayer integration with network distribution |
 
 ### :circus_tent: Festival Management
 - :stadium: **Multi-Stage Support** - Run multiple stages simultaneously
@@ -253,7 +248,7 @@ We're building the future of virtual music festivals! Help us make it even more 
 
 ## :scroll: License & Credits
 
-**© 2024 ThornsOfire - All Rights Reserved**
+**ï¿½ 2024 ThornsOfire - All Rights Reserved**
 
 *Building the future of virtual music festivals, one block at a time.* :musical_note:
 

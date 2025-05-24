@@ -8,34 +8,11 @@
 
 ## 🎵 **Core Project Stats**
 
-### 📝 **Lines of Code**
-- **Total Java Code**: ~3,420+ lines
-- **Documentation**: ~6,200+ lines
-- **Combined Project**: ~9,620+ lines
-- **Average File Size**: 136 lines
-
-### 🗃️ **File Counts**
-- **Java Files**: 25 components
-- **Documentation Files**: 21 guides
-- **Resource Files**: 18+ textures/models
-- **Configuration Files**: 6 config files
-- **Total Project Files**: 70+ files
+### 📝 **Lines of Code**- **Total Java Code**: ~4,500+ lines (revised count)- **Documentation**: ~6,200+ lines- **Combined Project**: ~10,700+ lines- **Average File Size**: 167 lines### 🗃️ **File Counts**- **Java Files**: 27 components (corrected count)- **Documentation Files**: 21 guides- **Resource Files**: 18+ textures/models- **Configuration Files**: 6 config files- **Total Project Files**: 72+ files
 
 ### 🏗️ **Component Breakdown**
 
-#### **Java Components by Category**
-- **🎧 Audio System**: 4 components (683 lines)
-  - AudioManager, StreamingSession, AudioLoadHandler, DJStandAudioBridge
-- **🧱 Block System**: 5 components (1,350 lines)
-  - DJ Stand Block + Entity, Speaker Block + Entity, Menu Provider
-- **🖥️ GUI System**: 2 components (676 lines)
-  - DJ Stand Screen, Speaker Screen
-- **⚙️ Registration System**: 5 components (525 lines)
-  - ModBlocks, ModItems, ModCreativeTabs, ModBlockEntities, ModMenuTypes
-- **⏰ Core Systems**: 6 components (estimated 800+ lines)
-  - MasterClock, MinefestCore, TimeSync, Config, etc.
-- **🔧 Utilities**: 3+ components (estimated 400+ lines)
-  - Permissions, Network, Testing, etc.
+#### **Java Components by Category**- **🎧 Audio System**: 6 components (~1,200+ lines)  - AudioManager, StreamingSession, AudioLoadHandler, DJStandAudioBridge, NetworkAudioManager, StreamValidator- **🧱 Block System**: 6 components (1,400+ lines)  - DJ Stand Block + Entity, Speaker Block + Entity, Menu Provider, Speaker Screen- **🖥️ GUI System**: 3 components (700+ lines)  - DJ Stand Screen, Speaker Screen, Menu Types- **⚙️ Registration System**: 5 components (525 lines)  - ModBlocks, ModItems, ModCreativeTabs, ModBlockEntities, ModMenuTypes- **⏰ Core Systems**: 6 components (estimated 800+ lines)  - MasterClock, MinefestCore, TimeSync, Config, etc.- **🔧 Utilities**: 3+ components (estimated 400+ lines)  - Permissions, Network, Testing, etc.
 
 #### **Documentation by Category**
 - **📋 Core Docs**: 5 files (2,169 lines)
@@ -51,11 +28,7 @@
 
 ## 🎯 **Development Metrics**
 
-### 📈 **Project Complexity**
-- **Component Index Range**: [01-25] (25 tracked components)
-- **Signposted Components**: 100% (all Java files)
-- **Documentation Coverage**: 21 comprehensive guides
-- **Code Lock Protected**: 4 critical components
+### 📈 **Project Complexity**- **Component Index Range**: [01-27] (27 tracked components)- **Signposted Components**: 100% (all Java files)- **Documentation Coverage**: 21 comprehensive guides- **Code Lock Protected**: 4 critical components
 
 ### 🎪 **Festival Features**
 - **DJ Stands**: Full audio streaming control

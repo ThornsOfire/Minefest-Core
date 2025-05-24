@@ -1,0 +1,15 @@
+#######
+### Minefest Common Configuration
+### Cross-world settings for network synchronization
+### CRITICAL: Boolean values must be lowercase (true/false)
+#######
+["Common Configuration"]
+	#Maximum allowed time drift in milliseconds before reporting
+	#Range: 100 ~ 10000
+	maxDriftMs = 1000
+	#Network synchronization interval in milliseconds
+	#Range: 1000 ~ 30000
+	networkSyncInterval = 5000
+	#Client synchronization interval in milliseconds
+	#Range: 50 ~ 10000
+	clientSyncInterval = 1000

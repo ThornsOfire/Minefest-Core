@@ -1,24 +1,24 @@
 # Minefest-Core Troubleshooting Guide
 
-## 🚨 **Current Critical Issues (v1.20.4-0.2.3.4)**
+## ? **Current Critical Issues (v1.20.4-0.2.3.4)**
 
 ### **HORIZONTAL_FACING Property Error - CurseForge Client Crash**
-**Status**: ⚠️ **ACTIVE INVESTIGATION** - Blocking CurseForge client startup
+**Status**: ?? **ACTIVE INVESTIGATION** - Blocking CurseForge client startup
 **Error**: `java.lang.NoSuchFieldError: HORIZONTAL_FACING at com.minefest.essentials.blocks.DJStandBlock.<clinit>(DJStandBlock.java:63)`
 
 **Environment**: CurseForge client with Minecraft 1.20.4 + Forge 49.2.0
 
 **Symptoms**:
-- Production server: ✅ Works correctly
-- Development client: ✅ Works correctly  
-- CurseForge client: ❌ Crashes immediately on startup
+- Production server: ? Works correctly
+- Development client: ? Works correctly  
+- CurseForge client: ? Crashes immediately on startup
 
 **Attempted Fixes**:
-- ✅ Fixed syntax errors in `ModCreativeTabs.java`
-- ✅ Verified correct usage of `BlockStateProperties.HORIZONTAL_FACING` (not `HorizontalDirectionalBlock.FACING`)
-- ✅ Rebuilt and deployed clean client JAR (115KB without server dependencies)
-- ✅ Enhanced build automation to prevent deployment timing bugs
-- ❌ Issue persists despite all fixes
+- ? Fixed syntax errors in `ModCreativeTabs.java`
+- ? Verified correct usage of `BlockStateProperties.HORIZONTAL_FACING` (not `HorizontalDirectionalBlock.FACING`)
+- ? Rebuilt and deployed clean client JAR (115KB without server dependencies)
+- ? Enhanced build automation to prevent deployment timing bugs
+- ? Issue persists despite all fixes
 
 **Current Investigation**:
 - Minecraft 1.20.4 / Forge 49.2.0 property compatibility verification needed
@@ -190,9 +190,9 @@ debugMode = false
 2. **Clean rebuild**: Run `./gradlew clean build copyModToRunMods`
 3. **Check version**: Verify mod version matches in logs vs gradle.properties
 
-## 🚨 **LavaPlayer Dependency Issues** (CRITICAL - BLOCKING SERVER STARTUP)
+## ? **LavaPlayer Dependency Issues** (CRITICAL - BLOCKING SERVER STARTUP)
 
-### **🔴 BLOCKING ISSUE: Server Cannot Start**
+### **? BLOCKING ISSUE: Server Cannot Start**
 **Symptoms:**
 ```
 java.lang.NoClassDefFoundError: com/sedmelluq/lava/common/tools/DaemonThreadFactory
@@ -203,7 +203,7 @@ java.lang.NoClassDefFoundError: com/sedmelluq/lava/common/tools/DaemonThreadFact
 
 **Impact:** **COMPLETE SERVER FAILURE** - Mod cannot initialize, zero functionality available
 
-**Status:** �?� **UNRESOLVED CRITICAL ISSUE**
+**Status:** ??? **UNRESOLVED CRITICAL ISSUE**
 
 **Root Cause:** jarJar system embeds LavaPlayer main JAR but misses transitive dependencies from `lava-common` library.
 
@@ -234,9 +234,9 @@ implementation 'com.sedmelluq:lavaplayer:1.3.78'
 Comment out AudioManager initialization in MinefestCore to allow basic mod loading.
 
 ### **Current Project Impact:**
-- �?� **ALL development blocked** - Cannot test any features
-- �?� **Server inoperable** - Complete startup failure
-- �?� **Documentation invalid** - Claims of working features are false until server starts
+- ??? **ALL development blocked** - Cannot test any features
+- ??? **Server inoperable** - Complete startup failure
+- ??? **Documentation invalid** - Claims of working features are false until server starts
 
 ## Network and BungeeCord Issues
 
@@ -371,4 +371,4 @@ property 'forge.logging.console.level', 'debug'
 
 ---
 *Last Updated: 2025-05-24*
-*Version: 1.20.4-0.2.3.4* 
+*Version: 1.20.4-0.3.3.0* 

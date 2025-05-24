@@ -82,11 +82,13 @@ minecraft {
             jvmArgs '--add-modules=ALL-SYSTEM'
             jvmArgs '--illegal-access=permit'
             
-            // Handle duplicate module conflicts in development
-            jvmArgs '--patch-module=org.apache.httpcomponents.httpclient=ALL-UNNAMED'
-            jvmArgs '--patch-module=org.apache.httpcomponents.httpcore=ALL-UNNAMED'
+            // CLIENT-SPECIFIC FIX: Use classpath-only development (no jarJar conflicts)
+            // This prevents HttpClient module conflicts since client uses Gradle classpath
+            // instead of the jarJar dependencies embedded in production JARs
             
-            // Removed problematic module exports that were causing conflicts
+            // Force FML to scan classpath for mods instead of mods folder
+            property 'fml.earlyprogresswindow', 'false'
+            property 'forge.enabledGameTestNamespaces', 'minefest'
         }
         
         server {
@@ -397,14 +399,47 @@ task copyModToServerTest(type: Copy, dependsOn: 'jarJar') {
     }
 }
 
-task copyModToClientMods(type: Copy, dependsOn: 'jarJar') {
-    from tasks.jarJar
+// 🔒 LOCKED COMPONENT - Client-Only JAR Configuration
+// This creates a client JAR without server-side dependencies that cause module conflicts
+task clientJar(type: Jar, dependsOn: 'classes') {
+    archiveBaseName = 'minefest-essentials'
+    archiveClassifier = 'client'
+    
+    manifest {
+        attributes([
+            "Specification-Title": "minefest",
+            "Specification-Vendor": "minefestsareus", 
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.jar.archiveVersion,
+            "Implementation-Vendor" :"minefestsareus",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    
+    // Include only the mod classes and resources, NO jarJar dependencies
+    from sourceSets.main.output
+    
+    // Exclude server-side components that clients don't need
+    exclude '**/audio/**'  // Server-side audio streaming
+    exclude '**/bungee/**' // Server-side BungeeCord integration
+    
+    doLast {
+        println "CLIENT JAR: Created ${archiveFile.get().asFile.name} without server dependencies"
+    }
+}
+
+task copyModToClientMods(type: Copy, dependsOn: 'clientJar') {
+    from tasks.clientJar
     into 'c:/Users/rstic/curseforge/minecraft/Instances/Minefest (1)/mods'
     doFirst {
         // Remove old versions of our mod
         delete fileTree('c:/Users/rstic/curseforge/minecraft/Instances/Minefest (1)/mods') {
             include 'minefest-essentials-*.jar'
         }
+        println "CLIENT DEPLOY: Deploying client-only JAR (no LavaPlayer conflicts)"
     }
     onlyIf {
         // Only copy if the CurseForge directory exists
@@ -414,8 +449,41 @@ task copyModToClientMods(type: Copy, dependsOn: 'jarJar') {
 
 // 🔒 LOCKED COMPONENT - BuildAll Task
 // This comprehensive build task is locked for environment synchronization stability
+// 🔒 LOCKED COMPONENT - Build Directory Restoration Task
+// This task ensures build directory is restored before deployment tasks run
+task restoreBuildDirectory {
+    description 'Restores build directory from any backup locations (fixes deployment timing issues)'
+    
+    doLast {
+        def buildDir = file('build')
+        def serverBackup = file('build-backup-temp')
+        def clientBackup = file('build-backup-temp-client')
+        
+        // Restore from any backup location
+        if (!buildDir.exists()) {
+            if (serverBackup.exists()) {
+                serverBackup.renameTo(buildDir)
+                println "BUILDALL: Restored build directory from server backup"
+            } else if (clientBackup.exists()) {
+                clientBackup.renameTo(buildDir)
+                println "BUILDALL: Restored build directory from client backup"
+            }
+        } else {
+            // Clean up any leftover backups
+            if (serverBackup.exists()) {
+                delete serverBackup
+                println "BUILDALL: Cleaned up server backup directory"
+            }
+            if (clientBackup.exists()) {
+                delete clientBackup
+                println "BUILDALL: Cleaned up client backup directory"
+            }
+        }
+    }
+}
+
 task buildAll {
-    dependsOn 'clean', 'build', 'copyModToRunMods', 'copyModToServerMods', 'copyModToClientMods'
+    dependsOn 'clean', 'build', 'restoreBuildDirectory', 'copyModToRunMods', 'copyModToServerMods', 'copyModToClientMods'
     group = 'minefest'
     description = 'Clean build and deploy to development (run/mods), production (server/mods), and client (CurseForge) environments'
     
@@ -432,47 +500,11 @@ task buildAll {
     }
 }
 
-// 🔒 LOCKED COMPONENT - Development JAR Configuration
-// This devJar task is locked for development environment stability
-task devJar(type: Jar, dependsOn: cleanModsDir) {
-    archiveBaseName = 'minefest-dev'
-    
-    manifest {
-        attributes([
-            "Specification-Title": "minefest",
-            "Specification-Vendor": "minefestsareus", 
-            "Specification-Version": "1",
-            "Implementation-Title": project.name,
-            "Implementation-Version": project.jar.archiveVersion,
-            "Implementation-Vendor" :"minefestsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-    
-    // Include resources but exclude Java files
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.java'
-    }
-    
-    // Include compiled classes but not the resources
-    from sourceSets.main.output.classesDirs
-    
-    // Exclude duplicate files like MANIFEST.MF 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    exclude 'META-INF/MANIFEST.MF'
-    exclude 'META-INF/*.SF'
-    exclude 'META-INF/*.DSA'
-    exclude 'META-INF/*.RSA'
-    
-    // Important: Place the dev jar directly in the run/mods folder
-    destinationDirectory = file("${projectDir}/run/mods")
-}
+// Development JAR task removed - using clean module conflict resolution instead
 
 // 🔒 LOCKED COMPONENT - Run Task Dependencies
 // These task dependencies are locked for proper build coordination
-tasks.matching { it.name == 'runClient' }.configureEach {
-    dependsOn 'copyModToRunMods', 'copyModToServerMods'
-}
+// Client dependencies moved to comprehensive task configuration below
 
 // 🔒 LOCKED COMPONENT - Server Run Task Configuration
 // This complex server run configuration is locked as it solves critical module conflicts
@@ -508,26 +540,49 @@ tasks.whenTaskAdded { task ->
             }
         }
     }
+    
+    // APPLY SAME FIX TO CLIENT - Module conflict resolution
+    if (task.name == 'runClient') {
+        // No extra dependencies needed - use pure classpath development
+        
+        task.doFirst {
+            // CLIENT FIX: Same approach as server - hide build directory to prevent module conflicts
+            def buildDir = file('build')
+            def buildBackup = file('build-backup-temp-client')
+            
+            if (buildDir.exists()) {
+                if (buildBackup.exists()) {
+                    delete buildBackup
+                }
+                buildDir.renameTo(buildBackup)
+                println "MINEFEST CLIENT: Temporarily moved build directory to prevent module conflicts"
+            }
+            
+            // Clear ALL mod JARs - client will use pure classpath development
+            delete fileTree('run/mods') { include '*.jar' }
+            
+            println "Client starting with pure classpath development (no module conflicts)"
+            println "Mod will be loaded from Gradle classpath instead of JARs"
+        }
+        
+        task.doLast {
+            // Restore build directory after client run
+            def buildDir = file('build')
+            def buildBackup = file('build-backup-temp-client')
+            
+            if (buildBackup.exists() && !buildDir.exists()) {
+                buildBackup.renameTo(buildDir)
+                println "MINEFEST CLIENT: Restored build directory"
+            }
+        }
+    }
 }
 
-// 🔒 LOCKED COMPONENT - Development JAR Cleanup
-// This cleanup task is locked for environment management stability
-tasks.register('cleanDevJars', Delete) {
-    delete fileTree(dir: "${projectDir}/run/mods", include: 'minefest-dev*.jar')
-}
-
-// Make clean depend on cleanDevJars
-tasks.clean.dependsOn cleanDevJars
+// Development JAR cleanup removed - no longer using dev JARs
 
 // 🔒 LOCKED COMPONENT - Client Run Configuration
 // This client run configuration is locked for development stability
-tasks.matching { it.name == 'runClient' }.configureEach {
-    doFirst {
-        // Make sure Forge doesn't try to load classes from the resources directory
-        systemProperty 'coremod.ignoreCoreMods', 'true'
-        systemProperty 'forge.forceNoStencil', 'true'
-    }
-}
+// Client configuration moved to comprehensive task configuration above
 
 // 🔒 LOCKED COMPONENT - Clean Server Run Task
 // This custom server run task is locked for conflict resolution stability
@@ -849,4 +904,393 @@ task validateLocks {
 }
 
 // Run lock validation before build
-build.dependsOn validateLocks 
+build.dependsOn validateLocks
+
+// ==========================================
+// GIT AUTOMATION SYSTEM - COMMIT ONLY
+// Conservative git automation for version management  
+// Added 2025-05-23 for automated version file management
+// ==========================================
+
+/**
+ * Conservative Git Automation for Version Management
+ * 
+ * Features:
+ * - Stages ONLY version-related files (safe file selection)
+ * - Standardized commit messages for version tracking
+ * - NO automatic push (manual control for stability)
+ * - Error handling with graceful fallback
+ * - Integration with existing version increment tasks
+ * - Automatic project-wide version updates before every commit
+ * 
+ * Safety Features:
+ * - Explicit file list (no wildcards)
+ * - Git status checking before operations
+ * - Clear success/failure feedback
+ * - Manual push instructions provided
+ * 
+ * Usage:
+ * - ./gradlew gitCommitVersion              (commit current version changes)
+ * - ./gradlew incrementPatchAndCommit       (increment + commit)
+ * - ./gradlew incrementMinorAndCommit       (increment + commit) 
+ * - ./gradlew incrementMajorAndCommit       (increment + commit)
+ * 
+ * After any commit, manually push when ready:
+ * - git push origin main
+ */
+
+task gitCommitVersion {
+    description 'Commits version-related file changes with standardized message (NO push)'
+    group = 'minefest'
+    dependsOn updateProjectVersions
+    
+    doLast {
+        def currentVersion = project.mod_version
+        def currentDate = new Date().format('yyyy-MM-dd')
+        
+        println "Starting git commit for version ${currentVersion}..."
+        
+        // Define ONLY the version-related files we want to commit
+        def versionFiles = [
+            'gradle.properties',
+            'docs/README.md', 
+            'docs/CURRENT_DEVELOPMENT_STATUS.md',
+            'docs/BUILD_WORKFLOW.md',
+            'docs/CHANGELOG.md',
+            'docs/TROUBLESHOOTING.md'
+        ]
+        
+        // Stage only the version files that exist
+        def stagedFiles = []
+        versionFiles.each { filePath ->
+            def file = project.file(filePath)
+            if (file.exists()) {
+                try {
+                    exec {
+                        commandLine 'git', 'add', filePath
+                        ignoreExitValue false
+                    }
+                    stagedFiles.add(filePath)
+                    println "Staged: ${filePath}"
+                } catch (Exception e) {
+                    println "Could not stage ${filePath}: ${e.message}"
+                }
+            } else {
+                println "Skipped (not found): ${filePath}"
+            }
+        }
+        
+        if (stagedFiles.isEmpty()) {
+            println "No version files to commit"
+            return
+        }
+        
+        // Create standardized commit message
+        def commitMessage = "v${currentVersion}: Version Update - ${currentDate}"
+        
+        // Attempt to commit
+        try {
+            exec {
+                commandLine 'git', 'commit', '-m', commitMessage
+                ignoreExitValue false
+            }
+            println "Git commit successful!"
+            println "Commit message: ${commitMessage}"
+            println "Files committed: ${stagedFiles.join(', ')}"
+            println ""
+            println "Next step: Push when ready with:"
+            println "   git push origin main"
+            
+        } catch (Exception e) {
+            println "Git commit info: ${e.message}"
+            println "This might mean no changes to commit, which is normal"
+            println "Check status with: git status"
+        }
+    }
+}
+
+task gitStatusCheck {
+    description 'Checks git status and provides helpful information'
+    group = 'minefest'
+    
+    doLast {
+        try {
+            def gitStatus = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'status', '--porcelain'
+                standardOutput = gitStatus
+            }
+            
+            def statusText = gitStatus.toString().trim()
+            
+            if (statusText.isEmpty()) {
+                println "Git working directory is clean"
+                println "Ready for version operations"
+            } else {
+                println "Git status summary:"
+                statusText.split('\n').each { line ->
+                    if (line.trim()) {
+                        def status = line.substring(0, 2)
+                        def file = line.substring(3)
+                        def statusDesc = ""
+                        
+                        switch(status.trim()) {
+                            case 'M': statusDesc = "Modified"; break
+                            case 'A': statusDesc = "Added"; break
+                            case 'D': statusDesc = "Deleted"; break
+                            case '??': statusDesc = "Untracked"; break
+                            default: statusDesc = "Changed"
+                        }
+                        
+                        println "   ${statusDesc}: ${file}"
+                    }
+                }
+                println ""
+                println "Version automation will only commit version-related files"
+            }
+            
+        } catch (Exception e) {
+            println "Could not check git status: ${e.message}"
+        }
+    }
+}
+
+// Enhanced version increment tasks with git commit automation
+task incrementPatchAndCommit {
+    description 'Increments patch version and commits to git (NO push)'
+    group = 'minefest'
+    dependsOn incrementPatch
+    finalizedBy gitCommitVersion
+    
+    doLast {
+        def currentVersion = project.mod_version
+        println "Patch version increment and commit workflow complete!"
+        println "New version: ${currentVersion}"
+        println "Files updated and committed automatically"
+        println "Push when ready: git push origin main"
+    }
+}
+
+task incrementMinorAndCommit {
+    description 'Increments minor version and commits to git (NO push)'  
+    group = 'minefest'
+    dependsOn incrementMinor
+    finalizedBy gitCommitVersion
+    
+    doLast {
+        def currentVersion = project.mod_version
+        println "Minor version increment and commit workflow complete!"
+        println "New version: ${currentVersion} (typically for stage completions)"
+        println "Files updated and committed automatically"
+        println "Push when ready: git push origin main"
+    }
+}
+
+task incrementMajorAndCommit {
+    description 'Increments major version and commits to git (NO push)'
+    group = 'minefest'
+    dependsOn incrementMajor
+    finalizedBy gitCommitVersion
+    
+    doLast {
+        def currentVersion = project.mod_version
+        println "Major version increment and commit workflow complete!"
+        println "New version: ${currentVersion} (major milestone!)"
+        println "Files updated and committed automatically"
+        println "Push when ready: git push origin main"
+    }
+}
+
+// Update the existing updateProjectVersions task to provide git guidance
+updateProjectVersions.doLast {
+    println ""
+    println "Git Automation Available:"
+    println "   ./gradlew gitCommitVersion        (commit current changes)"
+    println "   ./gradlew gitStatusCheck          (check what's changed)"
+    println "   ./gradlew incrementPatchAndCommit (version bump + commit)"
+}
+
+// ==========================================
+// GIT ROLLBACK & HISTORY AUTOMATION SYSTEM
+// Advanced version history management and rollback capabilities
+// ==========================================
+
+task gitVersionHistory {
+    description 'Shows clean version history with rollback information'
+    group = 'minefest'
+    
+    doLast {
+        def currentVersion = project.mod_version
+        
+        println "🕒 Version History for Minefest-Core:"
+        println "📍 Current Version: ${currentVersion}"
+        println ""
+        
+        try {
+            def gitLog = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'log', '--oneline', '--grep=Version Update', '-10'
+                standardOutput = gitLog
+            }
+            
+            def logLines = gitLog.toString().trim().split('\n')
+            
+            if (logLines.size() > 0 && !logLines[0].trim().isEmpty()) {
+                println "📋 Recent Version Commits (rollback targets):"
+                logLines.eachWithIndex { line, index ->
+                    if (line.trim()) {
+                        def parts = line.split(' ', 2)
+                        def commitHash = parts[0]
+                        def message = parts.length > 1 ? parts[1] : ""
+                        
+                        // Extract version from commit message
+                        def versionMatch = message =~ /v([^:]+):/
+                        def version = versionMatch ? versionMatch[0][1] : "unknown"
+                        
+                        def indicator = index == 0 ? "👉" : "  "
+                        println "${indicator} ${commitHash} - v${version}"
+                        
+                        if (index == 0) {
+                            println "     Current version (HEAD)"
+                        } else {
+                            println "     Rollback: ./gradlew gitRollbackToVersion -Pversion=${version}"
+                        }
+                    }
+                }
+                
+                println ""
+                println "🔄 Rollback Options:"
+                println "   ./gradlew gitVersionHistory           (show this history)"
+                println "   ./gradlew gitRollbackToVersion -Pversion=X.X.X.X (rollback to version)"
+                println "   ./gradlew gitCreateVersionTag         (tag current version)"
+                println ""
+                println "⚠️  Rollbacks modify git history - ensure you understand the impact!"
+                
+            } else {
+                println "ℹ️  No version update commits found in recent history"
+            }
+            
+        } catch (Exception e) {
+            println "⚠️  Could not retrieve git history: ${e.message}"
+        }
+    }
+}
+
+task gitRollbackToVersion {
+    description 'Rollback to a specific version (DANGEROUS - modifies git history)'
+    group = 'minefest'
+    
+    doLast {
+        def targetVersion = project.findProperty('version')
+        
+        if (!targetVersion) {
+            println "❌ Error: Version not specified"
+            println "Usage: ./gradlew gitRollbackToVersion -Pversion=1.20.4-0.2.3.1"
+            println ""
+            println "📋 Available versions:"
+            exec {
+                commandLine 'git', 'log', '--oneline', '--grep=Version Update', '-5'
+            }
+            return
+        }
+        
+        def currentVersion = project.mod_version
+        
+        if (targetVersion == currentVersion) {
+            println "ℹ️  Already at version ${targetVersion}"
+            return
+        }
+        
+        println "⚠️  ROLLBACK OPERATION"
+        println "📍 Current Version: ${currentVersion}"
+        println "🎯 Target Version: ${targetVersion}"
+        println ""
+        
+        try {
+            // Find the commit hash for the target version
+            def gitLog = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'log', '--oneline', '--grep=Version Update', '-20'
+                standardOutput = gitLog
+            }
+            
+            def targetCommit = null
+            gitLog.toString().split('\n').each { line ->
+                if (line.contains("v${targetVersion}:")) {
+                    targetCommit = line.split(' ')[0]
+                }
+            }
+            
+            if (!targetCommit) {
+                println "❌ Error: Version ${targetVersion} not found in git history"
+                println "Use ./gradlew gitVersionHistory to see available versions"
+                return
+            }
+            
+            println "🔍 Found target commit: ${targetCommit}"
+            println ""
+            println "This will:"
+            println "  1. Reset to commit ${targetCommit}"
+            println "  2. Update gradle.properties to version ${targetVersion}"
+            println "  3. Run updateProjectVersions to sync all documentation"
+            println "  4. Create a new commit with the rollback"
+            println ""
+            println "⚠️  DANGER: This modifies git history!"
+            println "⚠️  Make sure you have pushed recent changes before proceeding"
+            println ""
+            println "❌ SAFETY STOP: Automated rollback disabled for safety"
+            println "🔧 Manual rollback instructions:"
+            println "   git reset --hard ${targetCommit}"
+            println "   ./gradlew updateProjectVersions"
+            println "   git add -A"
+            println "   git commit -m \"Rollback to v${targetVersion}\""
+            
+        } catch (Exception e) {
+            println "❌ Error during rollback preparation: ${e.message}"
+        }
+    }
+}
+
+task gitCreateVersionTag {
+    description 'Create a git tag for the current version'
+    group = 'minefest'
+    
+    doLast {
+        def currentVersion = project.mod_version
+        def currentDate = new Date().format('yyyy-MM-dd')
+        
+        println "🏷️  Creating version tag for v${currentVersion}..."
+        
+        try {
+            // Check if tag already exists
+            def checkTag = new ByteArrayOutputStream()
+            def checkResult = exec {
+                commandLine 'git', 'tag', '-l', "v${currentVersion}"
+                standardOutput = checkTag
+                ignoreExitValue true
+            }
+            
+            if (checkTag.toString().trim()) {
+                println "ℹ️  Tag v${currentVersion} already exists"
+                return
+            }
+            
+            // Create annotated tag
+            def tagMessage = "Release v${currentVersion} - ${currentDate}"
+            exec {
+                commandLine 'git', 'tag', '-a', "v${currentVersion}", '-m', tagMessage
+                ignoreExitValue false
+            }
+            
+            println "✅ Created tag: v${currentVersion}"
+            println "📝 Tag message: ${tagMessage}"
+            println ""
+            println "🚀 To push tag to remote:"
+            println "   git push origin v${currentVersion}"
+            println "   git push --tags  (push all tags)"
+            
+        } catch (Exception e) {
+            println "❌ Error creating tag: ${e.message}"
+        }
+    }
+}
