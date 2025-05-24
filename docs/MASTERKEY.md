@@ -25,6 +25,7 @@
 | Document | Size | Purpose | When to Read |
 |----------|------|---------|--------------|
 | **AI_ASSISTANT_AUTOMATION_GUIDE.md** | 4.9KB | Automation enforcement, required commands | EVERY SESSION START |
+| **AI_TOOL_USAGE_PROTOCOL.md** | 2.1KB | Tool selection rules, formatting protection | EVERY SESSION START |
 | **CODE_LOCKING_PROTOCOL.md** | 17KB | Component modification restrictions | BEFORE ANY CODE CHANGES |
 | **SERVER_CLIENT_SEPARATION.md** | 15KB | Side-specific development patterns | NETWORKING/AUDIO WORK |
 
@@ -186,9 +187,10 @@
 ### **Session Start Checklist:**
 1. ✅ Read MASTERKEY.md (this document)
 2. ✅ Check AI_ASSISTANT_AUTOMATION_GUIDE.md for workflow requirements
-3. ✅ Review CURRENT_DEVELOPMENT_STATUS.md for current state
-4. ✅ Check CODE_LOCKING_PROTOCOL.md for modification restrictions
-5. ✅ Read task-specific docs based on work type (see Quick Context sections above)
+3. ✅ Review AI_TOOL_USAGE_PROTOCOL.md for tool selection rules
+4. ✅ Review CURRENT_DEVELOPMENT_STATUS.md for current state
+5. ✅ Check CODE_LOCKING_PROTOCOL.md for modification restrictions
+6. ✅ Read task-specific docs based on work type (see Quick Context sections above)
 
 ### **Before ANY Code Changes:**
 1. ✅ Verify component lock status in CODE_LOCKING_PROTOCOL.md
