@@ -341,5 +341,5 @@ property 'forge.logging.console.level', 'debug'
 - Documentation: Check all docs files first
 
 ---
-*Last Updated: 2025-05-23*
-*Version: 1.20.4-0.2.3.2* 
+*Last Updated: 2025-05-24*
+*Version: 1.20.4-0.2.3.4* 

@@ -1,5 +1,30 @@
 # Minefest-Core Changelog
 
+## [1.20.4-0.2.3.4] - 2025-05-24 (In Progress)
+
+### ? Debugging
+- **Client-Server Compatibility Investigation**: Ongoing resolution of `HORIZONTAL_FACING` crash on CurseForge client
+  - **Fixed**: Syntax errors in `ModCreativeTabs.java` (malformed method declarations)
+  - **Fixed**: Build system timing bug preventing clean client deployments
+  - **Architecture Enhancement**: Separated client and server JAR builds to eliminate dependency conflicts
+    - **Server JAR**: Full LavaPlayer dependencies (11MB) for audio streaming
+    - **Client JAR**: Clean build without server dependencies (115KB) for compatibility
+  - **Build Automation**: Enhanced `copyModToClientMods` task with reliable deployment
+  - **Status**: ?? **ONGOING** - Client still experiencing `HORIZONTAL_FACING` errors despite code fixes
+
+### ?? Build System
+- **Client-Server Separation**: Implemented separate build targets for different environments
+  - **Production Server**: Full jarJar with audio streaming capabilities 
+  - **Development Client**: Local environment with Gradle classpath
+  - **CurseForge Client**: Clean JAR without module conflicts
+- **Deployment Reliability**: Fixed silent deployment failures when build directory is displaced
+
+### ? Technical Debt
+- **Ongoing Investigation**: `DJStandBlock.java` line 63 `HORIZONTAL_FACING` error persists
+- **Client Compatibility**: Need further investigation of Minecraft 1.20.4 + Forge 49.2.0 property compatibility
+
+---
+
 ## [1.20.4-0.2.3.1] - 2025-05-23
 
 ### Added
