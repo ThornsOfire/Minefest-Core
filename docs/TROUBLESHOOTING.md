@@ -11,7 +11,7 @@
 1. **Clean Build**: `./gradlew clean build copyModToRunMods`
 2. **Remove Conflicting Sources**: Ensure only JAR in mods folder
 3. **Check Gradle Configuration**: Verify mods{} configuration in build.gradle
-4. **✅ WORKING SOLUTION**: The build.gradle is configured to temporarily move the build directory during server execution to prevent module conflicts. This is handled automatically by the runServer task.
+4. **? WORKING SOLUTION**: The build.gradle is configured to temporarily move the build directory during server execution to prevent module conflicts. This is handled automatically by the runServer task.
 
 ### Creative Tab Registration Errors  
 **Problem**: `NoSuchFieldError: f_279569_`
@@ -50,7 +50,7 @@
 **Causes**: Buffer underruns, network issues, CPU overload
 
 **Solutions**:
-1. **Increase Buffer Size**: 2048 → 4096 → 8192 frames
+1. **Increase Buffer Size**: 2048 ? 4096 ? 8192 frames
 2. **Check Network**: Reduce sync intervals if high latency
 3. **CPU Optimization**: Adjust thread pool size
 4. **Memory**: Ensure adequate heap space
@@ -96,7 +96,7 @@
 3. **Validate Syntax**: Check TOML formatting
 4. **Side-Specific**: Verify server-only vs common settings
 
-### TOML Boolean Syntax Error ✅ FIXED
+### TOML Boolean Syntax Error ? FIXED
 **Problem**: Server crashes with `ParsingException: Invalid value: True` or `Invalid value: False`
 
 **Error Example**:
@@ -109,12 +109,12 @@
 
 **Solution**: Update boolean values in configuration files:
 ```toml
-# ❌ WRONG - Uppercase booleans cause parsing errors
+# ? WRONG - Uppercase booleans cause parsing errors
 enableTestBroadcaster = True
 isTimeAuthority = False  
 debugMode = False
 
-# ✅ CORRECT - Lowercase booleans  
+# ? CORRECT - Lowercase booleans  
 enableTestBroadcaster = true
 isTimeAuthority = false
 debugMode = false
@@ -142,10 +142,10 @@ debugMode = false
 4. **Disable Features**: Turn off voice chat or effects if not needed
 5. **Monitor GC**: Check garbage collection frequency
 
-### Config Loading Issues ✅ RESOLVED
+### Config Loading Issues ? RESOLVED
 **Problem**: Server crashes with `IllegalStateException: Config values not loaded` during startup
 
-**Status**: **FIXED in v1.20.4-0.1.0.1** ✅
+**Status**: **FIXED in v1.20.4-0.1.0.1** ?
 
 **Previous Issue**: 
 - `MinefestConfig.ensureLoaded()` threw exceptions during config loading events
@@ -160,6 +160,54 @@ debugMode = false
 1. **Update to latest version**: Ensure you're using v1.20.4-0.1.0.1 or later
 2. **Clean rebuild**: Run `./gradlew clean build copyModToRunMods`
 3. **Check version**: Verify mod version matches in logs vs gradle.properties
+
+## 🚨 **LavaPlayer Dependency Issues** (CRITICAL - BLOCKING SERVER STARTUP)
+
+### **🔴 BLOCKING ISSUE: Server Cannot Start**
+**Symptoms:**
+```
+java.lang.NoClassDefFoundError: com/sedmelluq/lava/common/tools/DaemonThreadFactory
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.<init>
+	at com.minefest.essentials.audio.AudioManager.<init>
+	at com.minefest.essentials.MinefestCore.<init>
+```
+
+**Impact:** **COMPLETE SERVER FAILURE** - Mod cannot initialize, zero functionality available
+
+**Status:** �?� **UNRESOLVED CRITICAL ISSUE**
+
+**Root Cause:** jarJar system embeds LavaPlayer main JAR but misses transitive dependencies from `lava-common` library.
+
+### **Current Configuration (Broken):**
+```gradle
+jarJar.enable()
+compileOnly 'com.sedmelluq:lavaplayer:1.3.78'
+jarJar(group: 'com.sedmelluq', name: 'lavaplayer', version: '[1.3.78,1.4.0)') {
+    jarJar.pin(it, '1.3.78')
+}
+```
+
+**Result:** JAR size increases to 11.1MB (confirming main library embedded) but missing internal dependencies.
+
+### **Potential Solutions:**
+
+#### **Solution A: Fix jarJar Transitive Dependencies** (Research Needed)
+- Investigate jarJar configuration options for transitive dependency inclusion
+- May need additional jarJar entries for `lava-common` library components
+
+#### **Solution B: Use Implementation Instead** (Fallback)
+```gradle
+implementation 'com.sedmelluq:lavaplayer:1.3.78'
+// Remove jarJar configuration
+```
+
+#### **Solution C: Temporary Disable Audio** (Emergency)
+Comment out AudioManager initialization in MinefestCore to allow basic mod loading.
+
+### **Current Project Impact:**
+- �?� **ALL development blocked** - Cannot test any features
+- �?� **Server inoperable** - Complete startup failure
+- �?� **Documentation invalid** - Claims of working features are false until server starts
 
 ## Network and BungeeCord Issues
 
@@ -235,15 +283,15 @@ debugMode = false
 
 ### WARN Messages in Server Logs
 
-#### ✅ **Resolved Issues**
+#### ? **Resolved Issues**
 
 **Event Bus Registration Warning** - Fixed in v1.20.4-0.1.0.1
 ```
 [main/WARN] [com.minefest.essentials.test.ServerTestBroadcaster/]: Could not register to mod event bus...
 ```
-**Status**: ✅ **RESOLVED** - Fixed by removing `@Mod.EventBusSubscriber` annotation and using manual event registration.
+**Status**: ? **RESOLVED** - Fixed by removing `@Mod.EventBusSubscriber` annotation and using manual event registration.
 
-#### ⚠️ **Low Priority Warnings (Safe to Ignore)**
+#### ?? **Low Priority Warnings (Safe to Ignore)**
 
 **OSHI Configuration Conflicts**
 ```
@@ -251,7 +299,7 @@ debugMode = false
 [main/WARN] [oshi.util.FileUtil/]: Configuration conflict: there is more than one oshi.architecture.properties file...
 ```
 - **Cause**: Forge dependencies include duplicate OSHI library files for system monitoring
-- **Impact**: ⚠️ **Cosmetic only** - doesn't affect mod functionality
+- **Impact**: ?? **Cosmetic only** - doesn't affect mod functionality
 - **Fix**: Cannot be fixed (external library conflict), safely ignore
 
 **Version Difference Warning**
@@ -260,7 +308,7 @@ debugMode = false
 minefest (version 1.20.4-0.1.0.0 -> 1.20.4-0.1.0.1)
 ```
 - **Cause**: Normal when updating mod versions during development
-- **Impact**: ⚠️ **Temporary** - disappears after clean server restart
+- **Impact**: ?? **Temporary** - disappears after clean server restart
 - **Fix**: Expected behavior during development, no action needed
 
 **Assets URL Warning** (Development Only)
@@ -268,7 +316,7 @@ minefest (version 1.20.4-0.1.0.0 -> 1.20.4-0.1.0.1)
 [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL '...' uses unexpected schema
 ```
 - **Cause**: Development environment using reobfuscated JAR paths  
-- **Impact**: ⚠️ **Development only** - doesn't occur in production deployment
+- **Impact**: ?? **Development only** - doesn't occur in production deployment
 - **Fix**: Not needed - development environment specific
 
 ## Getting Help
@@ -293,5 +341,5 @@ property 'forge.logging.console.level', 'debug'
 - Documentation: Check all docs files first
 
 ---
-*Last Updated: 2025-05-22*
-*Version: 1.20.4-0.1.0.1* 
+*Last Updated: 2025-05-23*
+*Version: 1.20.4-0.2.3.1* 

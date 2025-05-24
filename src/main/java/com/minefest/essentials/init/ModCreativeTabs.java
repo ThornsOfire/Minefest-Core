@@ -5,7 +5,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,17 +13,18 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 /**
  * COMPONENT SIGNPOST [Index: 11]
- * Purpose: Creative tab registration with client-side environment detection
+ * Purpose: Creative tab registration with Minefest audio infrastructure items
  * Side: CLIENT/COMMON - conditional registration based on environment
  * 
  * Workflow:
  * 1. [Index: 11.1] Detect client environment and registry availability
  * 2. [Index: 11.2] Create DeferredRegister only when appropriate
- * 3. [Index: 11.3] Register creative tab with safe null handling
+ * 3. [Index: 11.3] Register creative tab with mod items
  * 4. [Index: 11.4] Handle registry exceptions gracefully
  * 
  * Dependencies:
  * - MinefestCore [Index: 02] - mod ID for creative tab registration
+ * - ModItems [Index: 08] - items to display in creative tab
  * - Minecraft Registries [Index: N/A] - creative tab registry access
  * - Forge Environment [Index: N/A] - side detection utilities
  * 
@@ -40,8 +40,16 @@ public class ModCreativeTabs {
     public static final RegistryObject<CreativeModeTab> MINEFEST_TAB = CREATIVE_MODE_TABS != null ? 
             CREATIVE_MODE_TABS.register("minefest_tab",
                 () -> CreativeModeTab.builder()
-                        .title(Component.translatable("itemGroup." + MinefestCore.MOD_ID))
-                        .icon(() -> new ItemStack(Items.NOTE_BLOCK))
+                        .title(Component.translatable("creativetab.minefest.minefest"))
+                        .icon(() -> new ItemStack(ModItems.DJ_STAND.get()))
+                        .displayItems((parameters, output) -> {
+                            // Audio Infrastructure Blocks
+                            output.accept(ModItems.DJ_STAND.get());
+                            output.accept(ModItems.SPEAKER.get());
+                            
+                            // Tools and Control Items
+                            output.accept(ModItems.REMOTE_CONTROL.get());
+                        })
                         .build()) : null;
     
     private static DeferredRegister<CreativeModeTab> createTabsRegister() {

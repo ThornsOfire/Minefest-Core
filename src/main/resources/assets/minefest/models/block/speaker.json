@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "minefest:block/speaker_bottom",
+    "up": "minefest:block/speaker_top",
+    "north": "minefest:block/speaker_front", 
+    "south": "minefest:block/speaker_back",
+    "west": "minefest:block/speaker_side",
+    "east": "minefest:block/speaker_side"
+  }
+} 

@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "minefest:block/dj_stand_bottom",
+    "up": "minefest:block/dj_stand_top",
+    "north": "minefest:block/dj_stand_front",
+    "south": "minefest:block/dj_stand_back",
+    "west": "minefest:block/dj_stand_side",
+    "east": "minefest:block/dj_stand_side"
+  }
+} 

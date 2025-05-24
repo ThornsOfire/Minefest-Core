@@ -3,10 +3,14 @@ package com.minefest.essentials;
 import com.minefest.essentials.init.ModBlocks;
 import com.minefest.essentials.init.ModItems;
 import com.minefest.essentials.init.ModCreativeTabs;
+import com.minefest.essentials.init.ModBlockEntities;
+import com.minefest.essentials.init.ModMenuTypes;
 import com.minefest.essentials.network.TimeSync;
 import com.minefest.essentials.timing.MasterClock;
 import com.minefest.essentials.config.MinefestConfig;
 import com.minefest.essentials.test.ServerTestBroadcaster;
+import com.minefest.essentials.permissions.MinefestPermissions;
+import com.minefest.essentials.audio.AudioManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -63,6 +67,7 @@ public class MinefestCore {
     private static String serverId;
     private static boolean isInitialized = false;
     private static MasterClock masterClock;
+    private static AudioManager audioManager;
     private static boolean configLoaded = false;
 
     public MinefestCore() {
@@ -81,12 +86,26 @@ public class MinefestCore {
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::onConfigReload);
         
+        // Add client setup listener for client-side packet handlers
+        if (FMLEnvironment.dist.isClient()) {
+            modEventBus.addListener(this::clientSetup);
+        }
+        
         // Initialize components
         if (FMLEnvironment.dist.isDedicatedServer()) {
             masterClock = MasterClock.createInstance();
             masterClock.initialize();
+            
+            // Initialize audio system
+            audioManager = new AudioManager();
+            audioManager.initialize();
+            
             isInitialized = true;
-            LOGGER.info("MasterClock initialized and ready");
+            LOGGER.info("MasterClock and AudioManager initialized and ready");
+            
+            // Initialize permission system
+            MinefestPermissions.initialize();
+            LOGGER.info("Permission system initialized");
         }
         
         // Register ourselves for server and other game events we are interested in
@@ -95,6 +114,8 @@ public class MinefestCore {
         // Register mod content - common for both sides
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
         
         // Register creative tabs only on client side
         if (FMLEnvironment.dist.isClient() && ModCreativeTabs.CREATIVE_MODE_TABS != null) {
@@ -128,6 +149,18 @@ public class MinefestCore {
         configLoaded = true;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    private void clientSetup(final net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            // Register client-side screen for DJ Stand container
+            net.minecraft.client.gui.screens.MenuScreens.register(
+                ModMenuTypes.DJ_STAND_MENU.get(), 
+                com.minefest.essentials.client.gui.DJStandScreen::new
+            );
+            LOGGER.info("Minefest Core client setup completed - DJ Stand screen registered");
+        });
+    }
+
     public static MinefestCore getInstance() {
         return instance;
     }
@@ -153,6 +186,20 @@ public class MinefestCore {
             throw new IllegalStateException("Attempted to access MasterClock before initialization");
         }
         return masterClock;
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    public static AudioManager getAudioManager() {
+        if (FMLEnvironment.dist.isClient()) {
+            throw new IllegalStateException("Cannot access AudioManager on client side");
+        }
+        if (!isInitialized) {
+            throw new IllegalStateException("Attempted to access AudioManager before initialization");
+        }
+        if (audioManager == null) {
+            throw new IllegalStateException("AudioManager not initialized");
+        }
+        return audioManager;
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)

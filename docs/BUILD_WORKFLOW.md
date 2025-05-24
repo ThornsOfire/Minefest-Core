@@ -8,7 +8,7 @@ The Minefest-Core build system ensures that development and production environme
 
 ### Primary Build Commands
 
-#### `./gradlew buildAll` ⭐ **Recommended**
+#### `./gradlew buildAll` ? **Recommended**
 - **Purpose**: Complete rebuild with environment synchronization
 - **Actions**:
   - Clean previous builds
@@ -20,9 +20,9 @@ The Minefest-Core build system ensures that development and production environme
 ```bash
 ./gradlew buildAll
 # Output: 
-# ✅ Built and deployed Minefest-Core v1.20.4-0.1.0.1
-# 📁 Development environment: run/mods/
-# 🚀 Production environment: server/mods/
+# ? Built and deployed Minefest-Core v1.20.4-0.1.0.1
+# ? Development environment: run/mods/
+# ? Production environment: server/mods/
 ```
 
 #### `./gradlew runServer`
@@ -167,20 +167,20 @@ Use block comment format for file headers and major sections:
 
 Common syntax errors and fixes:
 ```toml
-# ❌ WRONG - Uppercase booleans
+# ? WRONG - Uppercase booleans
 enableTestBroadcaster = True
 
-# ✅ CORRECT - Lowercase booleans  
+# ? CORRECT - Lowercase booleans  
 enableTestBroadcaster = true
 
-# ❌ WRONG - Missing quotes for strings
+# ? WRONG - Missing quotes for strings
 serverName = My Server
 
-# ✅ CORRECT - Quoted strings
+# ? CORRECT - Quoted strings
 serverName = "My Server"
 ```
 
-#### TOML Boolean Prevention System ✅
+#### TOML Boolean Prevention System ?
 
 **Root Cause Identified**: The uppercase `True`/`False` values were likely caused by manual editing using Python-style boolean capitalization. TOML format specifically requires lowercase boolean values by design.
 
@@ -199,19 +199,19 @@ Get-Content server\world\serverconfig\*.toml | Select-String "= True|= False"
 # Should return nothing if all booleans are lowercase
 ```
 
-**Lock Status**: The configuration system is now **🔒 LOCKED** under the Code Locking Protocol. Any changes require user approval as documented in `docs/CODE_LOCKING_PROTOCOL.md`.
+**Lock Status**: The configuration system is now **? LOCKED** under the Code Locking Protocol. Any changes require user approval as documented in `docs/CODE_LOCKING_PROTOCOL.md`.
 
 ## Code Locking Protocol
 
 Critical components that are working correctly are now protected under the **Code Locking Protocol**. Before modifying any component, check `docs/CODE_LOCKING_PROTOCOL.md` for lock status:
 
-- **🔒 LOCKED**: No changes without user approval
-- **⚠️ REVIEW REQUIRED**: Changes need justification  
-- **✅ UNLOCKED**: Free to modify
+- **? LOCKED**: No changes without user approval
+- **?? REVIEW REQUIRED**: Changes need justification  
+- **? UNLOCKED**: Free to modify
 
 **Current Locked Components**:
-- Configuration System [Index: 10] - TOML boolean fix working ✅
-- Server Startup Sequence [Index: 01] - No crashes, clean startup ✅
+- Configuration System [Index: 10] - TOML boolean fix working ?
+- Server Startup Sequence [Index: 01] - No crashes, clean startup ?
 
 When requesting changes to locked components, use the Lock Modification Request template in the protocol documentation.
 
@@ -292,8 +292,8 @@ For automated builds:
 ```
 
 ---
-*Last Updated: 2025-05-22*
-*Version: 1.20.4-0.1.0.1*
+*Last Updated: 2025-05-23*
+*Version: 1.20.4-0.2.3.1*
 
 ## Lock Protocol Enforcement
 
@@ -316,13 +316,13 @@ The build system includes automatic validation of the Code Locking Protocol:
 
 **Lock Validation Output**:
 ```bash
-✅ Lock protocol compliance verified
+? Lock protocol compliance verified
 # OR
-⚠️  LOCK PROTOCOL VIOLATIONS DETECTED:
+??  LOCK PROTOCOL VIOLATIONS DETECTED:
    - file.java is marked as locked but missing lock comment
 
-📖 Review docs/CODE_LOCKING_PROTOCOL.md for procedures
-🔒 Locked files require user approval before modification
+? Review docs/CODE_LOCKING_PROTOCOL.md for procedures
+? Locked files require user approval before modification
 ```
 
 ### Pre-Commit Hook Setup (Optional)

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "minefest:block/dj_stand" },
+    "facing=south": { "model": "minefest:block/dj_stand", "y": 180 },
+    "facing=west": { "model": "minefest:block/dj_stand", "y": 270 },
+    "facing=east": { "model": "minefest:block/dj_stand", "y": 90 }
+  }
+} 

@@ -1,29 +1,86 @@
 # Minefest-Core Architecture
 
+## System Overview
+
+Minefest-Core is designed as a revolutionary music festival platform for Minecraft, built on a robust server-client architecture with professional audio infrastructure and festival-scale deployment capabilities.
+
+**Current Version**: 1.20.4-0.1.2.0  
+**Architecture Status**: Stage 3 GUI System (67% Complete)
+
+### Core Design Principles
+- **Festival-Scale Performance**: Designed for thousands of concurrent users
+- **Professional Audio Quality**: Industry-standard streaming and synchronization
+- **Persistent Infrastructure**: Festival setups survive server restarts
+- **Cross-Dimensional Support**: Festival stages can span multiple worlds
+- **Modular Architecture**: Clean separation of concerns with component signposting
+
+## High-Level Architecture
+
+```
+┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐
+│   Client Side       │    │   Network Layer     │    │   Server Side       │
+├─────────────────────┤    ├─────────────────────┤    ├─────────────────────┤
+│ DJ Stand GUI [21]   │◄──►│ GUI Synchronization │◄──►│ DJStandBlockEntity  │
+│ Audio Playback      │    │ Audio Distribution  │    │ [18]                │
+│ Time Display        │    │ Time Sync Packets   │    │ Speaker Networks    │
+│ Creative Tab [11]   │    │ Permission Checks   │    │ AudioManager [05]   │
+└─────────────────────┘    └─────────────────────┘    └─────────────────────┘
+```
+
+## Component Architecture
+
+### Audio Infrastructure Components [Index: 15-22]
+
+#### DJ Stand System
+- **DJStandBlock [Index: 15]**: Main audio streaming controller with EntityBlock integration and GUI opening
+- **DJStandBlockEntity [Index: 18]**: Persistent data storage for stream URLs, speaker networks, and audio configuration
+- **DJStandScreen [Index: 21]**: Professional control panel GUI with real-time network monitoring and stream controls
+- **DJStandMenuProvider [Index: 22]**: Menu provider system for GUI-block entity integration and data synchronization
+
+#### Speaker System
+- **SpeakerBlock [Index: 16]**: Audio output device with EntityBlock integration and network participation
+- **SpeakerBlockEntity [Index: 19]**: Persistent DJ Stand linking, connection validation, and audio configuration
+
+#### Control System
+- **RemoteControlItem [Index: 17]**: Enhanced linking tool with block entity integration and comprehensive feedback
+
+### Server-Side Components [Index: 01-14]
+
 ## Package Structure
 
 ```
 com.minefest.essentials/
-├── MinefestCore.java        # Main mod class
-├── audio/                   # Audio streaming implementation
-│   ├── AudioManager.java    # Server-side audio management
-│   ├── MinefestAudioLoadHandler.java
-│   └── StreamingSession.java
+├── MinefestCore.java        # Main mod class [Index: 02]
+├── audio/                   # Audio streaming implementation  
+│   ├── AudioManager.java    # Server-side audio management [Index: 05]
+│   ├── MinefestAudioLoadHandler.java # LavaPlayer integration [Index: 07]
+│   └── StreamingSession.java # Session state management [Index: 06]
+├── blocks/                  # Audio infrastructure blocks
+│   ├── DJStandBlock.java    # DJ Stand controller [Index: 15]
+│   ├── SpeakerBlock.java    # Speaker output device [Index: 16]
+│   └── entity/              # Block entities for persistent data storage
+│       ├── DJStandBlockEntity.java  # DJ Stand data persistence [Index: 18]
+│       └── SpeakerBlockEntity.java  # Speaker data persistence [Index: 19]
+├── items/                   # Tools and control items
+│   └── RemoteControlItem.java # Speaker linking tool [Index: 17]
 ├── init/                    # Common initialization and registry
-│   ├── ModBlocks.java
-│   ├── ModItems.java
-│   └── ModCreativeTabs.java
+│   ├── ModBlocks.java       # Block registration [Index: 09]
+│   ├── ModItems.java        # Item registration [Index: 08]
+│   ├── ModCreativeTabs.java # Creative tab registration [Index: 11]
+│   └── ModBlockEntities.java # Block entity registration [Index: 20]
+├── permissions/             # Permission system integration
+│   └── MinefestPermissions.java # LuckPerms integration [Index: 14]
 ├── config/                  # Configuration handling
-│   └── MinefestConfig.java  # Side-specific config management
+│   └── MinefestConfig.java  # Side-specific config management [Index: 10]
 ├── network/                 # Network and synchronization
-│   └── TimeSync.java       # Server-side time sync
+│   └── TimeSync.java        # Server-side time sync [Index: 03]
 ├── timing/                  # Time management
-│   ├── MasterClock.java    # Server-side time authority
-│   └── ClientTimeSync.java # Client sync data structure
+│   ├── MasterClock.java     # Server-side time authority [Index: 01]
+│   └── ClientTimeSync.java  # Client sync data structure [Index: 12]
 ├── test/                    # Testing utilities
-│   └── ServerTestBroadcaster.java
-└── bungee/                 # Server-side BungeeCord integration
-    └── MinefestBungee.java
+│   └── ServerTestBroadcaster.java # Test broadcasting [Index: 13]
+└── bungee/                  # Server-side BungeeCord integration
+    └── MinefestBungee.java  # BungeeCord plugin messaging [Index: 04]
 ```
 
 ## System Overview
@@ -35,53 +92,120 @@ graph TD
         A --> C[MasterClock]
         A --> D[Server Config]
         A --> E[Network]
+        A --> F[Audio Infrastructure]
+        A --> G[Permissions]
 
         B --> B1[AudioManager]
         B --> B2[StreamingSession]
+        
+        F --> F1[DJ Stand Blocks]
+        F --> F2[Speaker Blocks]
+        F --> F3[Block Registration]
+        
+        G --> G1[LuckPerms Integration]
+        G --> G2[Forge Fallback]
 
         E --> E1[BungeeCord]
         E --> E2[Plugin Messaging]
     end
 
     subgraph Client Side
-        F[MinefestCore Client] --> G[Audio Playback]
-        F --> H[Time Display]
-        F --> I[Common Config]
+        H[MinefestCore Client] --> I[Audio Playback]
+        H --> J[Time Display]
+        H --> K[Common Config]
+        H --> L[Block Interaction]
+        
+        L --> L1[DJ Stand UI]
+        L --> L2[Speaker Placement]
+        L --> L3[Remote Control]
     end
 
     subgraph Common
-        J[Resource Registry]
-        K[Network Protocol]
+        M[Resource Registry]
+        N[Network Protocol]
+        O[Block Models & Textures]
     end
 
-    C -->|Time Sync| F
-    B -->|Stream| G
-    J --> A
-    J --> F
-    K --> A
-    K --> F
+    C -->|Time Sync| H
+    B -->|Stream| I
+    F1 -->|Block State| L1
+    F2 -->|Block State| L2
+    M --> A
+    M --> H
+    N --> A
+    N --> H
+    O --> F
 ```
 
 ## Component Separation
 
 ```mermaid
 graph TD
-    subgraph Server Components
+    subgraph Server Components [Index: 01-14, 18-20]
         A[MasterClock] -->|Authority| B[Time Management]
         C[AudioManager] -->|Sessions| D[Stream Control]
         E[ServerConfig] -->|Validation| F[Settings]
+        G[DJ Stand Block] -->|Stream Control| H[Audio Source]
+        I[Speaker Block] -->|Audio Output| J[Sound Distribution]
+        K[Permissions] -->|Access Control| L[Security]
+        M[DJ Stand Entity] -->|Data Persistence| G
+        N[Speaker Entity] -->|Data Persistence| I
+        O[Block Entity Registry] -->|Registration| M
+        O -->|Registration| N
     end
     
     subgraph Client Components
-        G[TimeDisplay] -->|Local| H[UI Updates]
-        I[AudioPlayback] -->|Local| J[Sound Output]
-        K[CommonConfig] -->|Local| L[Settings]
+        P[TimeDisplay] -->|Local| Q[UI Updates]
+        R[AudioPlayback] -->|Local| S[Sound Output]
+        T[CommonConfig] -->|Local| U[Settings]
+        V[Block Interaction] -->|Local| W[User Interface]
     end
     
-    subgraph Common Components
-        M[Resources]
-        N[Network Protocol]
-        O[Basic Config]
+    subgraph Common Components [Index: 08-11, 15-17]
+        X[Block Registration]
+        Y[Item Registration]
+        Z[Network Protocol]
+        AA[Audio Infrastructure]
+        BB[Creative Tabs]
+    end
+```
+
+## Audio Infrastructure System
+
+```mermaid
+graph LR
+    subgraph Audio Infrastructure
+        A[DJ Stand Block] -->|Controls| B[Audio Stream]
+        B -->|Distributes| C[Speaker Network]
+        C --> D[Speaker Block 1]
+        C --> E[Speaker Block 2]
+        C --> F[Speaker Block N]
+        
+        G[Remote Control] -->|Links| A
+        G -->|Links| D
+        G -->|Links| E
+        G -->|Links| F
+    end
+    
+    subgraph Data Persistence [Index: 18-19]
+        H[DJ Stand Entity] -->|Stream URLs| A
+        H -->|Speaker Network| C
+        I[Speaker Entity 1] -->|DJ Stand Link| D
+        J[Speaker Entity 2] -->|DJ Stand Link| E
+        K[Speaker Entity N] -->|DJ Stand Link| F
+        L[NBT Storage] -->|Persistent Data| H
+        L -->|Persistent Data| I
+        L -->|Persistent Data| J
+        L -->|Persistent Data| K
+    end
+    
+    subgraph Network Management
+        M[Network Validation] -->|Health Check| H
+        M -->|Connection Status| I
+        M -->|Connection Status| J
+        M -->|Connection Status| K
+        N[Cross-Dimensional Support] -->|Multi-World| H
+        N -->|Dimension Tracking| I
     end
 ```
 
@@ -89,37 +213,85 @@ graph TD
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant Server
+    participant Player
+    participant DJStand
+    participant DJStandEntity
+    participant Speaker
+    participant SpeakerEntity
+    participant RemoteControl
     participant AudioManager
     participant LavaPlayer
-    participant StreamingSession
     
-    Client->>Server: Request stream
-    Server->>AudioManager: Handle request
-    AudioManager->>StreamingSession: Create session
-    AudioManager->>LavaPlayer: Load audio
-    LavaPlayer-->>StreamingSession: Audio loaded
-    StreamingSession-->>Server: Ready
-    Server-->>Client: Stream initialized
+    Player->>DJStand: Place and right-click
+    DJStand->>DJStandEntity: Create block entity
+    Player->>Speaker: Place around festival area
+    Speaker->>SpeakerEntity: Create block entity
+    Player->>RemoteControl: Select DJ Stand
+    RemoteControl->>DJStandEntity: Store position in NBT
+    Player->>RemoteControl: Link to Speaker
+    RemoteControl->>SpeakerEntity: Create link to DJ Stand
+    SpeakerEntity->>DJStandEntity: Add speaker to network
     
-    loop Every 20 ticks
-        Client->>Server: Sync request
-        Server->>StreamingSession: Get data
-        StreamingSession-->>Server: Audio data
-        Server-->>Client: Send audio data
-    end
+    Note over DJStandEntity,SpeakerEntity: Stage 2: Block Entities (COMPLETE ✅)
+    Player->>DJStand: Right-click for status
+    DJStand->>DJStandEntity: Get status info
+    DJStandEntity-->>Player: Display network topology
+    Player->>Speaker: Right-click for status  
+    Speaker->>SpeakerEntity: Get connection info
+    SpeakerEntity-->>Player: Display connection status
+    
+    Note over DJStandEntity,AudioManager: Stage 3: GUI Integration (Next)
+    DJStandEntity->>AudioManager: Stream URL request
+    AudioManager->>LavaPlayer: Load audio stream
+    LavaPlayer-->>AudioManager: Audio ready
+    AudioManager-->>SpeakerEntity: Distribute audio data
+    SpeakerEntity-->>Player: Output synchronized audio
+```
+
+## Permission System Architecture
+
+```mermaid
+classDiagram
+    class MinefestPermissions {
+        +detectLuckPerms()
+        +checkPermission(player, node)
+        +canManageAudio(player)
+        +canCreateEvents(player)
+        +isAdmin(player)
+    }
+    
+    class LuckPermsAPI {
+        +getUserManager()
+        +getPermissionValue()
+    }
+    
+    class ForgePermissions {
+        +hasPermissionLevel()
+        +isOp()
+    }
+    
+    MinefestPermissions --> LuckPermsAPI : if available
+    MinefestPermissions --> ForgePermissions : fallback
+    
+    class PermissionNodes {
+        +minefest.admin
+        +minefest.audio.stream.*
+        +minefest.event.*
+        +minefest.time.*
+    }
+    
+    MinefestPermissions --> PermissionNodes
 ```
 
 ## Time Synchronization
 
 ```mermaid
 graph LR
-    subgraph Server
+    subgraph Server [Index: 01]
         A[MasterClock] -->|Authority| B[Network Time]
     end
     
-    subgraph Clients
+    subgraph Clients [Index: 12]
         C[Client 1 Time]
         D[Client 2 Time]
         E[Client N Time]
@@ -156,6 +328,7 @@ classDiagram
         +timeAuthority
         +region
         +eventSettings
+        +permissionSettings
         +validateServer()
     }
     
@@ -169,113 +342,135 @@ classDiagram
     Client --> Common
 ```
 
-## Event Flow
+## Resource & Asset System
+
+```mermaid
+graph TD
+    subgraph Block System
+        A[DJ Stand Block] --> B[Professional Radio Textures]
+        C[Speaker Block] --> D[Speaker Cabinet Textures]
+        E[Remote Control Item] --> F[Tuner-Style Texture]
+    end
+    
+    subgraph Resource Structure
+        G[Block Models] --> H[6-Face Texture Mapping]
+        I[Blockstates] --> J[4-Way Directional Rotation]
+        K[Item Models] --> L[Generated Item Textures]
+        M[Language Files] --> N[Localization Support]
+    end
+    
+    subgraph Creative Integration
+        O[Creative Tab] --> P[DJ Stand Icon]
+        Q[Item Organization] --> R[Audio Infrastructure]
+        S[Search Support] --> T[Keyword Recognition]
+    end
+```
+
+## Event Flow - Audio Infrastructure
 
 ```mermaid
 stateDiagram-v2
     [*] --> Initialize
     
-    state Server {
-        Initialize --> ConfigLoaded
-        ConfigLoaded --> MasterClockReady
-        MasterClockReady --> ServerReady
+    state Block_Placement {
+        Initialize --> DJStandPlaced
+        DJStandPlaced --> SpeakersPlaced
+        SpeakersPlaced --> RemoteControlCrafted
     }
     
-    state Client {
-        ServerReady --> ClientConfigLoaded
-        ClientConfigLoaded --> TimeSynced
-        TimeSynced --> Ready
+    state Linking_Phase {
+        RemoteControlCrafted --> SelectDJStand
+        SelectDJStand --> LinkSpeakers
+        LinkSpeakers --> NetworkEstablished
     }
     
-    Ready --> StreamStarted
-    StreamStarted --> StreamActive
-    
-    state Error {
-        StreamActive --> StreamError
-        StreamError --> Reconnecting
-        Reconnecting --> StreamActive
+    state Future_Stages {
+        NetworkEstablished --> Stage2_BlockEntities
+        Stage2_BlockEntities --> Stage3_GUI
+        Stage3_GUI --> Stage4_AudioStreaming
+        Stage4_AudioStreaming --> Stage5_Permissions
     }
     
-    StreamActive --> StreamEnded
-    StreamEnded --> [*]
+    Stage5_Permissions --> FestivalReady
+    FestivalReady --> [*]
+    
+    state Error_Handling {
+        LinkSpeakers --> LinkingError
+        LinkingError --> RetryLinking
+        RetryLinking --> LinkSpeakers
+    }
 ```
 
-## Memory Management
-
-```mermaid
-pie
-    title "Server Memory Allocation"
-    "Base System" : 256
-    "Voice Chat" : 64
-    "Audio Effects" : 32
-    "Per 10 Sessions" : 32
-```
-
-## Network Communication
+## Development Stages Architecture
 
 ```mermaid
 graph TD
-    subgraph Server Side
-        A[MinefestCore Server] -->|Plugin Messages| B[BungeeCord]
-        A -->|Time Authority| C[MasterClock]
+    subgraph Stage_1_Complete [Stage 1: Blocks & Items ✅]
+        A[DJ Stand Block] --> B[Speaker Block]
+        B --> C[Remote Control Item]
+        C --> D[Professional Textures]
+        D --> E[Creative Tab Integration]
     end
     
-    subgraph Client Side
-        D[Client 1]
-        E[Client 2]
-        F[Client N]
+    subgraph Stage_2_Planned [Stage 2: Block Entities]
+        F[DJ Stand Block Entity] --> G[Speaker Block Entity]
+        G --> H[Persistent Data Storage]
+        H --> I[Network Data Sync]
     end
     
-    B -->|Forward| D
-    B -->|Forward| E
-    B -->|Forward| F
+    subgraph Stage_3_Planned [Stage 3: GUI System]
+        J[DJ Stand GUI] --> K[URL Input Interface]
+        K --> L[Playback Controls]
+        L --> M[Speaker Network Visualization]
+    end
     
-    C -->|Sync| D
-    C -->|Sync| E
-    C -->|Sync| F
+    subgraph Stage_4_Planned [Stage 4: Audio Integration]
+        N[Live Streaming] --> O[Multi-Format Support]
+        O --> P[Synchronized Playback]
+        P --> Q[Volume Control]
+    end
+    
+    Stage_1_Complete --> Stage_2_Planned
+    Stage_2_Planned --> Stage_3_Planned
+    Stage_3_Planned --> Stage_4_Planned
 ```
 
-## Component Dependencies
+## Component Index Reference
 
-```mermaid
-graph TD
-    subgraph Required
-        A[Forge]
-        B[LavaPlayer]
-        C[Java 17]
-    end
-    
-    subgraph Optional
-        D[SpongeForge]
-        E[LuckPerms]
-    end
-    
-    subgraph Server Side
-        F[MinefestCore Server]
-    end
-    
-    subgraph Client Side
-        G[MinefestCore Client]
-    end
-    
-    A --> F
-    A --> G
-    B --> F
-    C --> F
-    C --> G
-    D -.-> F
-    E -.-> F
-```
+### Core Infrastructure [Index: 01-04]
+- **[01] MasterClock**: Central timing authority with millisecond precision
+- **[02] MinefestCore**: Main mod initialization and lifecycle management
+- **[03] TimeSync**: Network synchronization protocol implementation
+- **[04] MinefestBungee**: BungeeCord proxy integration for multi-server
 
-These diagrams provide a visual representation of:
-1. Overall system architecture with side-specific components
-2. Component separation between client and server
-3. Audio streaming flow across client and server
-4. Time synchronization mechanism
-5. Side-specific configuration structure
-6. Event state management for both sides
-7. Server memory allocation
-8. Network communication patterns
-9. Component dependencies for both client and server
+### Audio & Streaming [Index: 05-07]
+- **[05] AudioManager**: LavaPlayer integration and session management
+- **[06] StreamingSession**: Individual audio session state tracking
+- **[07] MinefestAudioLoadHandler**: LavaPlayer event handling and callbacks
 
-The diagrams use Mermaid syntax, which can be rendered by many Markdown viewers and GitHub. 
+### Registration & Resources [Index: 08-11]
+- **[08] ModItems**: Item registration including Remote Control
+- **[09] ModBlocks**: Block registration for DJ Stand and Speaker
+- **[10] MinefestConfig**: Configuration management with TOML support
+- **[11] ModCreativeTabs**: Creative tab with audio infrastructure organization
+
+### Client & Testing [Index: 12-13]
+- **[12] ClientTimeSync**: Client-side time synchronization data
+- **[13] ServerTestBroadcaster**: Development testing and metrics validation
+
+### Extensions [Index: 14-17]
+- **[14] MinefestPermissions**: LuckPerms integration with Forge fallback
+- **[15] DJStandBlock**: Audio streaming controller block
+- **[16] SpeakerBlock**: Audio output device block
+- **[17] RemoteControlItem**: Speaker linking and management tool
+
+### Block Entities [Index: 18-19]
+- **[18] DJStandBlockEntity**: DJ Stand data persistence
+- **[19] SpeakerBlockEntity**: Speaker data persistence
+
+### New Components [Index: 20]
+- **[20] ModBlockEntities**: Block entity registration
+
+---
+*Architecture Version: 1.20.4-0.1.0.10*  
+*Last Updated: 2025-05-23* 

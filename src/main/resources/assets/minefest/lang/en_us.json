@@ -1,3 +1,15 @@
 {
-    "creativetab.minefest.minefest": "Minefest"
+    "creativetab.minefest.minefest": "Minefest",
+    "block.minefest.dj_stand": "DJ Stand",
+    "block.minefest.speaker": "Speaker",
+    "item.minefest.dj_stand": "DJ Stand",
+    "item.minefest.speaker": "Speaker",
+    "item.minefest.remote_control": "Remote Control",
+    "itemGroup.minefest": "Minefest",
+    "minefest.remote.dj_selected": "DJ Stand selected at %s",
+    "minefest.remote.no_dj": "No DJ Stand selected! Right-click a DJ Stand first.",
+    "minefest.remote.speaker_linked": "Speaker linked to DJ Stand at %s (Distance: %.1f blocks)",
+    "minefest.remote.different_dimension": "DJ Stand is in a different dimension!",
+    "minefest.remote.dj_missing": "DJ Stand no longer exists at selected location!",
+    "minefest.remote.no_permission": "You don't have permission to configure DJ equipment!"
 } 

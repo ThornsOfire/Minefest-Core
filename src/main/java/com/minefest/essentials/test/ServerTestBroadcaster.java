@@ -17,6 +17,8 @@ import net.minecraft.world.level.Level;
 import com.minefest.essentials.config.MinefestConfig;
 import com.minefest.essentials.timing.MasterClock;
 import com.minefest.essentials.MinefestCore;
+import com.minefest.essentials.permissions.MinefestPermissions;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
@@ -362,6 +364,33 @@ public class ServerTestBroadcaster {
             LOGGER.info("Manual test broadcast triggered");
         } catch (Exception e) {
             LOGGER.error("Failed to force broadcast", e);
+        }
+    }
+
+    /**
+     * [Index: 13.14] Force a test broadcast with permission check (for commands)
+     */
+    public static boolean forceBroadcast(ServerPlayer player) {
+        if (FMLEnvironment.dist.isClient()) {
+            throw new IllegalStateException("Cannot force broadcast on client side");
+        }
+        
+        // Check if player has permission to trigger test broadcasts
+        if (!MinefestPermissions.canTestBroadcast(player)) {
+            LOGGER.warn("Player {} attempted to trigger test broadcast without permission", 
+                player.getName().getString());
+            return false;
+        }
+        
+        try {
+            long currentTime = System.currentTimeMillis();
+            performScheduledBroadcast(currentTime);
+            LOGGER.info("Manual test broadcast triggered by player: {}", player.getName().getString());
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Failed to force broadcast for player {}: {}", 
+                player.getName().getString(), e.getMessage());
+            return false;
         }
     }
 

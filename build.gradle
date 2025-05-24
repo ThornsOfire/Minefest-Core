@@ -17,10 +17,14 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
+// 🔒 LOCKED COMPONENT - Version Configuration (Do NOT lock version values)
+// The version assignment itself is locked for stability, but version values remain flexible
 version = project.mod_version
 group = 'com.minefest'
 archivesBaseName = 'minefest-essentials'
 
+// 🔒 LOCKED COMPONENT - Java Toolchain Configuration
+// This Java 17 + Oracle configuration is locked for build stability
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -28,6 +32,8 @@ java {
     }
 }
 
+// 🔒 LOCKED COMPONENT - Java Compilation Configuration
+// These compiler args are locked as they solve critical module system conflicts
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'
     options.encoding = 'UTF-8'
@@ -44,6 +50,11 @@ tasks.withType(JavaCompile) {
 
 println "Java: ${System.getProperty('java.version')}, JVM: ${System.getProperty('java.vm.version')} (${System.getProperty('java.vendor')}), Arch: ${System.getProperty('os.arch')}"
 
+// Enable Jar-in-Jar for LavaPlayer dependency embedding
+jarJar.enable()
+
+// 🔒 LOCKED COMPONENT - Minecraft Configuration
+// Mappings and run configurations are locked for development stability
 minecraft {
     mappings channel: 'official', version: minecraft_version
     
@@ -71,6 +82,10 @@ minecraft {
             jvmArgs '--add-modules=ALL-SYSTEM'
             jvmArgs '--illegal-access=permit'
             
+            // Handle duplicate module conflicts in development
+            jvmArgs '--patch-module=org.apache.httpcomponents.httpclient=ALL-UNNAMED'
+            jvmArgs '--patch-module=org.apache.httpcomponents.httpcore=ALL-UNNAMED'
+            
             // Removed problematic module exports that were causing conflicts
         }
         
@@ -96,11 +111,17 @@ minecraft {
             jvmArgs '--add-exports=java.base/sun.security.util=ALL-UNNAMED'
             jvmArgs '--add-exports=jdk.naming.dns/com.sun.jndi.dns=java.naming'
             
+            // Handle duplicate module conflicts in development
+            jvmArgs '--patch-module=org.apache.httpcomponents.httpclient=ALL-UNNAMED'
+            jvmArgs '--patch-module=org.apache.httpcomponents.httpcore=ALL-UNNAMED'
+            
             // Removed mods configuration to use jar in mods folder instead
         }
     }
 }
 
+// 🔒 LOCKED COMPONENT - Repository Configuration  
+// These repositories are locked as they provide essential dependencies
 repositories {
     maven { url = 'https://maven.minecraftforge.net' }
     mavenCentral()
@@ -119,16 +140,57 @@ repositories {
     maven {
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
+    // SpongeForge repository
+    maven {
+        name = 'sponge'
+        url = 'https://repo.spongepowered.org/maven'
+    }
+    // LuckPerms API repository (moved to official)
+    maven {
+        name = 'luckperms'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
 }
 
+// 🔒 LOCKED COMPONENT - Core Dependencies
+// These dependencies are locked for functionality stability (versions may be updated)
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     
-    implementation 'com.sedmelluq:lavaplayer:1.3.78'
+    // LavaPlayer: compileOnly for compilation, jarJar for production distribution (MINIMAL - only missing dependencies)
+    compileOnly 'com.sedmelluq:lavaplayer:1.3.78'
+    
+    // Main LavaPlayer library
+    jarJar(group: 'com.sedmelluq', name: 'lavaplayer', version: '[1.3.78,1.4.0)') {
+        jarJar.pin(it, '1.3.78')
+    }
+    
+    // CRITICAL: Include required LavaPlayer dependencies for production compatibility
+    // These are needed for standalone server deployment
+    jarJar(group: 'com.sedmelluq', name: 'lava-common', version: '[1.1.2,1.2.0)') {
+        jarJar.pin(it, '1.1.2')
+    }
+    
+    // Apache HttpClient dependencies - required for production server
+    jarJar(group: 'org.apache.httpcomponents', name: 'httpclient', version: '[4.5.14,4.6.0)') {
+        jarJar.pin(it, '4.5.14')
+    }
+    jarJar(group: 'org.apache.httpcomponents', name: 'httpcore', version: '[4.4.16,4.5.0)') {
+        jarJar.pin(it, '4.4.16')
+    }
+    
     compileOnly 'net.md-5:bungeecord-api:1.20-R0.1'
     implementation 'com.google.guava:guava:32.1.2-jre'
+    
+    // SpongeForge API integration
+    compileOnly 'org.spongepowered:spongeapi:8.2.0'
+    
+    // LuckPerms API for Sponge integration
+    compileOnly 'net.luckperms:api:5.4'
 }
 
+// 🔒 LOCKED COMPONENT - Configuration Resolution Strategy
+// This force resolution is locked to prevent dependency conflicts
 configurations {
     all {
         resolutionStrategy {
@@ -142,6 +204,8 @@ tasks.named('processResources').configure {
     // This was causing issues
 }
 
+// 🔒 LOCKED COMPONENT - Resource Processing Configuration
+// This processResources configuration is locked for build stability
 processResources {
     inputs.property "version", project.version
     inputs.property "minecraft_version", project.minecraft_version
@@ -170,6 +234,8 @@ processResources {
     }
 }
 
+// 🔒 LOCKED COMPONENT - Source Sets Configuration
+// This source set configuration is locked for project structure stability
 sourceSets {
     main {
         java {
@@ -181,6 +247,8 @@ sourceSets {
     }
 }
 
+// 🔒 LOCKED COMPONENT - JAR Configuration with Shadow Plugin for LavaPlayer
+// This JAR configuration is locked for build artifact stability and includes LavaPlayer dependencies
 jar {
     manifest {
         attributes([
@@ -205,6 +273,11 @@ jar {
     from sourceSets.main.output
 }
 
+// LavaPlayer dependency management handled by ForgeGradle automatically
+// Dependencies marked as 'implementation' will be included in the runtime classpath
+
+// 🔒 LOCKED COMPONENT - Directory Creation Tasks
+// These directory creation tasks are locked for environment stability
 task createModsDir {
     doLast {
         file('run/mods').mkdirs()
@@ -219,6 +292,8 @@ task cleanModsDir {
     }
 }
 
+// 🔒 LOCKED COMPONENT - Server Test Environment Creation
+// This server test setup is locked for testing infrastructure stability
 task createServerTestEnv {
     doLast {
         def serverTestDir = file('run/server-test')
@@ -290,8 +365,10 @@ task setupServerTest {
     description = 'Sets up the test server environment with the latest mod build'
 }
 
-task copyModToRunMods(type: Copy, dependsOn: jar) {
-    from jar
+// 🔒 LOCKED COMPONENT - Environment Synchronization Tasks
+// These copy tasks are locked as they provide critical environment synchronization
+task copyModToRunMods(type: Copy, dependsOn: 'jarJar') {
+    from tasks.jarJar
     into 'run/mods'
     doFirst {
         delete fileTree('run/mods') {
@@ -300,8 +377,8 @@ task copyModToRunMods(type: Copy, dependsOn: jar) {
     }
 }
 
-task copyModToServerMods(type: Copy, dependsOn: jar) {
-    from jar
+task copyModToServerMods(type: Copy, dependsOn: 'jarJar') {
+    from tasks.jarJar
     into 'server/mods'
     doFirst {
         delete fileTree('server/mods') {
@@ -310,8 +387,8 @@ task copyModToServerMods(type: Copy, dependsOn: jar) {
     }
 }
 
-task copyModToServerTest(type: Copy, dependsOn: jar) {
-    from jar
+task copyModToServerTest(type: Copy, dependsOn: 'jarJar') {
+    from tasks.jarJar
     into 'run/server-test/mods'
     doFirst {
         delete fileTree('run/server-test/mods') {
@@ -320,8 +397,8 @@ task copyModToServerTest(type: Copy, dependsOn: jar) {
     }
 }
 
-task copyModToClientMods(type: Copy, dependsOn: jar) {
-    from jar
+task copyModToClientMods(type: Copy, dependsOn: 'jarJar') {
+    from tasks.jarJar
     into 'c:/Users/rstic/curseforge/minecraft/Instances/Minefest (1)/mods'
     doFirst {
         // Remove old versions of our mod
@@ -335,7 +412,8 @@ task copyModToClientMods(type: Copy, dependsOn: jar) {
     }
 }
 
-// Comprehensive build task that updates all environments
+// 🔒 LOCKED COMPONENT - BuildAll Task
+// This comprehensive build task is locked for environment synchronization stability
 task buildAll {
     dependsOn 'clean', 'build', 'copyModToRunMods', 'copyModToServerMods', 'copyModToClientMods'
     group = 'minefest'
@@ -354,7 +432,8 @@ task buildAll {
     }
 }
 
-// Create a special dev jar with the correct structure for Forge to find the mod class
+// 🔒 LOCKED COMPONENT - Development JAR Configuration
+// This devJar task is locked for development environment stability
 task devJar(type: Jar, dependsOn: cleanModsDir) {
     archiveBaseName = 'minefest-dev'
     
@@ -389,12 +468,14 @@ task devJar(type: Jar, dependsOn: cleanModsDir) {
     destinationDirectory = file("${projectDir}/run/mods")
 }
 
-// Make sure our dev jar is created before running the client
+// 🔒 LOCKED COMPONENT - Run Task Dependencies
+// These task dependencies are locked for proper build coordination
 tasks.matching { it.name == 'runClient' }.configureEach {
     dependsOn 'copyModToRunMods', 'copyModToServerMods'
 }
 
-// Make sure our dev jar is created before running the server - FIXED APPROACH
+// 🔒 LOCKED COMPONENT - Server Run Task Configuration
+// This complex server run configuration is locked as it solves critical module conflicts
 tasks.whenTaskAdded { task ->
     if (task.name == 'runServer') {
         task.dependsOn 'copyModToRunMods', 'copyModToServerMods'
@@ -429,7 +510,8 @@ tasks.whenTaskAdded { task ->
     }
 }
 
-// Add a clean task to remove any dev jars we created
+// 🔒 LOCKED COMPONENT - Development JAR Cleanup
+// This cleanup task is locked for environment management stability
 tasks.register('cleanDevJars', Delete) {
     delete fileTree(dir: "${projectDir}/run/mods", include: 'minefest-dev*.jar')
 }
@@ -437,8 +519,8 @@ tasks.register('cleanDevJars', Delete) {
 // Make clean depend on cleanDevJars
 tasks.clean.dependsOn cleanDevJars
 
-// Configure the runClient task with additional JVM arguments
-// Fix: Use tasks.named instead of direct property access
+// 🔒 LOCKED COMPONENT - Client Run Configuration
+// This client run configuration is locked for development stability
 tasks.matching { it.name == 'runClient' }.configureEach {
     doFirst {
         // Make sure Forge doesn't try to load classes from the resources directory
@@ -447,7 +529,8 @@ tasks.matching { it.name == 'runClient' }.configureEach {
     }
 }
 
-// Custom task to run server without build directory conflicts
+// 🔒 LOCKED COMPONENT - Clean Server Run Task
+// This custom server run task is locked for conflict resolution stability
 task runServerClean(type: JavaExec, dependsOn: ['copyModToRunMods', 'copyModToServerMods']) {
     group = 'minefest'
     description = 'Run the server without build directory conflicts'
@@ -475,10 +558,266 @@ task runServerClean(type: JavaExec, dependsOn: ['copyModToRunMods', 'copyModToSe
     systemProperty 'fml.disableModClasspathScanning', 'true'
 }
 
-// Lock Protocol Validation Task
+// 🔒 LOCKED COMPONENT - Version Automation System
+// This comprehensive versioning system is locked for consistency and reliability
+// ⚡ VERSION AUTOMATION SYSTEM
+// Comprehensive versioning system that updates all project version references
+
+/**
+ * 🔒 LOCKED COMPONENT - Core Version Update Task
+ * Updates all version references throughout the project from the primary source (gradle.properties)
+ * 
+ * Primary Version Source: gradle.properties -> mod_version
+ * Target Files Updated:
+ * - docs/README.md (version badges and current version references) 
+ * - docs/CURRENT_DEVELOPMENT_STATUS.md (current version)
+ * - docs/BUILD_WORKFLOW.md (last updated version reference)
+ * - docs/CHANGELOG.md (creates new version entry if needed)
+ * - docs/TROUBLESHOOTING.md (last updated version reference)
+ */
+task updateProjectVersions {
+    description 'Updates all version references throughout the project from gradle.properties'
+    group = 'minefest'
+    
+    doLast {
+        def currentVersion = project.mod_version
+        def currentDate = new Date().format('yyyy-MM-dd')
+        
+        println "🎯 Updating project versions to: ${currentVersion}"
+        
+        // Update README.md version badge and current version
+        def readmeFile = file('docs/README.md')
+        if (readmeFile.exists()) {
+            def readmeContent = readmeFile.text
+            // Update version badge (shields.io format)
+            readmeContent = readmeContent.replaceAll(
+                /\[!\[Version\]\(https:\/\/img\.shields\.io\/badge\/version-[^)]+-blue\.svg\)\]/,
+                "[![Version](https://img.shields.io/badge/version-${currentVersion.replace('-', '--')}-blue.svg)]"
+            )
+            // Update "Current Features" header version
+            readmeContent = readmeContent.replaceAll(
+                /## ✨ Current Features \(v[^)]+\)/,
+                "## ✨ Current Features (v${currentVersion})"
+            )
+            // Update footer current version
+            readmeContent = readmeContent.replaceAll(
+                /\*Current Version: [^*]+\*/,
+                "*Current Version: ${currentVersion}*"
+            )
+            // Update footer last updated
+            readmeContent = readmeContent.replaceAll(
+                /\*Last Updated: [^*]+\*/,
+                "*Last Updated: ${currentDate}*"
+            )
+            readmeFile.text = readmeContent
+            println "✅ Updated docs/README.md"
+        }
+        
+        // Update CURRENT_DEVELOPMENT_STATUS.md
+        def statusFile = file('docs/CURRENT_DEVELOPMENT_STATUS.md')
+        if (statusFile.exists()) {
+            def statusContent = statusFile.text
+            statusContent = statusContent.replaceAll(
+                /\*\*Current Version\*\*: `[^`]+`/,
+                "**Current Version**: `${currentVersion}`"
+            )
+            statusContent = statusContent.replaceAll(
+                /\*\*Last Updated\*\*: [^\n]+/,
+                "**Last Updated**: ${currentDate}"
+            )
+            statusFile.text = statusContent
+            println "✅ Updated docs/CURRENT_DEVELOPMENT_STATUS.md"
+        }
+        
+        // Update BUILD_WORKFLOW.md version reference
+        def buildWorkflowFile = file('docs/BUILD_WORKFLOW.md')
+        if (buildWorkflowFile.exists()) {
+            def buildContent = buildWorkflowFile.text
+            buildContent = buildContent.replaceAll(
+                /\*Last Updated: [^*]+\*/,
+                "*Last Updated: ${currentDate}*"
+            )
+            buildContent = buildContent.replaceAll(
+                /\*Version: [^*]+\*/,
+                "*Version: ${currentVersion}*"
+            )
+            buildWorkflowFile.text = buildContent
+            println "✅ Updated docs/BUILD_WORKFLOW.md"
+        }
+        
+        // Update TROUBLESHOOTING.md version reference
+        def troubleshootingFile = file('docs/TROUBLESHOOTING.md')
+        if (troubleshootingFile.exists()) {
+            def troubleshootingContent = troubleshootingFile.text
+            troubleshootingContent = troubleshootingContent.replaceAll(
+                /\*Last Updated: [^*]+\*/,
+                "*Last Updated: ${currentDate}*"
+            )
+            troubleshootingContent = troubleshootingContent.replaceAll(
+                /\*Version: [^*]+\*/,
+                "*Version: ${currentVersion}*"
+            )
+            troubleshootingFile.text = troubleshootingContent
+            println "✅ Updated docs/TROUBLESHOOTING.md"
+        }
+        
+        // Check if CHANGELOG.md needs a new version entry
+        def changelogFile = file('docs/CHANGELOG.md')
+        if (changelogFile.exists()) {
+            def changelogContent = changelogFile.text
+            if (!changelogContent.contains("## [${currentVersion}]")) {
+                // Add new changelog entry template
+                def newEntry = """## [${currentVersion}] - ${currentDate}
+
+### Added
+- 
+
+### Enhanced
+- 
+
+### Fixed
+- 
+
+### Documentation
+- Version update to ${currentVersion}
+
+---
+
+"""
+                changelogContent = changelogContent.replace(
+                    '# Minefest-Core Changelog\n\n',
+                    "# Minefest-Core Changelog\n\n${newEntry}"
+                )
+                changelogFile.text = changelogContent
+                println "✅ Created new CHANGELOG.md entry for ${currentVersion}"
+            } else {
+                println "ℹ️  CHANGELOG.md already has entry for ${currentVersion}"
+            }
+        }
+        
+        println "🎉 Version update complete! All files updated to ${currentVersion}"
+        println ""
+        println "📝 Next steps:"
+        println "   1. Review and edit the new CHANGELOG.md entry"
+        println "   2. Update any stage completion status in CURRENT_DEVELOPMENT_STATUS.md"
+        println "   3. Commit version changes: git add -A && git commit -m \"Version ${currentVersion}\""
+    }
+}
+
+/**
+ * 🔒 LOCKED COMPONENT - Automated Version Increment Utilities
+ * These tasks increment version numbers automatically and update all references
+ * Lock Reason: Stable task dependencies and proper version number logic
+ */
+
+task incrementPatch {
+    description 'Increments patch version (X.X.X.Y -> X.X.X.Y+1) and updates all references'
+    group = 'minefest'
+    finalizedBy updateProjectVersions
+    // 🔒 LOCKED: Task dependencies and version logic are stable
+    
+    doLast {
+        def currentVersion = project.mod_version
+        def versionParts = currentVersion.split('-')
+        def mcVersion = versionParts[0] // e.g., "1.20.4"
+        def modVersionParts = versionParts[1].split('\\.')
+        
+        def major = modVersionParts[0]
+        def minor = modVersionParts[1] 
+        def patch = modVersionParts[2]
+        def build = modVersionParts.length > 3 ? (modVersionParts[3] as Integer) + 1 : 1
+        
+        def newVersion = "${mcVersion}-${major}.${minor}.${patch}.${build}"
+        
+        // Update gradle.properties
+        def gradlePropsFile = file('gradle.properties')
+        def gradlePropsContent = gradlePropsFile.text
+        gradlePropsContent = gradlePropsContent.replaceAll(
+            /mod_version=[^\n]+/,
+            "mod_version=${newVersion}"
+        )
+        gradlePropsFile.text = gradlePropsContent
+        
+        println "🔢 Incremented patch version: ${currentVersion} -> ${newVersion}"
+        println "📄 Updated gradle.properties"
+    }
+}
+
+task incrementMinor {
+    description 'Increments minor version (X.X.Y.Z -> X.X.Y+1.0) and updates all references'
+    group = 'minefest'
+    finalizedBy updateProjectVersions
+    // 🔒 LOCKED: Task dependencies and version logic are stable
+    
+    doLast {
+        def currentVersion = project.mod_version
+        def versionParts = currentVersion.split('-')
+        def mcVersion = versionParts[0] // e.g., "1.20.4"
+        def modVersionParts = versionParts[1].split('\\.')
+        
+        def major = modVersionParts[0]
+        def minor = (modVersionParts[1] as Integer) + 1
+        def patch = modVersionParts[2]
+        def build = 0
+        
+        def newVersion = "${mcVersion}-${major}.${minor}.${patch}.${build}"
+        
+        // Update gradle.properties
+        def gradlePropsFile = file('gradle.properties')
+        def gradlePropsContent = gradlePropsFile.text
+        gradlePropsContent = gradlePropsContent.replaceAll(
+            /mod_version=[^\n]+/,
+            "mod_version=${newVersion}"
+        )
+        gradlePropsFile.text = gradlePropsContent
+        
+        println "🔢 Incremented minor version: ${currentVersion} -> ${newVersion}"
+        println "📄 Updated gradle.properties"
+    }
+}
+
+task incrementMajor {
+    description 'Increments major version (X.Y.Z.W -> X.Y+1.0.0) and updates all references'
+    group = 'minefest'
+    finalizedBy updateProjectVersions
+    // 🔒 LOCKED: Task dependencies and version logic are stable
+    
+    doLast {
+        def currentVersion = project.mod_version
+        def versionParts = currentVersion.split('-')
+        def mcVersion = versionParts[0] // e.g., "1.20.4"
+        def modVersionParts = versionParts[1].split('\\.')
+        
+        def major = (modVersionParts[0] as Integer) + 1
+        def minor = 0
+        def patch = modVersionParts[2]
+        def build = 0
+        
+        def newVersion = "${mcVersion}-${major}.${minor}.${patch}.${build}"
+        
+        // Update gradle.properties
+        def gradlePropsFile = file('gradle.properties')
+        def gradlePropsContent = gradlePropsFile.text
+        gradlePropsContent = gradlePropsContent.replaceAll(
+            /mod_version=[^\n]+/,
+            "mod_version=${newVersion}"
+        )
+        gradlePropsFile.text = gradlePropsContent
+        
+        println "🔢 Incremented major version: ${currentVersion} -> ${newVersion}"
+        println "📄 Updated gradle.properties"
+    }
+}
+
+// 🔒 LOCKED COMPONENT - Build Integration
+// Automatically run version updates after buildAll - this integration is locked for workflow stability
+buildAll.finalizedBy updateProjectVersions
+
+// 🔒 LOCKED COMPONENT - Lock Protocol Validation Task
+// This validation task is locked for code protection stability
 task validateLocks {
     description 'Validates that locked components have not been modified without approval'
-    group 'verification'
+    group = 'verification'
     
     doLast {
         def lockedFiles = [
