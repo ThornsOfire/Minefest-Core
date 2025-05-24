@@ -1,9 +1,5 @@
 # Minefest-Core
 
-> **? AI ASSISTANT NOTICE**: This project uses **GRADLE AUTOMATIONS ONLY**. 
-> Never use manual Java commands - always use `./gradlew` tasks.
-> See [BUILD_WORKFLOW.md](docs/BUILD_WORKFLOW.md) for complete automation guide.
-
 A revolutionary music festival platform for Minecraft. Experience live music events in a virtual space with thousands of other players using professional audio infrastructure blocks.
 
 ? **Transform your Minecraft server into a world-class music festival venue** ?
