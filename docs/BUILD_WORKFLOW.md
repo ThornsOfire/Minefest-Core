@@ -293,7 +293,7 @@ For automated builds:
 
 ---
 *Last Updated: 2025-05-23*
-*Version: 1.20.4-0.2.3.1*
+*Version: 1.20.4-0.2.3.2*
 
 ## Lock Protocol Enforcement
 

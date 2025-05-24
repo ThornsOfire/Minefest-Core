@@ -8,7 +8,7 @@ A revolutionary music festival platform for Minecraft. Experience live music eve
 
 ? **Transform your Minecraft server into a world-class music festival venue** ?
 
-[![Version](https://img.shields.io/badge/version-1.20.4--0.2.3.1-blue.svg)](https://github.com/ThornsOfire/Minefest-Core)
+[![Version](https://img.shields.io/badge/version-1.20.4--0.2.3.2-blue.svg)](https://github.com/ThornsOfire/Minefest-Core)
 [![Minecraft](https://img.shields.io/badge/minecraft-1.20.4-green.svg)](https://www.minecraft.net/)
 [![Forge](https://img.shields.io/badge/forge-49.2.0-orange.svg)](https://minecraftforge.net/)
 [![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](LICENSE)
@@ -420,7 +420,7 @@ Have ideas for new features? [Let us know!](https://github.com/ThornsOfire/Minef
 
 **? Ready to revolutionize your Minecraft server with professional music festival capabilities? Download Minefest-Core today! ?**
 
-*Current Version: 1.20.4-0.2.3.1*  
+*Current Version: 1.20.4-0.2.3.2*  
 *Last Updated: 2025-05-23*
 
 ## ? Current Features
