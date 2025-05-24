@@ -338,4 +338,117 @@ chmod +x .git/hooks/pre-commit
 
 This ensures lock validation runs before every commit, catching potential violations early.
 
-**Note**: The pre-commit hook is optional and should only be used if team collaboration requires strict enforcement. 
+**Note**: The pre-commit hook is optional and should only be used if team collaboration requires strict enforcement.
+
+## AI Tool Usage Protocol
+
+### 🚨 **CRITICAL**: Formatting Corruption Prevention
+
+**Issue Identified**: The `search_replace` tool strips line breaks and corrupts markdown formatting in multi-line content, leading to documentation corruption.
+
+**Evidence**: All formatting corruption incidents occurred after `search_replace` usage with multi-line content:
+- CURRENT_DEVELOPMENT_STATUS.md corruption
+- ARCHITECTURE.md corruption  
+- CHANGELOG.md corruption
+
+### ✅ **Mandatory Tool Selection Rules**
+
+#### **Use `edit_file` for:**
+- **Multi-line Changes**: Any change involving more than one line
+- **Markdown Formatting**: Headers, bullet points, code blocks, tables
+- **Line Break Sensitive Content**: Documentation sections, changelogs
+- **Complex Structure**: Nested lists, indented content, formatted sections
+- **Section Rewrites**: Replacing entire sections or paragraphs
+
+#### **Use `search_replace` ONLY for:**
+- **Single-Line Text**: Simple word/phrase replacements on one line
+- **Version Numbers**: Simple version string updates (e.g., "1.20.4-0.2.3.4")
+- **Simple Values**: Single configuration values or simple text
+- **File Paths**: Simple path updates without formatting
+
+#### **Examples:**
+
+✅ **CORRECT - Use edit_file:**
+```markdown
+## Version Update
+- Version: 1.20.4-0.2.3.4
+- Status: Complete
+- Features:
+  - Audio streaming
+  - Network distribution
+```
+
+❌ **WRONG - Never use search_replace for this:**
+Multi-line content with formatting will be corrupted!
+
+✅ **CORRECT - Use search_replace:**
+```
+"version": "1.20.4-0.2.3.4"  →  "version": "1.20.4-0.3.3.0"
+```
+
+### 🔒 **Enforcement Protocol**
+
+#### **Pre-Change Checklist:**
+1. **Content Analysis**: Does the change involve multiple lines? → Use `edit_file`
+2. **Formatting Check**: Does it contain markdown syntax? → Use `edit_file`  
+3. **Structure Assessment**: Is it a complex replacement? → Use `edit_file`
+4. **Simple Text Only**: Single line, no formatting? → OK to use `search_replace`
+
+#### **Quality Control:**
+- **Immediate Verification**: Check file formatting after ANY tool usage
+- **Commit Review**: Verify no formatting corruption before commits
+- **Documentation Integrity**: Ensure line breaks and structure preserved
+
+#### **Recovery Protocol:**
+If formatting corruption is detected:
+1. **Identify**: Which tool caused the corruption?
+2. **Revert**: Use `edit_file` to fix the formatting
+3. **Document**: Note the incident for protocol improvement
+4. **Commit Fix**: Commit formatting restoration immediately
+
+### 📋 **Workflow Integration**
+
+#### **Development Session Start:**
+- Review this protocol before making documentation changes
+- Identify change type before selecting tool
+- Apply appropriate tool selection rules
+
+#### **Multi-Step Changes:**
+- Plan tool usage for each step in advance
+- Use `edit_file` as default for complex operations
+- Only use `search_replace` for confirmed simple replacements
+
+#### **Documentation Updates:**
+- **ALWAYS use `edit_file`** for documentation changes
+- Treat ALL markdown files as formatting-sensitive
+- Verify formatting preservation after changes
+
+### 🎯 **Success Metrics**
+
+#### **Zero Tolerance Goals:**
+- **Zero formatting corruption incidents**
+- **100% documentation integrity preservation**  
+- **Consistent markdown structure across all files**
+
+#### **Quality Indicators:**
+- ✅ Line breaks preserved in multi-line content
+- ✅ Bullet points and headers properly formatted
+- ✅ Code blocks and tables maintain structure
+- ✅ No run-on text from missing line breaks
+
+### 🔧 **Tool Usage Reference**
+
+| Content Type | Tool | Reason |
+|--------------|------|---------|
+| Multi-line sections | `edit_file` | Preserves formatting |
+| Markdown headers/lists | `edit_file` | Prevents corruption |
+| Version numbers only | `search_replace` | Safe for single values |
+| Documentation blocks | `edit_file` | Complex structure |
+| Simple text replacements | `search_replace` | Appropriate use case |
+| Code blocks | `edit_file` | Formatting critical |
+| Tables | `edit_file` | Structure sensitive |
+| Configuration values | `search_replace` | If single line only |
+
+**Default Rule**: **When in doubt, use `edit_file`**
+
+--- 
