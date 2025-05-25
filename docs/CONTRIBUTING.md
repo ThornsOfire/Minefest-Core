@@ -1,10 +1,10 @@
 # Contributing to Minefest-Core
 
-🎵 **Thank you for your interest in contributing to Minefest-Core!** 🎵
+? **Thank you for your interest in contributing to Minefest-Core!** ?
 
 We welcome contributions that help make Minefest-Core the best music festival platform for Minecraft. Whether you're fixing bugs, adding features, improving documentation, or helping with testing, your contributions are valuable to the community.
 
-## 🎯 Table of Contents
+## ? Table of Contents
 
 - [Getting Started](#-getting-started)
 - [Development Setup](#-development-setup)
@@ -17,17 +17,17 @@ We welcome contributions that help make Minefest-Core the best music festival pl
 - [Community Guidelines](#-community-guidelines)
 - [Getting Help](#-getting-help)
 
-## 🚀 Getting Started
+## ? Getting Started
 
 ### Prerequisites
 
 Before contributing, ensure you have:
 
-- ☕ **Java 17** (Oracle or OpenJDK)
-- 🟩 **Minecraft 1.20.4** 
-- ⚒️ **Forge 49.2.0**
-- 🔧 **Git** for version control
-- 💻 **IDE** (IntelliJ IDEA recommended, Eclipse supported)
+- ? **Java 17** (Oracle or OpenJDK)
+- ? **Minecraft 1.20.4** 
+- ?? **Forge 49.2.0**
+- ? **Git** for version control
+- ? **IDE** (IntelliJ IDEA recommended, Eclipse supported)
 
 ### Quick Setup
 
@@ -44,7 +44,7 @@ cd Minefest-Core
 ./gradlew runClient  # Test client-side
 ```
 
-## 🛠️ Development Setup
+## ?? Development Setup
 
 ### 1. Fork and Clone
 
@@ -94,14 +94,14 @@ quick_start_server.bat
 ### 4. Verify Setup
 
 Your setup is correct if:
-- ✅ Server starts without errors
-- ✅ "Minefest" creative tab appears in client
-- ✅ DJ Stand and Speaker blocks can be placed
-- ✅ Remote Control item works for linking
+- ? Server starts without errors
+- ? "Minefest" creative tab appears in client
+- ? DJ Stand and Speaker blocks can be placed
+- ? Remote Control item works for linking
 
-## 🎯 Contribution Types
+## ? Contribution Types
 
-### 🐛 Bug Reports
+### ? Bug Reports
 
 **Before submitting a bug report:**
 - Search existing issues to avoid duplicates
@@ -118,7 +118,7 @@ Your setup is correct if:
 
 **Use the bug report template** in `.github/ISSUE_TEMPLATE/bug_report.md`
 
-### ✨ Feature Requests
+### ? Feature Requests
 
 **Good feature requests include:**
 - Clear description of the proposed feature
@@ -128,7 +128,7 @@ Your setup is correct if:
 
 **Use the feature request template** in `.github/ISSUE_TEMPLATE/feature_request.md`
 
-### 🔧 Code Contributions
+### ? Code Contributions
 
 **Types of code contributions:**
 - **Bug fixes**: Fix reported issues
@@ -137,7 +137,7 @@ Your setup is correct if:
 - **Code refactoring**: Improve code quality and maintainability
 - **Testing**: Add unit tests and integration tests
 
-### 📖 Documentation
+### ? Documentation
 
 **Documentation contributions:**
 - **User guides**: Setup, configuration, troubleshooting
@@ -146,7 +146,7 @@ Your setup is correct if:
 - **README improvements**: Better explanations and examples
 - **Code comments**: Improve inline documentation
 
-### 🧪 Testing
+### ? Testing
 
 **Testing contributions:**
 - **Manual testing**: Test new features and bug fixes
@@ -154,44 +154,44 @@ Your setup is correct if:
 - **Compatibility testing**: Test with different mod combinations
 - **Edge case testing**: Test unusual configurations and scenarios
 
-## 📋 Development Guidelines
+## ? Development Guidelines
 
-### 🏗️ Project Architecture
+### ?? Project Architecture
 
 Minefest-Core follows a structured component architecture:
 
 ```
 Component Index System [Index: 01-22]
-├── Core Infrastructure [Index: 01-04]  🔒 LOCKED
-├── Audio & Streaming [Index: 05-07]    🔒 REVIEW REQUIRED  
-├── Registration [Index: 08-11]         ✅ Open for changes
-├── Client & Testing [Index: 12-13]     🔒 LOCKED
-├── Extensions [Index: 14-17]           ✅ Open for changes
-├── Block Entities [Index: 18-20]       ✅ Open for changes
-└── GUI System [Index: 21-22]           ✅ Open for changes
+??? Core Infrastructure [Index: 01-04]  ? LOCKED
+??? Audio & Streaming [Index: 05-07]    ? REVIEW REQUIRED  
+??? Registration [Index: 08-11]         ? Open for changes
+??? Client & Testing [Index: 12-13]     ? LOCKED
+??? Extensions [Index: 14-17]           ? Open for changes
+??? Block Entities [Index: 18-20]       ? Open for changes
+??? GUI System [Index: 21-22]           ? Open for changes
 ```
 
 #### Component Lock Status
 
-- **🔒 LOCKED**: Core stable components - require approval for changes
-- **🔒 REVIEW REQUIRED**: Critical components - require careful review
-- **✅ Open**: Components actively being developed
+- **? LOCKED**: Core stable components - require approval for changes
+- **? REVIEW REQUIRED**: Critical components - require careful review
+- **? Open**: Components actively being developed
 
 See `docs/CODE_LOCKING_PROTOCOL.md` for complete details.
 
-### 🎯 Development Stages
+### ? Development Stages
 
 **Current Focus: Stage 4 - Audio Integration**
 
 | Stage | Status | Available for Contribution |
 |-------|--------|---------------------------|
-| Stage 1: Blocks & Items | ✅ Complete | Documentation, bug fixes |
-| Stage 2: Block Entities | ✅ Complete | Bug fixes, optimizations |
-| Stage 3: GUI System | ⏳ 67% Complete | GUI networking, speaker config |
-| Stage 4: Audio Integration | 🔜 Next | All components open |
-| Stage 5: Multi-Stage Support | 🔮 Future | Design discussions |
+| Stage 1: Blocks & Items | ? Complete | Documentation, bug fixes |
+| Stage 2: Block Entities | ? Complete | Bug fixes, optimizations |
+| Stage 3: GUI System | ? 67% Complete | GUI networking, speaker config |
+| Stage 4: Audio Integration | ? Next | All components open |
+| Stage 5: Multi-Stage Support | ? Future | Design discussions |
 
-### 🧩 Component Guidelines
+### ? Component Guidelines
 
 #### Adding New Components
 
@@ -222,24 +222,24 @@ See `docs/CODE_LOCKING_PROTOCOL.md` for complete details.
 3. **Update related documentation** in same PR
 4. **Maintain component index references** throughout codebase
 
-### 📦 Package Organization
+### ? Package Organization
 
 ```
 com.minefest.essentials/
-├── 🎛️ blocks/          # Audio infrastructure blocks
-├── 🎮 client/gui/      # GUI system (Stage 3)
-├── 📻 items/           # Control items and tools
-├── 🔧 init/            # Registration systems
-├── 🎵 audio/           # Audio streaming (future Stage 4)
-├── 🌐 network/         # Networking (future)
-├── 🔐 permissions/     # Permission integration
-├── ⏰ timing/          # Time synchronization
-└── ⚙️ config/          # Configuration management
+??? ?? blocks/          # Audio infrastructure blocks
+??? ? client/gui/      # GUI system (Stage 3)
+??? ? items/           # Control items and tools
+??? ? init/            # Registration systems
+??? ? audio/           # Audio streaming (future Stage 4)
+??? ? network/         # Networking (future)
+??? ? permissions/     # Permission integration
+??? ? timing/          # Time synchronization
+??? ?? config/          # Configuration management
 ```
 
-## 📝 Code Standards
+## ? Code Standards
 
-### ☕ Java Standards
+### ? Java Standards
 
 #### Code Style
 - **Indentation**: 4 spaces (no tabs)
@@ -267,7 +267,7 @@ public class DJStandBlockEntity extends BlockEntity {
 }
 ```
 
-### 🎯 Minefest-Specific Standards
+### ? Minefest-Specific Standards
 
 #### Component Documentation
 Every new file must include:
@@ -289,7 +289,7 @@ Every new file must include:
 - **Logging**: Appropriate log levels for debugging and monitoring
 - **Recovery**: Automatic recovery from common failure scenarios
 
-### 🔧 Performance Standards
+### ? Performance Standards
 
 #### Festival-Scale Performance
 - **Memory efficiency**: Minimize allocations in hot paths
@@ -303,7 +303,7 @@ Every new file must include:
 - **Network usage**: Optimize for festival-scale bandwidth
 - **Error recovery**: Robust handling of stream interruptions
 
-## 🔄 Pull Request Process
+## ? Pull Request Process
 
 ### 1. Branch Strategy
 
@@ -351,25 +351,25 @@ Examples:
 
 #### PR Description Template
 ```markdown
-## 🎯 Purpose
+## ? Purpose
 Brief description of what this PR accomplishes
 
-## 🔄 Changes
+## ? Changes
 - List of specific changes made
 - Updated components with index references
 - New files added or existing files modified
 
-## 🧪 Testing
+## ? Testing
 - [ ] Tested in development environment
 - [ ] Tested specific use cases
 - [ ] Performance validated (if applicable)
 
-## 📖 Documentation
+## ? Documentation
 - [ ] Updated component signposting
 - [ ] Updated API documentation (if applicable)
 - [ ] Updated user documentation (if applicable)
 
-## 🔗 Related Issues
+## ? Related Issues
 Fixes #123
 Related to #456
 ```
@@ -390,9 +390,9 @@ Related to #456
 - **Update documentation**: Reflect any changes in documentation
 - **Re-test**: Verify changes after addressing feedback
 
-## 📚 Documentation Standards
+## ? Documentation Standards
 
-### 🧩 Component Documentation
+### ? Component Documentation
 
 Every component must include signposting:
 
@@ -417,21 +417,21 @@ Every component must include signposting:
  */
 ```
 
-### 📖 User Documentation
+### ? User Documentation
 
 #### Documentation Files Structure
 ```
 docs/
-├── README.md                    # Main project documentation
-├── CONTRIBUTING.md             # This file
-├── ARCHITECTURE.md             # System architecture overview
-├── API.md                      # Complete API documentation
-├── CHANGELOG.md                # Version history and changes
-├── TROUBLESHOOTING.md          # Common issues and solutions
-├── PERFORMANCE.md              # Performance optimization guide
-├── BUILD_WORKFLOW.md           # Development and deployment
-├── CODE_LOCKING_PROTOCOL.md    # Component protection system
-└── [Future] DEPLOYMENT.md      # Production deployment guide
+??? README.md                    # Main project documentation
+??? CONTRIBUTING.md             # This file
+??? ARCHITECTURE.md             # System architecture overview
+??? API.md                      # Complete API documentation
+??? CHANGELOG.md                # Version history and changes
+??? TROUBLESHOOTING.md          # Common issues and solutions
+??? PERFORMANCE.md              # Performance optimization guide
+??? BUILD_WORKFLOW.md           # Development and deployment
+??? CODE_LOCKING_PROTOCOL.md    # Component protection system
+??? [Future] DEPLOYMENT.md      # Production deployment guide
 ```
 
 #### Documentation Standards
@@ -441,7 +441,7 @@ docs/
 - **Cross-references**: Link related documentation sections
 - **Version info**: Include current version and last updated date
 
-### 🔗 API Documentation
+### ? API Documentation
 
 For any public API changes:
 - **Update API.md** with new methods and classes
@@ -450,9 +450,9 @@ For any public API changes:
 - **Note any breaking changes** clearly
 - **Version the API changes** appropriately
 
-## 🧪 Testing Guidelines
+## ? Testing Guidelines
 
-### 🔧 Development Testing
+### ? Development Testing
 
 #### Basic Testing Checklist
 - [ ] **Server startup**: Clean startup without errors
@@ -469,7 +469,7 @@ For any public API changes:
 - [ ] **Stream validation**: URL validation and error handling
 - [ ] **Performance**: Memory usage under normal operation
 
-### 🎪 Festival-Scale Testing
+### ? Festival-Scale Testing
 
 #### Performance Testing
 - **Memory usage**: Monitor with multiple DJ stands and networks
@@ -484,7 +484,7 @@ For any public API changes:
 - **Platform testing**: Test on different operating systems
 - **Permission compatibility**: Test with and without LuckPerms
 
-### 📊 Test Documentation
+### ? Test Documentation
 
 When adding tests:
 - **Document test purpose** clearly
@@ -493,9 +493,9 @@ When adding tests:
 - **Performance benchmarks** where applicable
 - **Edge cases** that tests cover
 
-## 🤝 Community Guidelines
+## ? Community Guidelines
 
-### 💬 Communication
+### ? Communication
 
 #### Be Respectful
 - **Professional tone**: Maintain respectful communication
@@ -509,7 +509,7 @@ When adding tests:
 - **Follow up**: Respond to questions and feedback promptly
 - **Documentation**: Document decisions and reasoning
 
-### 🎯 Focus Areas
+### ? Focus Areas
 
 #### High Priority Contributions
 - **Stage 3 completion**: GUI networking and speaker configuration
@@ -530,7 +530,7 @@ When adding tests:
 - **Visual effects**: Particle systems and stage lighting
 - **Analytics**: Festival metrics and monitoring systems
 
-### 🏆 Recognition
+### ? Recognition
 
 #### Contributor Recognition
 - **Contributor list**: Maintained in README.md
@@ -538,9 +538,9 @@ When adding tests:
 - **Special recognition**: Major contributors highlighted
 - **Community feedback**: Share positive impact of contributions
 
-## 🆘 Getting Help
+## ? Getting Help
 
-### 📋 Where to Ask Questions
+### ? Where to Ask Questions
 
 #### GitHub Discussions
 - **General questions**: https://github.com/ThornsOfire/Minefest-Core/discussions
@@ -553,7 +553,7 @@ When adding tests:
 - **Feature requests**: Concrete suggestions for improvements
 - **Documentation issues**: Problems with guides or examples
 
-### 🔧 Development Help
+### ? Development Help
 
 #### Common Development Issues
 - **Build failures**: Check Java 17 and Forge 49.2.0 setup
@@ -567,7 +567,7 @@ When adding tests:
 3. **Ask in discussions**: Community can provide guidance
 4. **Create detailed issue**: If you find a real problem
 
-### 📚 Learning Resources
+### ? Learning Resources
 
 #### Project-Specific
 - **ARCHITECTURE.md**: Understanding system design
@@ -583,15 +583,15 @@ When adding tests:
 
 ---
 
-## 🎵 Ready to Contribute?
+## ? Ready to Contribute?
 
 **Thank you for helping make Minefest-Core the best music festival platform for Minecraft!**
 
-1. **📖 Read this guide** thoroughly
-2. **🔧 Set up your development environment**
-3. **🎯 Choose an area to contribute** (Stage 3/4, documentation, testing)
-4. **💬 Join the discussion** on GitHub
-5. **🚀 Start contributing** with your first PR!
+1. **? Read this guide** thoroughly
+2. **? Set up your development environment**
+3. **? Choose an area to contribute** (Stage 3/4, documentation, testing)
+4. **? Join the discussion** on GitHub
+5. **? Start contributing** with your first PR!
 
 ### Quick Start Checklist
 - [ ] Fork and clone the repository
@@ -605,8 +605,8 @@ When adding tests:
 
 ---
 
-**🎪 Let's build amazing festival experiences together! 🎪**
+**? Let's build amazing festival experiences together! ?**
 
-*Contributing Guide Version: 1.20.4-0.1.2.0*  
+*Contributing Guide Version: 1.20.4-0.4.3.0*********  
 *Last Updated: 2025-05-23*  
 *Next Update: After Stage 4 completion* 

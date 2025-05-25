@@ -4,6 +4,36 @@
 
 This guide ensures any AI assistant working on Minefest-Core follows the established automation workflow.
 
+### 🚨 **AUTOMATIC VIOLATION DETECTION SYSTEM**
+
+**BEFORE ANY TERMINAL COMMAND**: Scan for these violation patterns and auto-trigger warnings:
+
+#### **Command Pattern Violations**
+```regex
+# FORBIDDEN PATTERNS - Auto-trigger violations BEFORE execution
+java -jar.*                    → "🚨 MANUAL JAVA DETECTED - Use ./gradlew automation"
+cd.*server.*run\.bat          → "🚨 MANUAL SERVER DETECTED - Use ./gradlew runServer"  
+taskkill.*java\.exe           → "🚨 AGGRESSIVE KILLING DETECTED - Use emergency protocol"
+copy.*build/libs.*            → "🚨 MANUAL COPYING DETECTED - Use ./gradlew buildAll"
+javac.*                       → "🚨 MANUAL COMPILATION DETECTED - Use ./gradlew automation"
+```
+
+#### **Auto-Response Protocol**
+When violation detected:
+1. **STOP**: Do not execute the violating command
+2. **TRIGGER**: Display automation violation warning
+3. **REDIRECT**: Provide correct automation command
+4. **REQUIRE**: Reference automation guide
+
+**Example Auto-Response**:
+```
+🚨 AUTOMATION VIOLATION DETECTED
+Command: "taskkill /F /IM java.exe"
+Issue: Aggressive process killing - will destroy Gradle daemon
+Correct: Use Emergency Process Protocol (Priority 1-4)
+Reference: docs/AI_ASSISTANT_AUTOMATION_GUIDE.md (Emergency Process Protocol)
+```
+
 ### 🚨 **CRITICAL RULES**
 
 1. **NEVER suggest manual Java commands**
@@ -23,40 +53,57 @@ This guide ensures any AI assistant working on Minefest-Core follows the establi
 | **Version Update** | `./gradlew incrementPatch` | Version increments |
 | **Version Sync** | `./gradlew updateProjectVersions` | Manual version synchronization |
 
-### 🚨 **Emergency Process Protocol** (Updated - Gradle Daemon Preserving)
+### 🚨 **Emergency Process Protocol** (Enhanced with Violation Prevention)
 
-**PROBLEM SOLVED**: Previous protocol that killed all Java processes was too aggressive and caused Gradle daemon restarts, leading to freezing issues.
+**🔒 MANDATORY PRE-EXECUTION CHECK**: Before ANY process management command, verify:
+1. **Pattern Scan**: Does command match forbidden patterns?
+2. **Gradle Safety**: Will this kill the Gradle daemon?
+3. **Priority Check**: Am I using the correct priority level?
 
-**NEW SMART APPROACH** (preserves development environment):
+**ENHANCED SMART APPROACH** (preserves development environment):
 
-#### **Priority 1: Target Only Minecraft/Forge Processes** ⭐ **RECOMMENDED**
+#### **✅ Priority 1: Target Only Minecraft/Forge Processes** ⭐ **REQUIRED FIRST**
 ```bash
 # Windows Command Prompt - targets LaunchTesting processes only
 for /f "tokens=1" %i in ('jps -m ^| findstr /C:"LaunchTesting"') do taskkill /F /PID %i
+
+# 🔒 VIOLATION CHECK: Does NOT kill Gradle daemon ✅
 ```
 
-#### **Priority 2: PowerShell Alternative** ⭐ **RELIABLE FALLBACK**
+#### **✅ Priority 2: PowerShell Alternative** ⭐ **SAFE FALLBACK**
 ```powershell
 # PowerShell - more reliable process filtering with safety
 Get-Process java | Where-Object {$_.ProcessName -eq 'java' -and $_.CommandLine -like '*LaunchTesting*'} | Stop-Process -Force
+
+# 🔒 VIOLATION CHECK: Does NOT kill Gradle daemon ✅
 ```
 
-#### **Priority 3: Gradle Daemon Clean Restart** 🔄 **DEVELOPMENT RESET**
+#### **✅ Priority 3: Gradle Daemon Clean Restart** 🔄 **DEVELOPMENT RESET**
 ```bash
 # Only when Gradle daemon itself needs restarting
 ./gradlew --stop
+
+# 🔒 VIOLATION CHECK: Graceful Gradle shutdown ✅
 ```
 
-#### **Priority 4: Emergency Batch Script** 🛠️ **AUTOMATED SOLUTION**
+#### **✅ Priority 4: Emergency Batch Script** 🛠️ **AUTOMATED SOLUTION**
 ```bash
 # Use the emergency-stop.bat script (automatically tries priorities 1-3)
 emergency-stop.bat
+
+# 🔒 VIOLATION CHECK: Uses proper escalation ✅
 ```
 
-#### **⚠️ Last Resort: Complete Reset** (Avoid if possible)
+#### **🚨 FORBIDDEN: Complete Reset** (Manual Override Required)
 ```bash
-# ONLY if all above fail - causes development environment restart
-taskkill /F /IM java.exe
+# 🚨 AUTOMATION VIOLATION: taskkill /F /IM java.exe
+# ❌ VIOLATION: Kills Gradle daemon unnecessarily
+# ✅ REQUIRED: Must use Priorities 1-4 first
+# ⚠️ ONLY IF: All priorities 1-4 have failed AND user explicitly approves
+
+# MANUAL OVERRIDE TEMPLATE:
+# User approval required: "Priority 1-4 failed, approve aggressive taskkill?"
+# Response: "Emergency taskkill approved" OR "Use different approach"
 ```
 
 ### 🎯 **Benefits of Current Protocol**
@@ -247,6 +294,110 @@ You're following automation correctly when:
 - **Process Management**: Always try Priority 1-2 emergency approaches before resorting to complete process termination
 - **Performance**: Gradle daemon preservation significantly speeds up development cycles
 - **Production vs Development**: Use `./start-server.bat` for production, `./gradlew runServer` for development
+
+### 🔧 **PRE-EXECUTION VIOLATION SCANNER**
+
+**TRIGGER CONDITIONS** - Before executing any command containing:
+- `taskkill /F /IM java.exe` → VIOLATION: Use Priority 1-4 instead
+- `java -jar forge-*.jar` → VIOLATION: Use ./gradlew runServer instead  
+- `cd server && *.bat` → VIOLATION: Use ./gradlew automation instead
+- `copy build/libs/*` → VIOLATION: Use ./gradlew buildAll instead
+
+**SCANNER RESPONSE**:
+```
+🚨 AUTOMATION VIOLATION PREVENTED
+Forbidden Command: [detected command]
+Violation Type: [specific rule violated]
+Required Alternative: [correct automation command]
+Protocol Reference: [relevant documentation section]
+ACTION: Command blocked - use automation alternative
+```
+
+### 🔐 **MANDATORY REAL-TIME VALIDATION PROTOCOL**
+
+**⚡ BEFORE EVERY `run_terminal_cmd` CALL**: Execute this validation checklist:
+
+#### **Step 1: Command Pattern Analysis**
+```javascript
+// Pseudo-code for validation logic
+function validateCommand(command) {
+    const FORBIDDEN_PATTERNS = {
+        'taskkill.*java\.exe': 'Use emergency protocol Priority 1-4',
+        'java -jar.*': 'Use ./gradlew runServer or ./gradlew buildAll',
+        'cd.*server.*\.(bat|sh)': 'Use ./gradlew runServer for development',
+        'copy.*build/libs.*': 'Use ./gradlew buildAll for deployment',
+        'javac.*': 'Use ./gradlew automation for compilation'
+    };
+    
+    for (pattern in FORBIDDEN_PATTERNS) {
+        if (command.matches(pattern)) {
+            return VIOLATION_DETECTED(pattern, FORBIDDEN_PATTERNS[pattern]);
+        }
+    }
+    return VALIDATION_PASSED;
+}
+```
+
+#### **Step 2: Mandatory Pre-Execution Declaration**
+**AI MUST STATE BEFORE EVERY TERMINAL COMMAND**:
+```
+🔍 AUTOMATION VALIDATION: [command to execute]
+✅ Pattern Check: [PASS/FAIL + reason]
+✅ Gradle Safety: [PRESERVES/VIOLATES daemon]
+✅ Alternative Required: [NONE/command alternative]
+🚦 VALIDATION: [APPROVED/BLOCKED]
+```
+
+#### **Step 3: Auto-Block Mechanism**
+If validation fails:
+```
+🚨 AUTOMATION VIOLATION DETECTED - COMMAND BLOCKED
+Command: [attempted command]
+Violation: [specific rule violated]
+Required: [correct automation alternative]
+Status: EXECUTION PREVENTED - Using automation instead
+```
+
+**Then immediately use the correct automation command instead.**
+
+### 🔄 **VALIDATION EXAMPLES**
+
+#### **❌ VIOLATION EXAMPLE**
+```
+Attempted: taskkill /F /IM java.exe
+🔍 AUTOMATION VALIDATION: taskkill /F /IM java.exe
+❌ Pattern Check: FAIL - matches forbidden aggressive killing
+❌ Gradle Safety: VIOLATES - will kill Gradle daemon
+✅ Alternative Required: Emergency Protocol Priority 1-4
+🚦 VALIDATION: BLOCKED
+
+🚨 AUTOMATION VIOLATION DETECTED - COMMAND BLOCKED
+Command: taskkill /F /IM java.exe
+Violation: Aggressive process killing without emergency protocol
+Required: Use Priority 1-4 emergency protocol
+Status: EXECUTION PREVENTED - Using emergency protocol instead
+```
+
+#### **✅ APPROVED EXAMPLE**
+```
+Intended: ./gradlew buildAll
+🔍 AUTOMATION VALIDATION: ./gradlew buildAll
+✅ Pattern Check: PASS - uses required Gradle automation
+✅ Gradle Safety: PRESERVES - proper Gradle usage
+✅ Alternative Required: NONE - this IS the automation
+🚦 VALIDATION: APPROVED
+```
+
+### 📋 **VALIDATION ENFORCEMENT CHECKLIST**
+
+For AI Assistant Self-Monitoring:
+- [ ] Did I check command patterns before execution?
+- [ ] Did I state validation results explicitly?
+- [ ] Did I block forbidden commands?
+- [ ] Did I use automation alternatives instead?
+- [ ] Did I reference the correct automation guide sections?
+
+**🚨 CRITICAL**: If this validation system fails to prevent violations, the automation rule enforcement needs further strengthening.
 
 ---
 

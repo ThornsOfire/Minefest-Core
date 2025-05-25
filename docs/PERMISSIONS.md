@@ -1,6 +1,6 @@
-# Minefest Permission System## OverviewMinefest Core includes a flexible permission system that supports both **LuckPerms** (recommended) and **Forge's built-in permissions** (fallback). The system automatically detects if LuckPerms is available and uses it, otherwise falls back to Forge operator levels.> **🏢 Enterprise Business Model**: For professional festival deployment with **automated ticketing, revenue protection, and anti-piracy features**, **LuckPerms is essential**. The enterprise architecture requires real-time permission validation for ticket tiers and automated access control. See [`docs/FESTIVAL_BUSINESS_ARCHITECTURE.md`](docs/FESTIVAL_BUSINESS_ARCHITECTURE.md) for complete business integration details.## 🎫 Enterprise Ticket System Permissions### Automated Ticket ProcessingThe enterprise business model uses **Tibex automation** to automatically grant permissions when tickets are purchased:```Customer Purchase → Tibex → Terminal Commands → LuckPerms → Instant Access```### Ticket Tier Permission Structure#### 🎫 General Admission```bashminefest.festival.access           # Basic festival entryminefest.festival.stage.main       # Main stage audio access```#### 🎪 Multi-Stage Pass  ```bashminefest.festival.access           # Basic festival entryminefest.festival.stage.*          # All stage access (main, secondary, acoustic)```#### 🌟 VIP Access```bash# Includes all Multi-Stage permissions PLUS:minefest.festival.vip              # VIP area access```#### 💎 Premium Quality```bash# Includes all VIP permissions PLUS:minefest.festival.premium          # Premium audio quality (320kbps, FLAC)minefest.festival.multistream      # Multiple simultaneous streams```#### 🎭 Backstage Access```bash# Includes all Premium permissions PLUS:minefest.festival.backstage        # Backstage access```### Time-Based Access Control- **Day Passes**: 24-hour permission duration- **Weekend Passes**: Multi-day permission blocks  - **Season Passes**: Extended duration with renewal- **Automatic Cleanup**: Tibex manages permission expiration automatically
+# Minefest Permission System## OverviewMinefest Core includes a flexible permission system that supports both **LuckPerms** (recommended) and **Forge's built-in permissions** (fallback). The system automatically detects if LuckPerms is available and uses it, otherwise falls back to Forge operator levels.> **? Enterprise Business Model**: For professional festival deployment with **automated ticketing, revenue protection, and anti-piracy features**, **LuckPerms is essential**. The enterprise architecture requires real-time permission validation for ticket tiers and automated access control. See [`docs/FESTIVAL_BUSINESS_ARCHITECTURE.md`](docs/FESTIVAL_BUSINESS_ARCHITECTURE.md) for complete business integration details.## ? Enterprise Ticket System Permissions### Automated Ticket ProcessingThe enterprise business model uses **Tibex automation** to automatically grant permissions when tickets are purchased:```Customer Purchase ? Tibex ? Terminal Commands ? LuckPerms ? Instant Access```### Ticket Tier Permission Structure#### ? General Admission```bashminefest.festival.access           # Basic festival entryminefest.festival.stage.main       # Main stage audio access```#### ? Multi-Stage Pass  ```bashminefest.festival.access           # Basic festival entryminefest.festival.stage.*          # All stage access (main, secondary, acoustic)```#### ? VIP Access```bash# Includes all Multi-Stage permissions PLUS:minefest.festival.vip              # VIP area access```#### ? Premium Quality```bash# Includes all VIP permissions PLUS:minefest.festival.premium          # Premium audio quality (320kbps, FLAC)minefest.festival.multistream      # Multiple simultaneous streams```#### ? Backstage Access```bash# Includes all Premium permissions PLUS:minefest.festival.backstage        # Backstage access```### Time-Based Access Control- **Day Passes**: 24-hour permission duration- **Weekend Passes**: Multi-day permission blocks  - **Season Passes**: Extended duration with renewal- **Automatic Cleanup**: Tibex manages permission expiration automatically
 
-## Permission Nodes### Core Permissions- `minefest` - Base permission (all Minefest features)- `minefest.admin` - Administrative access to all features### 🎫 Enterprise Festival Permissions- `minefest.festival.access` - Basic festival entry (required for all ticket types)- `minefest.festival.stage.main` - Main stage audio access- `minefest.festival.stage.secondary` - Secondary stage access- `minefest.festival.stage.acoustic` - Acoustic stage access- `minefest.festival.stage.*` - All stage access (wildcard)- `minefest.festival.vip` - VIP area access- `minefest.festival.backstage` - Backstage access- `minefest.festival.premium` - Premium audio quality (320kbps, FLAC)- `minefest.festival.multistream` - Multiple simultaneous streams
+## Permission Nodes### Core Permissions- `minefest` - Base permission (all Minefest features)- `minefest.admin` - Administrative access to all features### ? Enterprise Festival Permissions- `minefest.festival.access` - Basic festival entry (required for all ticket types)- `minefest.festival.stage.main` - Main stage audio access- `minefest.festival.stage.secondary` - Secondary stage access- `minefest.festival.stage.acoustic` - Acoustic stage access- `minefest.festival.stage.*` - All stage access (wildcard)- `minefest.festival.vip` - VIP area access- `minefest.festival.backstage` - Backstage access- `minefest.festival.premium` - Premium audio quality (320kbps, FLAC)- `minefest.festival.multistream` - Multiple simultaneous streams
 
 ### Audio System Permissions
 - `minefest.audio` - Access to audio features
@@ -26,7 +26,7 @@
 
 ## Setup Instructions
 
-### Option 1: LuckPerms Setup (Recommended) 🌟
+### Option 1: LuckPerms Setup (Recommended) ?
 
 #### 1. Install SpongeForge
 Download and install [SpongeForge for 1.20.4](https://www.spongepowered.org/downloads/spongeforge)
@@ -108,21 +108,21 @@ The permission system follows a hierarchical structure:
 
 ```
 minefest.*
-├── minefest.admin (grants all permissions)
-├── minefest.audio.*
-│   └── minefest.audio.stream.*
-│       ├── minefest.audio.stream.start
-│       ├── minefest.audio.stream.stop
-│       └── minefest.audio.stream.manage
-├── minefest.event.*
-│   ├── minefest.event.create
-│   ├── minefest.event.delete
-│   └── minefest.event.manage
-├── minefest.time.*
-│   ├── minefest.time.authority
-│   └── minefest.time.sync
-└── minefest.test.*
-    └── minefest.test.broadcast
+??? minefest.admin (grants all permissions)
+??? minefest.audio.*
+?   ??? minefest.audio.stream.*
+?       ??? minefest.audio.stream.start
+?       ??? minefest.audio.stream.stop
+?       ??? minefest.audio.stream.manage
+??? minefest.event.*
+?   ??? minefest.event.create
+?   ??? minefest.event.delete
+?   ??? minefest.event.manage
+??? minefest.time.*
+?   ??? minefest.time.authority
+?   ??? minefest.time.sync
+??? minefest.test.*
+    ??? minefest.test.broadcast
 ```
 
 ## Troubleshooting
@@ -149,19 +149,19 @@ Then check logs for permission check details.
 
 ## Best Practices
 
-### 🎵 Music Festival Setup
+### ? Music Festival Setup
 - **DJs**: `minefest.audio.stream` permissions
 - **Event Coordinators**: `minefest.event.manage` permissions  
 - **Technical Staff**: `minefest.admin` permissions
 - **Participants**: No special permissions needed
 
-### 🔒 Security Recommendations
+### ? Security Recommendations
 - Use LuckPerms for granular control
 - Limit `minefest.admin` to trusted users only
 - Regular audit of permission assignments
 - Use temporary permissions for events: `/lp user <username> permission settemp minefest.event.manage true 2h`
 
-### 📝 Permission Templates
+### ? Permission Templates
 Create permission templates for common roles:
 
 ```bash
@@ -180,5 +180,5 @@ Create permission templates for common roles:
 ---
 
 **Last Updated**: 2025-05-22  
-**Version**: 1.20.4-0.1.0.6  
+**Version**: 1.20.4-0.4.3.0
 **Integration**: SpongeForge + LuckPerms 

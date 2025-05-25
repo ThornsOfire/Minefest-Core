@@ -1,7 +1,7 @@
 # :musical_note: Minefest-Core :tada:
 ### *Turn Your Minecraft Server Into The Ultimate Music Festival!* 
 
-[![Version](https://img.shields.io/badge/version-1.20.4--0.3.3.0-blue.svg)](https://github.com/ThornsOfire/Minefest-Core)
+[![Version](https://img.shields.io/badge/version-1.20.4--0.4.3.0-blue.svg)](https://github.com/ThornsOfire/Minefest-Core)
 [![Minecraft](https://img.shields.io/badge/minecraft-1.20.4-green.svg)](https://www.minecraft.net/)
 [![Forge](https://img.shields.io/badge/forge-49.2.0-orange.svg)](https://minecraftforge.net/)
 [![Party Ready](https://img.shields.io/badge/party-ready-ff69b4.svg)](https://github.com/ThornsOfire/Minefest-Core)
@@ -252,6 +252,6 @@ We're building the future of virtual music festivals! Help us make it even more 
 
 *Building the future of virtual music festivals, one block at a time.* :musical_note:
 
-**:headphones: Current Version**: `1.20.4-0.2.3.2`  
+**:headphones: Current Version**: `1.20.4-0.4.3.0`  
 **:tada: Last Updated**: `2025-05-23`  
 **:fire: Status**: **PARTY READY!** :sparkles:

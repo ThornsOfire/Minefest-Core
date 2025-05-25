@@ -1,43 +1,43 @@
-# 📊 Minefest-Core Project Statistics
+# ? Minefest-Core Project Statistics
 
-**Last Updated**: 2025-05-24  **Version**: 1.20.4-0.2.3.4
+**Last Updated**: 2025-05-24  **Version**: 1.20.4-0.4.3.0
 
 > *A fun collection of project metrics and interesting statistics!*
 
 ---
 
-## 🎵 **Core Project Stats**
+## ? **Core Project Stats**
 
-### 📝 **Lines of Code**- **Total Java Code**: ~4,500+ lines (revised count)- **Documentation**: ~6,200+ lines- **Combined Project**: ~10,700+ lines- **Average File Size**: 167 lines### 🗃️ **File Counts**- **Java Files**: 27 components (corrected count)- **Documentation Files**: 21 guides- **Resource Files**: 18+ textures/models- **Configuration Files**: 6 config files- **Total Project Files**: 72+ files
+### ? **Lines of Code**- **Total Java Code**: ~4,500+ lines (revised count)- **Documentation**: ~6,200+ lines- **Combined Project**: ~10,700+ lines- **Average File Size**: 167 lines### ?? **File Counts**- **Java Files**: 27 components (corrected count)- **Documentation Files**: 21 guides- **Resource Files**: 18+ textures/models- **Configuration Files**: 6 config files- **Total Project Files**: 72+ files
 
-### 🏗️ **Component Breakdown**
+### ?? **Component Breakdown**
 
-#### **Java Components by Category**- **🎧 Audio System**: 6 components (~1,200+ lines)  - AudioManager, StreamingSession, AudioLoadHandler, DJStandAudioBridge, NetworkAudioManager, StreamValidator- **🧱 Block System**: 6 components (1,400+ lines)  - DJ Stand Block + Entity, Speaker Block + Entity, Menu Provider, Speaker Screen- **🖥️ GUI System**: 3 components (700+ lines)  - DJ Stand Screen, Speaker Screen, Menu Types- **⚙️ Registration System**: 5 components (525 lines)  - ModBlocks, ModItems, ModCreativeTabs, ModBlockEntities, ModMenuTypes- **⏰ Core Systems**: 6 components (estimated 800+ lines)  - MasterClock, MinefestCore, TimeSync, Config, etc.- **🔧 Utilities**: 3+ components (estimated 400+ lines)  - Permissions, Network, Testing, etc.
+#### **Java Components by Category**- **? Audio System**: 6 components (~1,200+ lines)  - AudioManager, StreamingSession, AudioLoadHandler, DJStandAudioBridge, NetworkAudioManager, StreamValidator- **? Block System**: 6 components (1,400+ lines)  - DJ Stand Block + Entity, Speaker Block + Entity, Menu Provider, Speaker Screen- **?? GUI System**: 3 components (700+ lines)  - DJ Stand Screen, Speaker Screen, Menu Types- **?? Registration System**: 5 components (525 lines)  - ModBlocks, ModItems, ModCreativeTabs, ModBlockEntities, ModMenuTypes- **? Core Systems**: 6 components (estimated 800+ lines)  - MasterClock, MinefestCore, TimeSync, Config, etc.- **? Utilities**: 3+ components (estimated 400+ lines)  - Permissions, Network, Testing, etc.
 
 #### **Documentation by Category**
-- **📋 Core Docs**: 5 files (2,169 lines)
+- **? Core Docs**: 5 files (2,169 lines)
   - README, CHANGELOG, CURRENT_STATUS, MASTERKEY, BUILD_WORKFLOW
-- **🏛️ Architecture**: 4 files (1,465 lines)
+- **?? Architecture**: 4 files (1,465 lines)
   - ARCHITECTURE, API, SERVER_CLIENT_SEPARATION, Signposting
-- **📚 Contributor Guides**: 6 files (1,919 lines)
+- **? Contributor Guides**: 6 files (1,919 lines)
   - CONTRIBUTING, CODE_LOCKING, ROADMAP, VERSIONING, etc.
-- **🔧 Technical**: 6 files (859 lines)
+- **? Technical**: 6 files (859 lines)
   - PERFORMANCE, TROUBLESHOOTING, PERMISSIONS, DEPLOYMENT, etc.
 
 ---
 
-## 🎯 **Development Metrics**
+## ? **Development Metrics**
 
-### 📈 **Project Complexity**- **Component Index Range**: [01-27] (27 tracked components)- **Signposted Components**: 100% (all Java files)- **Documentation Coverage**: 21 comprehensive guides- **Code Lock Protected**: 4 critical components
+### ? **Project Complexity**- **Component Index Range**: [01-27] (27 tracked components)- **Signposted Components**: 100% (all Java files)- **Documentation Coverage**: 21 comprehensive guides- **Code Lock Protected**: 4 critical components
 
-### 🎪 **Festival Features**
+### ? **Festival Features**
 - **DJ Stands**: Full audio streaming control
 - **Speaker Networks**: 25 speakers per network max
 - **Remote Control**: Advanced linking system
 - **Permission Levels**: 15 structured permission nodes
 - **Multi-World Support**: Cross-dimensional festivals
 
-### ⚡ **Performance Stats**
+### ? **Performance Stats**
 - **Network Latency**: <1ms timing precision
 - **Audio Sync**: Real-time streaming capability
 - **GUI Updates**: 1-second refresh rate
@@ -46,33 +46,33 @@
 
 ---
 
-## 🏆 **Project Milestones**
+## ? **Project Milestones**
 
-### ✅ **Completed Stages**- **Stage 1**: Foundation & Architecture (100%)- **Stage 2**: Audio Infrastructure (100%) - **Stage 3**: GUI & User Interface (100%)- **Stage 4**: ⚠️ ON HOLD - Client Compatibility Issue### 📊 **Current Progress**- **Total Implementation**: ~75% complete (Stage 4 blocked)- **Core Features**: Fully functional on server and dev client- **Client Issue**: HORIZONTAL_FACING crash on CurseForge client- **Documentation**: Comprehensive and up-to-date
+### ? **Completed Stages**- **Stage 1**: Foundation & Architecture (100%)- **Stage 2**: Audio Infrastructure (100%) - **Stage 3**: GUI & User Interface (100%)- **Stage 4**: ?? ON HOLD - Client Compatibility Issue### ? **Current Progress**- **Total Implementation**: ~75% complete (Stage 4 blocked)- **Core Features**: Fully functional on server and dev client- **Client Issue**: HORIZONTAL_FACING crash on CurseForge client- **Documentation**: Comprehensive and up-to-date
 
 ---
 
-## 🎉 **Fun Facts**
+## ? **Fun Facts**
 
-### 🤓 **Code Statistics**
+### ? **Code Statistics**
 - **Most Complex File**: SpeakerScreen.java (457 lines)
 - **Smallest Component**: ModItems.java (49 lines)
 - **Largest Documentation**: CHANGELOG.md (932 lines)
 - **Component Density**: ~137 lines per Java file
 
-### 🎮 **Gaming Heritage**
+### ? **Gaming Heritage**
 - **Inspired by**: OpenFM mod
 - **Target Platform**: Minecraft 1.20.4
 - **Mod Framework**: Minecraft Forge
 - **Audio Engine**: LavaPlayer integration
 
-### 🔧 **Development Tools**
+### ? **Development Tools**
 - **Build System**: Gradle automation
 - **Version Control**: Automated versioning
 - **Code Quality**: Zero compilation errors
 - **Testing**: Festival-scale validated
 
-### 🎵 **Audio Capabilities**
+### ? **Audio Capabilities**
 - **Streaming Formats**: MP3, OGG, and more
 - **Network Audio**: Synchronized speaker playback
 - **Volume Control**: Master + individual speaker
@@ -80,36 +80,36 @@
 
 ---
 
-## 📈 **Growth Tracking**
+## ? **Growth Tracking**
 
-### 📅 **Recent Growth** (Last Version)
+### ? **Recent Growth** (Last Version)
 - **New Components**: 1 (DJStandAudioBridge)
 - **Enhanced Components**: 2 (MinefestCore, ModMenuTypes)
 - **Documentation Updates**: 4 files
 - **Lines Added**: ~342 lines (Step 1)
 
-### 🎯 **Next Milestone Targets**
+### ? **Next Milestone Targets**
 - **Step 2**: Real-time Audio Streaming (+300-500 lines)
 - **Step 3**: Stream Validation (+200-300 lines)
 - **Stage 4 Complete**: +1,000-1,500 lines estimated
 
 ---
 
-## 🛠️ **Technical Achievements**
+## ?? **Technical Achievements**
 
-### 🏗️ **Architecture**
+### ?? **Architecture**
 - **Clean Separation**: Perfect server/client isolation
 - **Component Signposting**: 100% documentation coverage
 - **Lock Protection**: Critical components secured
 - **Automation**: Build, version, and deployment
 
-### 🎪 **Festival Ready Features**
+### ? **Festival Ready Features**
 - **Professional GUI**: Dark theme, real-time updates
 - **Network Management**: Advanced speaker topology
 - **Permission System**: LuckPerms integration ready
 - **Multi-Stage Support**: Scalable festival architecture
 
-### 🔬 **Quality Metrics**
+### ? **Quality Metrics**
 - **Build Success Rate**: 100%
 - **Code Coverage**: Comprehensive signposting
 - **Documentation Quality**: 21 detailed guides
@@ -117,10 +117,10 @@
 
 ---
 
-*🎵 "From a simple idea to a comprehensive festival platform - every line of code tells our story!" 🎵*
+*? "From a simple idea to a comprehensive festival platform - every line of code tells our story!" ?*
 
 ---
 
 **Generated**: Manual scan on 2025-05-23  
 **Project**: Minefest-Core Festival Platform  
-**Community**: Building the future of virtual music festivals! 🎪 
+**Community**: Building the future of virtual music festivals! ? 

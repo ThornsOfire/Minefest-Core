@@ -60,7 +60,7 @@ import javax.annotation.Nullable;
 public class DJStandBlock extends HorizontalDirectionalBlock implements EntityBlock {
     private static final Logger LOGGER = LogManager.getLogger();
     
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     
     // DJ Stand shape (similar to lectern dimensions from OpenFM design)
     private static final VoxelShape SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0);

@@ -25,7 +25,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
  * Dependencies:
  * - MinefestCore [Index: 02] - mod ID for creative tab registration
  * - ModItems [Index: 08] - items to display in creative tab
- * - Minecraft Registries [Index: N/A] - creative tab registry access
+ * - Vanilla Registries [Index: N/A] - creative tab registry access
  * - Forge Environment [Index: N/A] - side detection utilities
  * 
  * Related Files:
@@ -34,33 +34,30 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
  * - ModBlocks.java [Index: 09] - blocks displayed in creative tab
  */
 public class ModCreativeTabs {
-    // Only create creative tabs if we're on the client or in a dev environment
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = createTabsRegister();
+    // Use the registry key for vanilla registries in Minecraft 1.20.4
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = 
+        DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MinefestCore.MOD_ID);
 
-    public static final RegistryObject<CreativeModeTab> MINEFEST_TAB = CREATIVE_MODE_TABS != null ? 
-            CREATIVE_MODE_TABS.register("minefest_tab",
-                () -> CreativeModeTab.builder()
-                        .title(Component.translatable("creativetab.minefest.minefest"))
-                        .icon(() -> new ItemStack(ModItems.DJ_STAND.get()))
-                        .displayItems((parameters, output) -> {
-                            // Audio Infrastructure Blocks
-                            output.accept(ModItems.DJ_STAND.get());
-                            output.accept(ModItems.SPEAKER.get());
-                            
-                            // Tools and Control Items
-                            output.accept(ModItems.REMOTE_CONTROL.get());
-                        })
-                        .build()) : null;
+    public static final RegistryObject<CreativeModeTab> MINEFEST_TAB = CREATIVE_MODE_TABS.register("minefest_tab", () -> 
+        CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.minefest.minefest_tab"))
+            .icon(() -> new ItemStack(ModItems.DJ_STAND.get()))
+            .displayItems((parameters, output) -> {
+                // Add all Minefest items to the creative tab
+                output.accept(ModItems.DJ_STAND.get());
+                output.accept(ModItems.SPEAKER.get());
+            })
+            .build()
+    );
 
-    private static DeferredRegister<CreativeModeTab> createTabsRegister() {
-        try {
-            // PROPER FIX: Use the correct registry for Minecraft 1.20.4 + Forge 49.2.0
-            // Creative tabs should work in both development and production
-            return DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MinefestCore.MOD_ID);
-        } catch (Exception e) {
-            // If creative mode tab registry doesn't exist, gracefully fallback
-            System.out.println("Creative tabs not available - this is expected in client-only builds: " + e.getMessage());
-            return null;
+    /**
+     * Registers the creative mode tabs with the mod event bus
+     * Only registers on client side to prevent server-side issues
+     */
+    public static void register(net.minecraftforge.eventbus.api.IEventBus eventBus) {
+        // Only register creative tabs on client side or in development environment
+        if (FMLEnvironment.dist == Dist.CLIENT || !FMLEnvironment.production) {
+            CREATIVE_MODE_TABS.register(eventBus);
         }
     }
 } 

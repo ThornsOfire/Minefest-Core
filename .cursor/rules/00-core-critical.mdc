@@ -1,0 +1,234 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: [ALWAYS] Critical automation and context management - always enforced
+alwaysApply: true
+---
+
+# 🚨 CRITICAL PROJECT REQUIREMENTS
+
+At the start of every new conversation you MUST read /docs/MASTERKEY.MD
+
+This file will provide you with a synopsis of all documents required for current stage.
+
+## 🎯 **MANDATORY MULTI-STEP SYSTEM ENFORCEMENT**
+
+**🚨 CRITICAL**: Apply multi-step methodology automatically for ANY task involving 2+ steps
+
+### **Auto-Trigger Conditions**
+**TRIGGER PATTERNS** - Multi-step system MUST activate when task involves:
+- Multiple file modifications
+- Multiple error diagnosis/fixes
+- Sequential build/deploy operations
+- Component integration with dependencies
+- Debug sessions with multiple failure points
+- Configuration changes affecting multiple systems
+- Version updates with associated documentation
+- Testing workflows with multiple validation steps
+
+### **Mandatory Multi-Step Declaration**
+**AI MUST STATE AT TASK START**:
+```
+🎯 **MULTI-STEP OPERATION DETECTED**
+📋 **PLANNED STAGES:**
+
+| Stage # | Description | Status |
+|---------|-------------|--------|
+| 1 | [First logical step] | ⏳ Not Started |
+| 2 | [Second logical step] | ⏳ Not Started |
+| 3 | [Third logical step] | ⏳ Not Started |
+| N | [Final step] | ⏳ Not Started |
+
+🔄 **PROGRESS TRACKING**: Will update this table after each completed stage
+```
+
+### **Stage Completion Protocol**
+**AFTER EACH COMPLETED STAGE**:
+```
+✅ **STAGE [N] COMPLETE**: [Brief description]
+
+📋 **UPDATED PROGRESS:**
+| Stage # | Description | Status |
+|---------|-------------|--------|
+| 1 | [Description] | ✅ Complete |
+| 2 | [Description] | ⏳ In Progress |
+| N | [Description] | ⏳ Not Started |
+
+🎯 **NEXT**: [What will be tackled next]
+```
+
+### **Auto-Enforcement Rules**
+- **NO SINGLE-STEP ASSUMPTIONS**: If task might expand to multiple steps, declare multi-step upfront
+- **PROGRESS VISIBILITY**: User should always know current progress and next steps
+- **FAILURE RECOVERY**: If a stage fails, update table and revise plan
+- **COMPLETION CONFIRMATION**: Final summary shows all stages ✅ Complete
+
+## 🤖 AUTOMATION-FIRST DEVELOPMENT
+**NEVER suggest manual Java commands. ALWAYS use Gradle automations.**
+
+**Required Commands:**
+- `./gradlew buildAll` - Build and deploy to both environments
+- `./gradlew runServer` - Start development server with auto-rebuild
+- `./gradlew runClient` - Start development client
+- `./gradlew incrementPatch|incrementMinor|incrementMajor` - Version updates
+- Emergency Process Protocol - Stop hanging processes (preserves Gradle daemon)
+
+**FORBIDDEN Commands:**
+- Manual Java commands (`java -jar`, `javac`)
+- Manual JAR copying (`copy build/libs/*.jar`)
+- Manual environment setup
+- Manual version editing across multiple files
+
+**Reference Documentation:** `docs/AI_ASSISTANT_AUTOMATION_GUIDE.md`
+
+## 🔒 CODE LOCKING AWARENESS
+**Check `docs/CODE_LOCKING_PROTOCOL.md` before ANY code modifications.**
+
+**Lock Status Rules:**
+- 🔒 **LOCKED**: NO changes without explicit user approval
+- ⚠️ **REVIEW REQUIRED**: Changes need justification
+- ✅ **UNLOCKED**: Free to modify
+
+**Currently Locked Components:**
+- Version Automation System (build.gradle tasks)
+- Build System Components (Java toolchain, JVM args, repositories)
+- Configuration System [Index: 10] (TOML boolean fix)
+- MasterClock System [Index: 01] (timing critical)
+- Server Startup Sequence [Index: 02] (zero crashes)
+
+## 🚨 AUTOMATED VIOLATION DETECTION SYSTEM
+
+### Multi-Step Violation Detection
+**TRIGGER CONDITIONS** - If AI starts complex task without multi-step declaration:
+- Diagnosing multiple errors without stage breakdown
+- Making multiple file changes without progress tracking
+- Complex debugging without systematic approach
+- Integration work without dependency sequencing
+
+**REQUIRED RESPONSE**: "🎯 MULTI-STEP SYSTEM REQUIRED - Declaring staged approach"
+**MANDATORY ACTION**: Create multi-step plan immediately
+
+### Automation Violation Detection
+**TRIGGER CONDITIONS** - If AI suggests ANY of these patterns:
+- "java -jar" or "javac" commands
+- "copy build/libs/*.jar" or manual JAR copying
+- Manual compilation or environment setup
+- Any process management other than emergency protocol
+- Commands not starting with "./gradlew"
+
+**REQUIRED RESPONSE**: "🚨 AUTOMATION VIOLATION DETECTED - Using ./gradlew automation only"
+**MANDATORY ACTION**: Reference `docs/AI_ASSISTANT_AUTOMATION_GUIDE.md` immediately
+
+### Windows Environment Violation Detection
+**TRIGGER CONDITIONS** - If AI suggests ANY Linux/bash patterns on Windows:
+- "&&" command chaining (use ";" in PowerShell)
+- "ls" command (use "dir" or "Get-ChildItem")
+- "cp" or "mv" commands (use "Copy-Item" or "Move-Item")
+- Forward slashes in Windows paths (use backslashes)
+- "export" for environment variables (use "$env:" in PowerShell)
+- "chmod" or Linux permissions (Windows doesn't use these)
+- "ps aux" or Linux process commands (use "Get-Process")
+
+**REQUIRED RESPONSE**: "🪟 WINDOWS ENVIRONMENT DETECTED - Using PowerShell syntax only"
+**MANDATORY ACTION**: Convert to Windows/PowerShell equivalent commands
+
+### Lock Check Enforcement
+**MANDATORY VERIFICATION** - Before ANY code modification suggestion:
+1. Must explicitly state: "🔒 Checking component lock status..."
+2. Must verify specific component in `docs/CODE_LOCKING_PROTOCOL.md`
+3. If LOCKED: Must request user approval before proceeding
+4. Must include component index number in any code suggestions
+
+**VIOLATION TRIGGER**: Any code modification suggestion without explicit lock verification
+
+## 🧠 CONTEXT WINDOW OVERLOAD DETECTION
+
+### Context Exhaustion Pattern Recognition
+**OVERLOAD TRIGGER CONDITIONS** (Any 3+ within a session):
+- Requesting context refresh more than 3 times
+- Forgetting automation requirements after recent refresh
+- Missing lock checks after being reminded
+- Providing incomplete signposting after correction
+- Losing track of current stage/progress repeatedly
+- Giving contradictory information about project state
+- Responses becoming noticeably degraded in quality
+- Missing component index numbers repeatedly
+- Not mentioning automation requirements for basic tasks
+
+### Context Overload Response Protocol
+**WHEN OVERLOAD DETECTED, AI MUST**:
+
+1. **STOP current task immediately**
+2. **Acknowledge the overload**: 
+   "🧠 CONTEXT WINDOW OVERLOAD DETECTED - I'm struggling to maintain consistent development context"
+
+3. **Document current state**:
+   "Let me document our current development state before suggesting a window reset"
+
+4. **Create session handoff using this template**:
+
+```
+## SESSION HANDOFF DOCUMENTATION - [DATE]
+
+### Current Development State
+**Project Version**: [from gradle.properties]
+**Current Stage**: [Stage X - Description] 
+**Progress**: [X% complete - specific achievements]
+
+### Last Completed Task
+**Task**: [What was just finished]
+**Files Modified**: [List of changed files]
+**Status**: [Success/Partial/Blocked]
+
+### Current Working Context
+**Active Development**: [What we were working on]
+**Next Immediate Task**: [Next specific action needed]
+**Dependencies**: [What's needed to proceed]
+
+### Project Health Status
+**Build Status**: [Last successful build command and result]
+**Locked Components**: [Any lock concerns or pending approvals]
+**Automation Compliance**: [Any violations to note]
+
+### Decisions Pending
+**User Approval Needed**: [Any pending approvals for locked components]
+**Technical Decisions**: [Architecture choices or implementation decisions needed]
+**Next Session Priority**: [What to tackle first in new session]
+
+### Quick Context Refresh Commands for New Session
+```
+1. Read docs/MASTERKEY.md (priority documents for current stage)
+2. Check docs/CURRENT_DEVELOPMENT_STATUS.md (current progress)
+3. Review docs/CODE_LOCKING_PROTOCOL.md (component restrictions)
+4. Check docs/AI_ASSISTANT_AUTOMATION_GUIDE.md (workflow requirements)
+5. Resume at: [specific task/file/implementation point]
+```
+
+### Handoff Notes
+[Any specific context, decisions, or important details the next session needs]
+```
+
+5. **Suggest clean restart**:
+   "I recommend a window reset with this handoff document. This will restore peak development performance with full context awareness."
+
+### Context Health Monitoring
+**WARNING SIGNS** that trigger context refresh:
+- Missing component index numbers in code suggestions
+- Not mentioning automation requirements for development tasks
+- Forgetting signposting requirements for new components
+- Unclear about current stage priorities
+- Responses over normal length without progress tracking
+- Providing information inconsistent with previous responses
+
+**AUTO-TRIGGER**: "🧠 CONTEXT DRIFT DETECTED - Refreshing critical development context"
+**REQUIRED ACTION**: Read `docs/MASTERKEY.md` priority documents for current stage
+
+
+
+
+
+
+

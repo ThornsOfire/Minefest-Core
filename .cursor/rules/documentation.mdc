@@ -1,0 +1,147 @@
+---
+description: 
+globs: docs/**/*.md", "**/*.md", "README*", "**/*.mdc", "CHANGELOG*
+alwaysApply: false
+---
+---
+description: [AUTO ATTACHED] Documentation formatting protection and multi-step tracking
+globs: [docs/**/*.md, **/*.md, README.*, **/*.mdc, CHANGELOG.*]
+---
+
+# 📁 DOCUMENTATION SAFETY & FORMATTING
+
+## 🛠️ DOCUMENTATION TOOL SAFETY
+
+### DOCUMENTATION MODIFICATION PROTECTION
+**CRITICAL RULE**: Markdown formatting corruption has been identified as a recurring issue.
+
+- **FORBIDDEN**: `search_replace` tool for ANY .md file changes
+- **REQUIRED**: `edit_file` tool exclusively for documentation
+- **TRIGGER PHRASE**: "📁 DOCUMENTATION MODIFICATION - Using formatting-safe tools only"
+
+**AUTO-CATCH**: Any suggestion to use `search_replace` on markdown files
+
+### Prevention Measures
+- **EditorConfig**: `.editorconfig` file enforces consistent formatting
+- **Git Settings**: `core.autocrlf=false` and `core.eol=lf` prevent line ending conversion
+- **AI Tool Awareness**: Be cautious with `search_replace` and `edit_file` tools
+- **Backup Strategy**: Always verify file formatting after AI editing operations
+
+### Recovery Commands
+```bash
+# Fix Git line ending settings
+git config core.autocrlf false
+git config core.eol lf
+
+# Restore corrupted files
+git checkout HEAD -- [filename]
+
+# Clear PowerShell history if corrupted
+Remove-Item $env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt -Force
+```
+
+## 📋 MULTI-STEP PROJECT SUMMARY SYSTEM
+
+### Purpose
+To ensure that, during any code fix, refactor, or implementation involving multiple steps or stages, the AI provides clear, structured progress summaries. This helps users track what has been completed, what remains, and the current status of each stage, reducing confusion and improving workflow transparency.
+
+### Requirements
+
+#### Stage Definition
+At the start of any multi-step process, the AI must define all planned stages or steps.
+A list of all remaining stages, with their status:
+- ✅ Complete
+- ⏳ In Progress
+- ⏳ Not Started
+
+#### On-Demand Summaries
+The user may request a summary at any time by asking for "progress," "summary," or similar.
+The AI must immediately present the current summary table, regardless of stage.
+
+#### Summary Table Format
+The summary table must include:
+- Stage number
+- Stage description  
+- Status (Not Started, In Progress, Complete)
+
+Example:
+| Stage # | Description | Status |
+|---------|---------------------------------------------|---------------|
+| 1 | Date/Time Formatting Centralization | ✅ Complete |
+| 2 | Operation Field Extraction Centralization | ⏳ In Progress|
+| 3 | HTML/Entity Stripping Utility Usage | ⏳ Not Started|
+| 4 | Direct Permission Checks Refactor | ⏳ Not Started|
+
+#### Completion Criteria
+The process is only considered complete when all stages are marked as ✅ Complete.
+The final summary must be shown at the end of the last stage.
+
+#### User Customization
+The user may specify custom stage names, order, or additional requirements at any time.
+The AI must update the summary table accordingly.
+
+### Documentation Requirements
+This rule applies to any codebase change involving more than one logical step or file.
+For single-step fixes, a summary is not required unless requested.
+The summary should be concise but clear, and always up-to-date with the latest progress.
+
+## 📚 REQUIRED DOCUMENTATION FILES
+
+The following files must be maintained in `/docs`:
+
+**Core Documentation:**
+- `CHANGELOG.md` (canonical change log - ALL changes recorded here)
+- `README.md` (canonical project documentation - NOT in root)
+- `AI_ASSISTANT_AUTOMATION_GUIDE.md` (automation enforcement for AI assistants)
+- `BUILD_WORKFLOW.md` (development and deployment processes)
+- `CODE_LOCKING_PROTOCOL.md` (component protection system)
+
+**Architecture Documentation:**
+- `ARCHITECTURE.md` (system design and component relationships)
+- `API.md` (network protocols and interfaces)
+- `Signposting Requirements.md` (component documentation standards)
+- `SERVER_CLIENT_SEPARATION.md` (side-specific development guide)
+
+**Operational Documentation:**
+- `TROUBLESHOOTING.md` (common issues and solutions)
+- `PERFORMANCE.md` (optimization strategies and benchmarks)
+- `VERSIONING.md` (version management policies)
+- `PERMISSIONS.md` (LuckPerms integration guide)
+
+**Development Documentation:**
+- `CONTRIBUTING.md` (community contribution guide)
+- `ROADMAP.md` (development stages and feature priorities)
+- `CURRENT_DEVELOPMENT_STATUS.md` (stage tracking and progress)
+
+## 🔄 POST-DEVELOPMENT DOCUMENTATION
+
+### Post-Development
+1. **Update CHANGELOG.md:** Record ALL changes with version entry
+2. **Update Documentation:** Sync affected documentation files
+3. **Version Update:** Use appropriate `./gradlew increment*` command
+4. **Validation:** Ensure all cross-references point to `/docs/` locations
+
+## 📊 SUCCESS METRICS
+
+### Documentation Quality
+- ✅ All changes recorded in CHANGELOG.md
+- ✅ Multi-step progress summaries provided
+- ✅ Component signposting maintained
+- ✅ Cross-references point to `/docs/`
+- ✅ Zero formatting corruption incidents
+- ✅ All documentation maintains proper structure
+- ✅ Line breaks preserved in all content
+- ✅ Markdown syntax remains intact
+
+**Default Rule**: **When in doubt, use `edit_file`**
+
+**Remember**: Better safe than sorry - `edit_file` preserves formatting, `search_replace` destroys it.
+
+
+
+
+
+
+
+
+

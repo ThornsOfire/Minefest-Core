@@ -1,0 +1,343 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: [ALWAYS-ENFORCE] Emergency procedures, automation violation prevention, and mandatory development workflows
+alwaysApply: true
+ruleType: automation-enforcement
+priority: critical
+---
+
+# ⚡ AUTOMATED WORKFLOWS & EMERGENCY PROCEDURES
+
+**🚨 CRITICAL**: This rule enforces automation compliance and emergency protocols automatically.
+
+## 🔐 **MANDATORY PRE-EXECUTION VALIDATION**
+
+**⚡ BEFORE EVERY TERMINAL COMMAND**: Execute validation protocol:
+
+### **Step 1: Automatic Violation Detection**
+```javascript
+// Auto-scan for forbidden patterns
+const FORBIDDEN_PATTERNS = {
+    'taskkill.*java\\.exe': 'VIOLATION: Use emergency protocol Priority 1-4',
+    'java -jar.*': 'VIOLATION: Use ./gradlew runServer or ./gradlew buildAll',
+    'cd.*server.*\\.(bat|sh)': 'VIOLATION: Use ./gradlew runServer for development',
+    'copy.*build/libs.*': 'VIOLATION: Use ./gradlew buildAll for deployment',
+    'javac.*': 'VIOLATION: Use ./gradlew automation for compilation'
+};
+```
+
+### **Step 2: Mandatory Pre-Declaration**
+**AI MUST STATE BEFORE EVERY COMMAND**:
+```
+🔍 AUTOMATION VALIDATION: [command to execute]
+✅ Pattern Check: [PASS/FAIL + reason]  
+✅ Gradle Safety: [PRESERVES/VIOLATES daemon]
+✅ Alternative Required: [NONE/automation command]
+🚦 VALIDATION: [APPROVED/BLOCKED]
+```
+
+### **Step 3: Auto-Block Violation**
+If validation FAILS → **BLOCK COMMAND** → Use automation alternative
+
+---
+
+## 🚨 **ENHANCED EMERGENCY PROCESS PROTOCOL**
+
+**🔒 MANDATORY**: Before ANY process management, check patterns and Gradle safety!
+
+## 🚨 EMERGENCY PROCESS PROTOCOLS
+
+### Process Management (Updated - Gradle Daemon Preserving)
+**PROBLEM SOLVED**: Previous protocol that killed all Java processes was too aggressive and caused Gradle daemon restarts.
+
+#### **Priority 1: Target Only Minecraft/Forge Processes** ⭐ **REQUIRED FIRST**
+```powershell
+# PowerShell - Target only Minecraft/Forge processes safely
+Get-Process java | Where-Object {$_.ProcessName -eq 'java' -and $_.CommandLine -like '*LaunchTesting*'} | Stop-Process -Force
+
+# 🔒 VIOLATION CHECK: Does NOT kill Gradle daemon ✅
+```
+
+#### **Priority 2: Command Prompt Alternative** ⭐ **SAFE FALLBACK**
+```cmd
+# Windows Command Prompt - targets LaunchTesting processes only
+for /f "tokens=1" %i in ('jps -m ^| findstr /C:"LaunchTesting"') do taskkill /F /PID %i
+
+# 🔒 VIOLATION CHECK: Does NOT kill Gradle daemon ✅
+```
+
+#### **Priority 3: Gradle Daemon Clean Restart** 🔄 **DEVELOPMENT RESET**
+```powershell
+# PowerShell - Only when Gradle daemon itself needs restarting
+./gradlew --stop
+
+# 🔒 VIOLATION CHECK: Graceful Gradle shutdown ✅
+```
+
+#### **Priority 4: Emergency Batch Script** 🛠️ **AUTOMATED SOLUTION**
+```cmd
+# Use the emergency-stop.bat script (automatically tries priorities 1-3)
+.\emergency-stop.bat
+
+# 🔒 VIOLATION CHECK: Uses proper escalation ✅
+```
+
+### 🚨 **FORBIDDEN: Aggressive Killing** (Manual Override Required)
+```cmd
+# 🚨 AUTOMATION VIOLATION: taskkill /F /IM java.exe
+# ❌ VIOLATION: Kills Gradle daemon unnecessarily
+# ✅ REQUIRED: Must use Priorities 1-4 first
+# ⚠️ ONLY IF: All priorities 1-4 have failed AND user explicitly approves
+
+# MANUAL OVERRIDE REQUIRED:
+# User approval: "Priority 1-4 failed, approve aggressive taskkill?"
+# Response: "Emergency taskkill approved" OR "Use different approach"
+```
+
+## 🪟 WINDOWS POWERSHELL COMMAND REFERENCE
+
+### Command Syntax Differences (Linux → Windows PowerShell)
+```powershell
+# ❌ Linux/Bash Syntax (DON'T USE)
+ls                          # List files
+cp file1 file2             # Copy files  
+mv file1 file2             # Move files
+command1 && command2       # Chain commands
+export VAR=value           # Set environment variables
+ps aux                     # List processes
+chmod 755 file             # File permissions
+
+# ✅ Windows PowerShell Syntax (USE THESE)
+dir                         # or Get-ChildItem
+Copy-Item file1 file2      # Copy files
+Move-Item file1 file2      # Move files  
+command1; command2         # Chain commands
+$env:VAR = "value"         # Set environment variables
+Get-Process                # List processes
+# No chmod needed on Windows
+```
+
+### Windows Path Conventions
+```powershell
+# ✅ Correct Windows Paths
+.\gradlew buildAll                    # Relative path with backslash
+cd ..\..                             # Navigate up directories
+C:\Users\rstic\Minefest-Core         # Absolute Windows path
+.cursor\rules                        # Subdirectory path
+```
+
+## 🔧 BUILD TROUBLESHOOTING WORKFLOWS
+
+### Build Issues Resolution
+- **First Step:** Always try `./gradlew clean buildAll`
+- **Hanging Processes:** Use Emergency Process Protocol (Priority 1-2)
+- **Module Conflicts:** Gradle automation handles this automatically
+- **Environment Sync:** `./gradlew buildAll` resolves sync issues
+
+### Gradle Performance Optimization (Windows PowerShell)
+```powershell
+# Clean workspace and optimize
+./gradlew clean buildAll
+
+# Check for daemon issues
+./gradlew --status
+
+# Force daemon restart if needed
+./gradlew --stop; ./gradlew buildAll
+```
+
+## 🐛 DEBUG SESSION PROTOCOLS
+
+### Systematic Debugging Approach
+1. **Isolate Problem**: Identify specific component or operation
+2. **Check Locks**: Verify component modification permissions
+3. **Review Logs**: Check server startup and runtime logs
+4. **Test Minimal**: Use minimal test cases
+5. **Document Findings**: Update troubleshooting documentation
+
+### Audio System Debugging
+```bash
+# Audio system testing workflow
+./gradlew buildAll
+./gradlew runServer
+
+# Test components in order:
+# 1. Server startup (check AudioManager initialization)
+# 2. DJ Stand placement and GUI
+# 3. Speaker linking and network formation
+# 4. Stream URL loading and playback
+```
+
+### Network Debugging
+- **Server Logs**: Check packet transmission logs
+- **Client Reception**: Verify packet reception on client side
+- **GUI Integration**: Test end-to-end GUI functionality
+- **Block Entity Sync**: Verify data persistence and synchronization
+
+## 📊 PERFORMANCE MONITORING
+
+### Build Performance Metrics
+- **Build Time**: Monitor `./gradlew buildAll` duration
+- **Memory Usage**: Check JVM memory allocation
+- **JAR Size**: Verify `-all.jar` includes dependencies correctly
+- **Environment Sync**: Ensure all three environments synchronized
+
+### Runtime Performance
+- **Server Startup**: Monitor initialization time and memory
+- **Audio Processing**: Check LavaPlayer performance metrics
+- **Network Efficiency**: Monitor packet distribution performance
+- **GUI Responsiveness**: Verify real-time updates and controls
+
+## 🔄 VERSION RECOVERY PROCEDURES
+
+### Version Issues
+- **Source of Truth:** `gradle.properties` is the primary version source
+- **Sync Problems:** Use `./gradlew updateProjectVersions`
+- **Manual Edits:** Never edit version numbers manually across files
+- **Rollback:** Use Git to restore version consistency if corrupted
+
+### Emergency Version Reset
+```bash
+# If version automation breaks
+git checkout HEAD -- gradle.properties
+./gradlew updateProjectVersions
+./gradlew buildAll
+```
+
+## 🎯 TESTING WORKFLOWS
+
+### Stage 4 Audio Testing Protocol
+```bash
+# Complete audio system test workflow
+./gradlew buildAll
+./gradlew runServer
+
+# Test sequence:
+# 1. Place DJ Stand → Check GUI opens
+# 2. Enter stream URL → Verify validation
+# 3. Place speakers → Check network formation
+# 4. Start streaming → Verify audio distribution
+# 5. Test volume controls → Check individual/master volume
+# 6. Test stop/start → Verify session management
+```
+
+### Multi-Player Testing
+- **Multiple Clients**: Test concurrent access to DJ Stand GUI
+- **Permission Validation**: Test access control with different user permissions
+- **Network Performance**: Test speaker networks with multiple concurrent streams
+- **Error Recovery**: Test error handling and recovery scenarios
+
+## 📋 DOCUMENTATION WORKFLOWS
+
+### Emergency Documentation Recovery
+```bash
+# If documentation formatting corrupted
+git checkout HEAD -- docs/[filename]
+
+# Restore entire docs directory if needed
+git checkout HEAD -- docs/
+```
+
+### Documentation Update Workflow
+1. **Use edit_file**: Never use search_replace on markdown
+2. **Update CHANGELOG.md**: Record all changes
+3. **Cross-reference Validation**: Ensure `/docs/` references
+4. **Version Consistency**: Update version references
+
+## 🚀 DEPLOYMENT WORKFLOWS
+
+### Production Deployment
+```bash
+# Complete production deployment workflow
+./gradlew clean buildAll
+./start-server.bat
+
+# Verify:
+# 1. Clean server startup
+# 2. All systems operational
+# 3. Audio components functional
+# 4. No critical errors in logs
+```
+
+### Development Environment Reset
+```bash
+# Reset development environment to clean state
+./gradlew clean
+./gradlew --stop
+./gradlew buildAll
+./gradlew runServer
+```
+
+## 📞 ESCALATION PROCEDURES
+
+### When to Request User Intervention
+1. **Lock Violations**: Any modification to 🔒 LOCKED components
+2. **Build System Changes**: Modifications to critical build configurations
+3. **Architecture Decisions**: Major design or implementation choices
+4. **Emergency Overrides**: Critical issues requiring lock overrides
+
+### Context Overload Escalation
+- **Trigger**: 3+ context refresh requests in single session
+- **Action**: Document session state and request window reset
+- **Recovery**: Use session handoff documentation for clean restart
+
+## 🔄 **VALIDATION ENFORCEMENT EXAMPLES**
+
+### **❌ VIOLATION DETECTION & BLOCKING**
+```
+Attempted Command: taskkill /F /IM java.exe
+
+🔍 AUTOMATION VALIDATION: taskkill /F /IM java.exe
+❌ Pattern Check: FAIL - matches forbidden aggressive killing
+❌ Gradle Safety: VIOLATES - will kill Gradle daemon
+✅ Alternative Required: Emergency Protocol Priority 1-4
+🚦 VALIDATION: BLOCKED
+
+🚨 AUTOMATION VIOLATION DETECTED - COMMAND BLOCKED
+Command: taskkill /F /IM java.exe
+Violation: Aggressive process killing without emergency protocol
+Required: Use Priority 1-4 emergency protocol
+Status: EXECUTION PREVENTED - Using emergency protocol instead
+```
+
+### **✅ APPROVED AUTOMATION COMMAND**
+```
+Intended Command: ./gradlew buildAll
+
+🔍 AUTOMATION VALIDATION: ./gradlew buildAll
+✅ Pattern Check: PASS - uses required Gradle automation
+✅ Gradle Safety: PRESERVES - proper Gradle usage
+✅ Alternative Required: NONE - this IS the automation
+🚦 VALIDATION: APPROVED
+```
+
+### **🔧 CORRECTIVE ACTION PROTOCOL**
+When violation detected:
+1. **BLOCK** the violating command immediately
+2. **IDENTIFY** the correct automation alternative
+3. **EXECUTE** the proper automation command instead
+4. **REFERENCE** relevant automation guide section
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,154 @@
+---
+description: 
+globs: **/*.java, src/**/*, build.gradle, gradle.properties
+alwaysApply: false
+---
+---
+description: [AUTO ATTACHED] Java development patterns and architecture standards
+globs: [**/*.java, src/**/*, build.gradle, gradle.properties]
+---
+
+# 🏗️ JAVA DEVELOPMENT & ARCHITECTURE
+
+## COMPONENT DOCUMENTATION SYSTEM
+
+### Signposting Requirements
+AI agent will produce a combination signpost and detailed per object commenting to explain logic inside of each file. All commented logic in the main body of the code will have an index number which will match the corresponding signpost entry. Commented logic must be detailed explaining function, linking, dependencies, etc.
+
+### Java Signposting Format
+All new Java files must include signposting using JavaDoc format:
+```java
+/**
+ * COMPONENT SIGNPOST [Index: XX]
+ * Purpose: Brief description of component responsibility
+ * Side: DEDICATED_SERVER | CLIENT | COMMON
+ * 
+ * Workflow:
+ * 1. [Index: XX.1] Step description
+ * 2. [Index: XX.2] Step description
+ * 
+ * Dependencies:
+ * - ComponentName [Index: YY] - interaction description
+ * 
+ * Related Files:
+ * - FileName.java [Index: ZZ] - relationship description
+ */
+```
+
+### Signpost Index System
+- Component level: XX (e.g., 01, 02, 03)
+- Method level: XX.Y (e.g., 01.1, 01.2)  
+- Logic block level: XX.Y.Z (e.g., 01.1.1, 01.1.2)
+
+**Current Index Assignments:**
+- 01: MasterClock.java (timing authority) 🔒 LOCKED
+- 02: MinefestCore.java (core initialization) 🔒 LOCKED  
+- 03-13: Core systems (see docs/ARCHITECTURE.md)
+- 15-17: Audio infrastructure blocks (Stage 1)
+- 18-20: Block entities (Stage 2)
+- 21-24: GUI systems (Stage 3)
+- 25-27: Audio integration systems (Stage 4)
+
+## 🔒 ARCHITECTURE PATTERN ENFORCEMENT
+
+### NEW COMPONENT REQUIREMENTS
+**When suggesting new Java files:**
+
+**MANDATORY ELEMENTS**:
+1. Component signpost with index number [Index: XX]
+2. Server/client side designation (DEDICATED_SERVER | CLIENT | COMMON)
+3. Dependencies and related files sections
+4. Integration with existing architecture
+
+**VIOLATION TRIGGER**: Any new Java class suggestion without complete signposting
+**REQUIRED RESPONSE**: "🏗️ APPLYING ARCHITECTURE STANDARDS - Adding required signposting"
+
+### Server-Client Separation Patterns
+```java
+// ✅ CORRECT - Server-side only component
+@OnlyIn(Dist.DEDICATED_SERVER)
+public class AudioManager {
+    // Server-side audio management
+}
+
+// ✅ CORRECT - Client-side only component  
+@OnlyIn(Dist.CLIENT)
+public class ClientAudioRenderer {
+    // Client-side audio rendering
+}
+
+// ✅ CORRECT - Common component with side checks
+public class NetworkProtocol {
+    public void handlePacket() {
+        if (FMLEnvironment.dist.isClient()) {
+            // Client-side handling
+        } else {
+            // Server-side handling
+        }
+    }
+}
+```
+
+## 📁 PROJECT CONTEXT INTEGRATION
+
+**Project:** Minefest-Core v1.20.4-0.4.3.0
+**Status:** Minecraft music festival platform mod
+**Current Stage:** Stage 4 (Audio Integration & Streaming)
+
+### Required Documentation Files
+The following files must be maintained in `/docs`:
+
+**Core Documentation:**
+- `CHANGELOG.md` (canonical change log - ALL changes recorded here)
+- `AI_ASSISTANT_AUTOMATION_GUIDE.md` (automation enforcement for AI assistants)
+- `CODE_LOCKING_PROTOCOL.md` (component protection system)
+
+**Architecture Documentation:**
+- `ARCHITECTURE.md` (system design and component relationships)
+- `SERVER_CLIENT_SEPARATION.md` (side-specific development guide)
+- `Signposting Requirements.md` (component documentation standards)
+
+## VERSIONING AUTOMATION SYSTEM
+
+### Version Source of Truth
+**Primary Location:** `gradle.properties` → `mod_version`
+**Current Version:** 1.20.4-0.4.3.0
+
+### Automated Version Management
+**NEVER manually edit version numbers.** Always use:
+- `./gradlew incrementPatch` - Bug fixes, documentation (X.X.X.Y → X.X.X.Y+1)
+- `./gradlew incrementMinor` - New features, stage completion (X.X.Y.Z → X.X.Y+1.0)
+- `./gradlew incrementMajor` - Breaking changes (X.Y.Z.W → X.Y+1.0.0)
+- `./gradlew updateProjectVersions` - Manual sync after gradle.properties edit
+
+### Version Format
+Format: [MC_VERSION]-[MAJOR].[MINOR].[PATCH].[BUILD]
+Components:
+- MC_VERSION: Target Minecraft version (1.20.4)
+- MAJOR: Breaking changes, major architecture changes
+- MINOR: New features, stage completions
+- PATCH: Bug fixes, performance improvements  
+- BUILD: Development iterations, hotfixes
+
+## 🎯 DEVELOPMENT WORKFLOW RULES
+
+### Pre-Development Checklist
+1. **Read Context:** Check `docs/CURRENT_DEVELOPMENT_STATUS.md` for current stage
+2. **Check Locks:** Review `docs/CODE_LOCKING_PROTOCOL.md` for component status
+3. **Use Automations:** Always use `./gradlew` commands, never manual Java
+4. **Version Management:** Use automation for all version changes
+
+### During Development
+1. **Stage Tracking:** Maintain clear progress summaries for multi-step processes
+2. **Signposting:** Add proper component documentation for all new Java files
+3. **Lock Compliance:** Never modify 🔒 LOCKED components without user approval
+4. **Environment Sync:** Use `./gradlew buildAll` to ensure dev/prod sync
+
+
+
+
+
+
+
+
+

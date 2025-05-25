@@ -1,3 +1,29 @@
+// ================================================================================
+// MINEFEST-CORE BUILD SYSTEM ARCHITECTURE
+// ================================================================================
+// 
+// COMPONENT SIGNPOST [Index: BUILD-01]
+// Purpose: Complete build automation system for Minefest-Core mod development
+// Architecture: Multi-environment deployment with dependency embedding
+// Side: BUILD/GRADLE - affects all environments (dev, prod, client)
+// Dependencies: ForgeGradle, MixinGradle, jarJar for LavaPlayer embedding
+// 
+// KEY FEATURES:
+// - Automated environment synchronization (dev/prod/client)
+// - LavaPlayer dependency embedding via jarJar
+// - Version automation across all project files
+// - Emergency process management for development conflicts
+// - Code locking protocol enforcement
+// - Multi-JAR creation (all/client/server specific)
+//
+// CRITICAL AUTOMATION COMMANDS:
+// - ./gradlew buildAll        → Build and deploy to all environments
+// - ./gradlew runServer       → Development server with auto-rebuild
+// - ./gradlew incrementPatch  → Version management with auto-sync
+// - ./gradlew clientJar       → Client-specific JAR (no server deps)
+//
+// ================================================================================
+
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
@@ -654,10 +680,15 @@ task updateProjectVersions {
                 /## ✨ Current Features \(v[^)]+\)/,
                 "## ✨ Current Features (v${currentVersion})"
             )
-            // Update footer current version
+            // Update footer current version (bold with emoji format)
             readmeContent = readmeContent.replaceAll(
-                /\*Current Version: [^*]+\*/,
-                "*Current Version: ${currentVersion}*"
+                /\*\*:headphones: Current Version\*\*: `[^`]+`/,
+                "**:headphones: Current Version**: `${currentVersion}`"
+            )
+            // Also handle backup file format
+            readmeContent = readmeContent.replaceAll(
+                /\*\*🎧 Current Version\*\*: `[^`]+`/,
+                "**🎧 Current Version**: `${currentVersion}`"
             )
             // Update footer last updated
             readmeContent = readmeContent.replaceAll(
@@ -714,6 +745,138 @@ task updateProjectVersions {
             )
             troubleshootingFile.text = troubleshootingContent
             println "✅ Updated docs/TROUBLESHOOTING.md"
+        }
+
+        // Update ARCHITECTURE.md version reference
+        def architectureFile = file('docs/ARCHITECTURE.md')
+        if (architectureFile.exists()) {
+            def architectureContent = architectureFile.text
+            architectureContent = architectureContent.replaceAll(
+                /\*\*Current Version\*\*: [^*]+/,
+                "**Current Version**: ${currentVersion}"
+            )
+            architectureFile.text = architectureContent
+            println "✅ Updated docs/ARCHITECTURE.md"
+        }
+
+        // Update API.md version reference
+        def apiFile = file('docs/API.md')
+        if (apiFile.exists()) {
+            def apiContent = apiFile.text
+            apiContent = apiContent.replaceAll(
+                /\*\*Current Version\*\*: [^*]+/,
+                "**Current Version**: ${currentVersion}"
+            )
+            apiFile.text = apiContent
+            println "✅ Updated docs/API.md"
+        }
+
+        // Update PERFORMANCE.md version reference
+        def performanceFile = file('docs/PERFORMANCE.md')
+        if (performanceFile.exists()) {
+            def performanceContent = performanceFile.text
+            performanceContent = performanceContent.replaceAll(
+                /\*\*Current Version\*\*: [^*]+/,
+                "**Current Version**: ${currentVersion}"
+            )
+            performanceFile.text = performanceContent
+            println "✅ Updated docs/PERFORMANCE.md"
+        }
+
+        // Update MASTERKEY.md version reference
+        def masterkeyFile = file('docs/MASTERKEY.md')
+        if (masterkeyFile.exists()) {
+            def masterkeyContent = masterkeyFile.text
+            masterkeyContent = masterkeyContent.replaceAll(
+                /\*\*Project Version\*\*: [^\n]+/,
+                "**Project Version**: ${currentVersion}"
+            )
+            masterkeyFile.text = masterkeyContent
+            println "✅ Updated docs/MASTERKEY.md"
+        }
+
+        // Update README_backup.md version reference
+        def readmeBackupFile = file('docs/README_backup.md')
+        if (readmeBackupFile.exists()) {
+            def readmeBackupContent = readmeBackupFile.text
+            readmeBackupContent = readmeBackupContent.replaceAll(
+                /\*\*🎧 Current Version\*\*: `[^`]+`/,
+                "**🎧 Current Version**: `${currentVersion}`"
+            )
+            readmeBackupFile.text = readmeBackupContent
+            println "✅ Updated docs/README_backup.md"
+        }
+
+        // Update ROADMAP.md version references
+        def roadmapFile = file('docs/ROADMAP.md')
+        if (roadmapFile.exists()) {
+            def roadmapContent = roadmapFile.text
+            roadmapContent = roadmapContent.replaceAll(
+                /v1\.20\.4-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/,
+                "v${currentVersion}"
+            )
+            roadmapFile.text = roadmapContent
+            println "✅ Updated docs/ROADMAP.md"
+        }
+
+        // Update VERSIONING.md current version example
+        def versioningFile = file('docs/VERSIONING.md')
+        if (versioningFile.exists()) {
+            def versioningContent = versioningFile.text
+            versioningContent = versioningContent.replaceAll(
+                /`1\.20\.4-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+` \(current version\)/,
+                "`${currentVersion}` (current version)"
+            )
+            versioningContent = versioningContent.replaceAll(
+                /We are currently at version `1\.20\.4-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+`/,
+                "We are currently at version `${currentVersion}`"
+            )
+            // Update footer version
+            versioningContent = versioningContent.replaceAll(
+                /\*Versioning Guide Version: [^*]+\*/,
+                "*Versioning Guide Version: ${currentVersion}*"
+            )
+            versioningFile.text = versioningContent
+            println "✅ Updated docs/VERSIONING.md"
+        }
+
+        // Update other files with footer version patterns
+        def filesToUpdateFooters = [
+            'docs/CONTRIBUTING.md': /\*Contributing Guide Version: [^\n*]+/,
+            'docs/DEPLOYMENT.md': /\*Version: [^\n*]+/,
+            'docs/API.md': /\*API Version: [^\n*]+/,
+            'docs/PERFORMANCE.md': /\*Performance Guide Version: [^\n*]+/,
+            'docs/PERMISSIONS.md': /\*\*Version\*\*: [^\n*]+/,
+            'docs/ROADMAP.md': /\*Roadmap Version: [^\n*]+/,
+            'docs/PROJECT_STATS.md': /\*\*Version\*\*: [^\n*]+/
+        ]
+        
+        filesToUpdateFooters.each { filePath, pattern ->
+            def file = project.file(filePath)
+            if (file.exists()) {
+                def content = file.text
+                // Determine replacement based on pattern
+                def replacement
+                if (filePath.contains('PERMISSIONS.md') || filePath.contains('PROJECT_STATS.md')) {
+                    replacement = "**Version**: ${currentVersion}"
+                } else {
+                    replacement = "*${filePath.split('/')[1].replace('.md', '')} Version: ${currentVersion}*"
+                    if (filePath.contains('DEPLOYMENT.md')) {
+                        replacement = "*Version: ${currentVersion}*"
+                    } else if (filePath.contains('API.md')) {
+                        replacement = "*API Version: ${currentVersion}*"
+                    } else if (filePath.contains('PERFORMANCE.md')) {
+                        replacement = "*Performance Guide Version: ${currentVersion}*"
+                    } else if (filePath.contains('CONTRIBUTING.md')) {
+                        replacement = "*Contributing Guide Version: ${currentVersion}*"
+                    } else if (filePath.contains('ROADMAP.md')) {
+                        replacement = "*Roadmap Version: ${currentVersion}*"
+                    }
+                }
+                content = content.replaceAll(pattern, replacement)
+                file.text = content
+                println "✅ Updated ${filePath}"
+            }
         }
         
         // Check if CHANGELOG.md needs a new version entry
@@ -905,6 +1068,28 @@ task validateLocks {
 
 // Run lock validation before build
 build.dependsOn validateLocks
+
+// ================================================================================
+// COMPONENT SIGNPOST [Index: BUILD-02]
+// Purpose: Git automation system for version management
+// Architecture: Conservative git operations with safety checks
+// Side: BUILD/GIT - affects version control and documentation
+// Dependencies: Git CLI, version automation tasks
+// 
+// KEY FEATURES:
+// - Safe version file staging (explicit file list, no wildcards)
+// - Standardized commit messages for version tracking
+// - NO automatic push (manual control for stability)
+// - Error handling with graceful fallback
+// - Integration with version increment tasks
+// 
+// SAFETY FEATURES:
+// - Explicit file list (no wildcards)
+// - Git status checking before operations
+// - Clear success/failure feedback
+// - Manual push instructions provided
+//
+// ================================================================================
 
 // ==========================================
 // GIT AUTOMATION SYSTEM - COMMIT ONLY
@@ -1292,5 +1477,14 @@ task gitCreateVersionTag {
         } catch (Exception e) {
             println "❌ Error creating tag: ${e.message}"
         }
+    }
+}
+
+// CREATIVE_MODE_TAB Fix: Properly configure reobf extension to disable obfuscation
+// This prevents NoSuchFieldError in CurseForge client for registry fields like CREATIVE_MODE_TAB
+reobf {
+    // Disable obfuscation to fix client-side field reference errors
+    jar {
+        enabled = false
     }
 }

@@ -1,0 +1,190 @@
+---
+description: Use when working on current active development stage - provides stage-specific patterns, objectives, and implementation guidance
+globs: 
+alwaysApply: false
+---
+---
+description: [AGENT REQUESTED] Use when working on current active development stage - provides stage-specific patterns, objectives, and implementation guidance
+---
+
+<!-- 
+🔄 STAGE TEMPLATE RULE - Update content when transitioning to new stages
+Current: Stage 4 (Audio Integration) 
+Next: Stage 5 (Performance & Polish)
+-->
+
+# 🎯 CURRENT STAGE: AUDIO INTEGRATION & STREAMING
+
+**Current Focus**: Stage 4 - Audio Integration & Streaming Development
+**Project Version**: 1.20.4-0.4.3.0
+**Stage Status**: 75% Complete - Core audio streaming system functional
+**Next Stage**: Stage 5 - Performance & Polish (Planned)
+
+## 🎯 STAGE 4 OBJECTIVES & PROGRESS
+
+### ✅ Completed Components (75%)
+1. **Audio Infrastructure Blocks** - DJ Stand, Speaker, Remote Control [Index: 15-17]
+2. **Block Entities & Persistence** - Data storage and network management [Index: 18-20]
+3. **GUI System** - Professional control interfaces [Index: 21-24]
+4. **LavaPlayer Integration** - Fully operational server-side audio system [Index: 05-07]
+5. **Audio Streaming Bridge** - Coordination layer between GUI and audio [Index: 25]
+6. **Network Audio Distribution** - Speaker network distribution system [Index: 26]
+7. **Enterprise Security** - Stream validation and access control [Index: 27]
+
+### 🚧 Stage 4 Components Status
+- **[Index: 25] DJStandAudioBridge** ✅ Complete (16KB, 357 lines)
+- **[Index: 26] NetworkAudioManager** ✅ Complete (22KB, 528 lines)  
+- **[Index: 27] StreamValidator** ✅ Complete (26KB, 600 lines)
+- **[Index: 05] AudioManager** ✅ Complete (8.2KB, 196 lines)
+- **[Index: 06] StreamingSession** ✅ Complete (1.9KB, 66 lines)
+- **[Index: 07] MinefestAudioLoadHandler** ✅ Complete (3.2KB, 79 lines)
+
+## 🔊 AUDIO SYSTEM ARCHITECTURE PATTERNS
+
+### Server-Side Audio Authority
+**CRITICAL**: LavaPlayer runs SERVER-SIDE ONLY
+- **Server**: AudioManager, LavaPlayer sessions, stream processing
+- **Client**: Minecraft audio engine, playback coordination
+- **Network**: Audio data transmission from server to client
+
+### Component Integration Points
+```java
+// ✅ CORRECT - Audio system integration pattern
+DJStandBlockEntity → DJStandAudioBridge → AudioManager → LavaPlayer
+                 ↓
+            NetworkAudioManager → SpeakerNetwork → Client Audio
+```
+
+### Audio Session Management
+```java
+/**
+ * COMPONENT SIGNPOST [Index: 06]
+ * Purpose: Individual audio session state tracking
+ * Side: DEDICATED_SERVER
+ * 
+ * Workflow:
+ * 1. [Index: 06.1] Session creation with UUID tracking
+ * 2. [Index: 06.2] Stream URL validation and loading
+ * 3. [Index: 06.3] Network distribution to speaker entities
+ * 4. [Index: 06.4] Session lifecycle management and cleanup
+ */
+@OnlyIn(Dist.DEDICATED_SERVER)
+public class StreamingSession {
+    // Server-side session management only
+}
+```
+
+## 🎛️ DJ STAND AUDIO BRIDGE PATTERNS
+
+### Audio-GUI Integration
+```java
+/**
+ * COMPONENT SIGNPOST [Index: 25]
+ * Purpose: Bridge between DJ Stand GUI controls and AudioManager
+ * Side: DEDICATED_SERVER
+ * 
+ * Dependencies:
+ * - AudioManager [Index: 05] - LavaPlayer session management
+ * - DJStandBlockEntity [Index: 18] - GUI state persistence
+ * - NetworkAudioManager [Index: 26] - Speaker distribution
+ */
+```
+
+### Stream Control Operations
+- **Play/Pause/Stop**: GUI controls → Audio bridge → LavaPlayer
+- **Volume Control**: Master volume + individual speaker adjustment
+- **Stream URL**: Validation → Loading → Distribution
+- **Network Status**: Real-time speaker topology monitoring
+
+## 🔊 NETWORK AUDIO DISTRIBUTION
+
+### Speaker Network Architecture
+```java
+/**
+ * COMPONENT SIGNPOST [Index: 26]
+ * Purpose: Distribute audio to speaker networks with synchronized playback
+ * Side: DEDICATED_SERVER
+ * 
+ * Workflow:
+ * 1. [Index: 26.1] Speaker network discovery (25-block radius)
+ * 2. [Index: 26.2] Synchronized audio distribution (20Hz sync)
+ * 3. [Index: 26.3] Volume management (master + individual)
+ * 4. [Index: 26.4] Distance attenuation (64-block maximum range)
+ */
+```
+
+### Performance Optimization
+- **Thread-Safe Operations**: Concurrent audio processing
+- **Memory Management**: Efficient session cleanup
+- **Network Efficiency**: Optimized packet distribution
+- **Festival-Scale Ready**: Thousands of concurrent users
+
+## 🔐 ENTERPRISE SECURITY PATTERNS
+
+### Stream Validation System
+```java
+/**
+ * COMPONENT SIGNPOST [Index: 27]
+ * Purpose: Enterprise security validation with access tokens
+ * Side: DEDICATED_SERVER
+ * 
+ * Features:
+ * - Permission-based access control (LuckPerms integration)
+ * - Obfuscated token generation (UUID-based)
+ * - Multi-tier ticket system (General/VIP/Premium/Backstage)
+ * - Anti-piracy protection (session-tied tokens)
+ */
+```
+
+### Business Integration Requirements
+- **Tibex Integration**: Automated ticket processing
+- **Real-Time Access**: Purchase → permission → instant access
+- **Revenue Protection**: Player-specific access tokens
+- **Time-Limited Access**: Automatic permission expiration
+
+## 🚀 NEXT DEVELOPMENT PRIORITIES
+
+### Stage 4 Completion (25% Remaining)
+1. **Client-Side Audio Integration** [Index: 29] - Client audio rendering
+2. **3D Audio Positioning** - Speaker location-based audio
+3. **Performance Testing** - Festival-scale load testing
+4. **Integration Testing** - End-to-end audio pipeline validation
+
+### Stage 5 Preparation
+1. **Multi-User Coordination** - Advanced festival features
+2. **Performance Optimization** - Large-scale deployment
+3. **Advanced Permissions** - Complex access control systems
+
+## 🎵 AUDIO DEVELOPMENT BEST PRACTICES
+
+### LavaPlayer Integration
+- Always use AudioManager for session management
+- Server-side audio processing only
+- Proper session cleanup and error handling
+- Thread-safe concurrent operations
+
+### Network Audio Distribution
+- 20Hz synchronization for speaker networks
+- Logarithmic distance attenuation
+- Efficient packet distribution
+- Speaker network auto-discovery
+
+### GUI Integration
+- Real-time status updates
+- Professional control interfaces
+- Persistent configuration storage
+- Network topology visualization
+
+### Enterprise Security
+- Permission-based access validation
+- Obfuscated token generation
+- Session-tied security tokens
+- Automatic access management
+
+
+
+
+
+
+
+

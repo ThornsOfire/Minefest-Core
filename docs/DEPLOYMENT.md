@@ -21,20 +21,20 @@ This guide covers deploying Minefest-Core from your local Windows development en
 ## Prerequisites
 
 ### Local Environment (Windows)
-- ✅ Java 17 installed
-- ✅ Project building successfully (`./gradlew buildAll`)
-- ✅ SSH client (Git Bash, WSL, or OpenSSH for Windows)
+- ? Java 17 installed
+- ? Project building successfully (`./gradlew buildAll`)
+- ? SSH client (Git Bash, WSL, or OpenSSH for Windows)
 
 ### Production Server (Linux)
-- ✅ Java 17+ installed (`sudo apt install openjdk-17-jdk`)
-- ✅ SSH server running
-- ✅ User with sudo privileges
-- ✅ At least 8GB RAM (6GB for Minecraft + 2GB for OS)
-- ✅ SSH key authentication set up
+- ? Java 17+ installed (`sudo apt install openjdk-17-jdk`)
+- ? SSH server running
+- ? User with sudo privileges
+- ? At least 8GB RAM (6GB for Minecraft + 2GB for OS)
+- ? SSH key authentication set up
 
 ## Deployment Methods
 
-### Method 1: Automated Deployment Script ⭐ **Recommended**
+### Method 1: Automated Deployment Script ? **Recommended**
 
 The automated deployment script handles everything for you:
 
@@ -61,12 +61,12 @@ export DEPLOY_PATH=/home/minecraft/server
 ```
 
 **What it does:**
-1. ✅ Builds project locally with `./gradlew buildAll`
-2. ✅ Tests SSH connection
-3. ✅ Creates backup of existing server
-4. ✅ Deploys all server files
-5. ✅ Sets up configuration
-6. ✅ Verifies deployment
+1. ? Builds project locally with `./gradlew buildAll`
+2. ? Tests SSH connection
+3. ? Creates backup of existing server
+4. ? Deploys all server files
+5. ? Sets up configuration
+6. ? Verifies deployment
 
 ### Method 2: Manual Deployment
 
@@ -354,18 +354,18 @@ scp minecraft@server:/home/minecraft/server-backup-*.tar.gz ./backups/
 ## Security Considerations
 
 ### Server Security
-- ✅ Use SSH key authentication
-- ✅ Disable password authentication
-- ✅ Keep Java updated
-- ✅ Use firewall rules
-- ✅ Regular security updates
+- ? Use SSH key authentication
+- ? Disable password authentication
+- ? Keep Java updated
+- ? Use firewall rules
+- ? Regular security updates
 
 ### Minecraft Security
-- ✅ Use offline mode for development
-- ✅ Consider online mode for production
-- ✅ Set up proper permissions
-- ✅ Monitor server logs
+- ? Use offline mode for development
+- ? Consider online mode for production
+- ? Set up proper permissions
+- ? Monitor server logs
 
 ---
 *Last Updated: 2025-05-22*
-*Version: 1.20.4-0.1.0.1* 
+*Version: 1.20.4-0.4.3.0********* 
